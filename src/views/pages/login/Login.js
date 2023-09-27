@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios'
 import { Link } from 'react-router-dom'
 import {
   CButton,
@@ -19,6 +20,28 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import polban from './../../../assets/images/polban.png'
 
 const Login = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  })
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
+  }
+  const handleLogin = async (e) => {
+    e.preventDefault()
+
+    try {
+      const response = await axios.post('http://localhost:8080/api/auth/signin', formData)
+      const token = response.data.token
+      window.location.href = '/dashboard'
+    } catch (error) {
+      console.error('Login failed:', error)
+    }
+  }
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -34,7 +57,13 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        name="username"
+                        placeholder="Username"
+                        autoComplete="username"
+                        value={formData.username}
+                        onChange={handleInputChange}
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -42,13 +71,16 @@ const Login = () => {
                       </CInputGroupText>
                       <CFormInput
                         type="password"
+                        name="password"
                         placeholder="Password"
                         autoComplete="current-password"
+                        value={formData.password}
+                        onChange={handleInputChange}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4" href="/dashboard">
+                        <CButton color="primary" className="px-4" onClick={handleLogin}>
                           Login
                         </CButton>
                       </CCol>
