@@ -9,12 +9,14 @@ import {
   CContainer,
   CForm,
   CFormInput,
+  CImage,
   CInputGroup,
   CInputGroupText,
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import polban from './../../../assets/images/polban.png'
 
 const Login = () => {
   return (
@@ -46,7 +48,7 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton color="primary" className="px-4" href="/dashboard">
                           Login
                         </CButton>
                       </CCol>
@@ -62,16 +64,17 @@ const Login = () => {
               <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
                 <CCardBody className="text-center">
                   <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
+                    <h2>Student Leaving Permission</h2>
+                    <div className="clearfix">
+                      <CImage
+                        align="center"
+                        rounded
+                        src={polban}
+                        alt="Polban"
+                        width={155}
+                        height={210}
+                      />
+                    </div>
                   </div>
                 </CCardBody>
               </CCard>
