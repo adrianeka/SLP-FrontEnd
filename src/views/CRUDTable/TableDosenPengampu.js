@@ -41,7 +41,7 @@ const DosenTablePengampu = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Dosen Pengampu</CCardHeader>
+            <CCardHeader>Daftar Dosen</CCardHeader>
             <CCardBody>
               <CForm className="mb-3">
                 <CInputGroup>
