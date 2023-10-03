@@ -13,7 +13,7 @@ import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 
 // sidebar nav config
-import navigation from '../_nav'
+import navigation from '../navAdmin'
 import { cilCrop, cilDinner } from '@coreui/icons'
 
 const AppSidebarAdmin = () => {

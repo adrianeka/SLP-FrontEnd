@@ -101,6 +101,7 @@ const KelolaDataMhs = () => {
       user.prodi.toLowerCase().includes(searchText.toLowerCase())
     )
   })
+
   return (
     <div>
       <CRow>
@@ -122,10 +123,10 @@ const KelolaDataMhs = () => {
                     <CInputGroup className="search-input">
                       <CFormInput
                         placeholder="Search"
-                        value={searchText} // Mengikat nilai pencarian ke state searchText
+                        value={searchText}
                         onChange={handleSearchChange}
                       />
-                      <CInputGroupText id="tanggal-awal">
+                      <CInputGroupText id="search-icon">
                         <CIcon icon={cilSearch} />
                       </CInputGroupText>
                     </CInputGroup>
@@ -139,12 +140,6 @@ const KelolaDataMhs = () => {
                     <CTableHeaderCell>Kelas</CTableHeaderCell>
                     <CTableHeaderCell>Nim</CTableHeaderCell>
                     <CTableHeaderCell>Prodi</CTableHeaderCell>
-                    <CTableHeaderCell>Username</CTableHeaderCell>
-                    <CTableHeaderCell>Password</CTableHeaderCell>
-                    <CTableHeaderCell>Email</CTableHeaderCell>
-                    <CTableHeaderCell>No Telp</CTableHeaderCell>
-                    <CTableHeaderCell>Nama Orang Tua</CTableHeaderCell>
-                    <CTableHeaderCell>No Telp Orang Tua</CTableHeaderCell>
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -155,31 +150,29 @@ const KelolaDataMhs = () => {
                       <CTableDataCell>{user.Kelas}</CTableDataCell>
                       <CTableDataCell>{user.nim}</CTableDataCell>
                       <CTableDataCell>{user.prodi}</CTableDataCell>
-                      <CTableDataCell>{user.username}</CTableDataCell>
-                      <CTableDataCell>{user.password}</CTableDataCell>
-                      <CTableDataCell>{user.email}</CTableDataCell>
-                      <CTableDataCell>{user.noTelp}</CTableDataCell>
-                      <CTableDataCell>{user.namaOrangTua}</CTableDataCell>
-                      <CTableDataCell>{user.noTelpOrangTua}</CTableDataCell>
                       <CTableDataCell>
-                        <CButton
-                          color="primary"
-                          variant="outline"
-                          className="ms-2"
-                          title="Ubah Data Mahasiswa"
-                          onClick={() => handleUpdateModal(user)}
-                        >
-                          <CIcon icon={cilPen} />
-                        </CButton>
-                        <CButton
-                          color="danger"
-                          variant="outline"
-                          className="ms-2"
-                          title="Hapus Data Mahasiswa"
-                          onClick={() => handleDeleteModal(user)}
-                        >
-                          <CIcon icon={cilTrash} />
-                        </CButton>
+                        <CCol>
+                          <Link to="/kelola/mahasiswa/update">
+                            <CButton
+                              color="primary"
+                              variant="outline"
+                              className="ms-2"
+                              title="Ubah Data Mahasiswa"
+                              onClick={() => handleUpdateModal(user)}
+                            >
+                              <CIcon icon={cilPen} />
+                            </CButton>
+                          </Link>
+                          <CButton
+                            color="danger"
+                            variant="outline"
+                            className="ms-2"
+                            title="Hapus Data Mahasiswa"
+                            onClick={() => handleDeleteModal(user)}
+                          >
+                            <CIcon icon={cilTrash} />
+                          </CButton>
+                        </CCol>
                       </CTableDataCell>
                     </CTableRow>
                   ))}
@@ -195,9 +188,9 @@ const KelolaDataMhs = () => {
         backdrop="static"
         visible={modalDelete}
         onClose={() => setModalDelete(false)}
-        aria-labelledby="StaticBackdropExampleLabel"
+        aria-labelledby="DeleteModal"
       >
-        <CModalHeader>
+        <CModalHeader closeButton>
           <CModalTitle id="DeleteModal">Delete</CModalTitle>
         </CModalHeader>
         <CModalBody>Yakin ingin hapus {selectedData ? selectedData.nama : ''} ?</CModalBody>
@@ -213,116 +206,17 @@ const KelolaDataMhs = () => {
         backdrop="static"
         visible={modalUpdate}
         onClose={() => setModalUpdate(false)}
-        aria-labelledby="StaticBackdropExampleLabel"
+        aria-labelledby="UpdateModal"
       >
-        <CModalHeader>
+        <CModalHeader closeButton>
           <CModalTitle id="UpdateModal">Update</CModalTitle>
         </CModalHeader>
-        <CModalBody>
-          <CForm className="row g-3">
-            <CCol xs={12}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="judul">
-                  <CIcon icon={cilShortText} />
-                </CInputGroupText>
-                <CFormTextarea
-                  aria-describedby="judul"
-                  value={selectedData ? selectedData.judulSurat : ''}
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="tanggal-awal">
-                  <CIcon icon={cilCalendar} />
-                </CInputGroupText>
-                <CFormInput
-                  type="date"
-                  placeholder="Tanggal Awal"
-                  floatingLabel="Tanggal Awal"
-                  aria-describedby="tanggal-awal"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="tanggal-akhir">
-                  <CIcon icon={cilCalendar} />
-                </CInputGroupText>
-                <CFormInput
-                  type="date"
-                  placeholder="Tanggal Akhir"
-                  floatingLabel="Tanggal Akhir"
-                  aria-describedby="tanggal-akhir"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="jam-awal">
-                  <CIcon icon={cilClock} />
-                </CInputGroupText>
-                <CFormInput
-                  placeholder="Jam Kuliah Awal"
-                  floatingLabel="Jam Kuliah Awal"
-                  aria-describedby="jam-awal"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="jam-akhir">
-                  <CIcon icon={cilClock} />
-                </CInputGroupText>
-                <CFormInput
-                  placeholder="Jam Kuliah Akhir"
-                  floatingLabel="Jam Kuliah Akhir"
-                  aria-describedby="jam-akhir"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol xs={12}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="alasan">
-                  <CIcon icon={cilShortText} />
-                </CInputGroupText>
-                <CFormTextarea
-                  placeholder="Keterangan"
-                  floatingLabel="Keterangan"
-                  aria-describedby="keterangan"
-                  value={selectedData ? selectedData.alasan : ''}
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol xs={12}>
-              <CFormSelect
-                id="jenisKetidakhadiran"
-                label="Jenis Ketidakhadiran"
-                value={selectedData ? selectedData.jenis : ''}
-              >
-                <option selected hidden>
-                  Pilih..
-                </option>
-                <option value="Sakit">Sakit</option>
-                <option value="Izin">Izin</option>
-              </CFormSelect>
-            </CCol>
-            <CCol xs={12}>
-              <CFormInput
-                id="bukti"
-                type="file"
-                a
-                aria-describedby="file"
-                label="Upload Bukti Surat Perizinan"
-              />
-            </CCol>
-          </CForm>
-        </CModalBody>
+        <CModalBody>{/* Isi formulir pembaruan di sini */}</CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setModalUpdate(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton color="primary">Update</CButton>
         </CModalFooter>
       </CModal>
     </div>
