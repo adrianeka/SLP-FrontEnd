@@ -103,21 +103,21 @@ const KelolaDataDosenPengampu = () => {
                 <CRow>
                   <CCol xs={8}>
                     <CRow>
-                    <CCol xs={2}>
-                      <Link to="/kelola/dosen/pengampu/tambah">
-                        <CButton variant="outline">
-                          <CIcon icon={cilUserPlus} className="mx-2" />
-                          Create
+                      <CCol xs={2}>
+                        <Link to="/kelola/dosen/pengampu/tambah">
+                          <CButton variant="outline">
+                            <CIcon icon={cilUserPlus} className="mx-2" />
+                            Create
+                          </CButton>
+                        </Link>
+                      </CCol>
+                      <CCol xs={3}>
+                        <CButton variant="outline" color="success">
+                          <CIcon icon={cilFile} className="mx-2" />
+                          Import
                         </CButton>
-                      </Link>
-                    </CCol>
-                    <CCol xs={3}>
-                      <CButton variant='outline' color='success'>
-                        <CIcon icon={cilFile} className='mx-2' />
-                        Import
-                      </CButton>
-                    </CCol>
-                    <CCol xs={6}></CCol>
+                      </CCol>
+                      <CCol xs={6}></CCol>
                     </CRow>
                   </CCol>
                   <CCol xs={4}>

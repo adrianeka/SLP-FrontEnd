@@ -37,8 +37,10 @@ const Login = () => {
     e.preventDefault()
 
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/signin', formData)
-      const token = response.data.token
+      const response = await axios.post('http://localhost:8080/api/auth/signin', formData, {
+        withCredentials: true, // Include cookies with the request
+      })
+
       window.location.href = '/dashboard'
     } catch (error) {
       console.error('Login failed:', error)
