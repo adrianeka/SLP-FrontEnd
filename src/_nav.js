@@ -32,53 +32,29 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: ' ',
-  },
-  {
-    component: CNavTitle,
-    name: 'Pengelolaan',
-    to: '/dashboard',
+    name: 'Daftar Mahasiswa',
+    to: '/kelola/mahasiswa',
   },
   {
     component: CNavGroup,
-    name: 'Kelola Data',
+    name: 'Permohonan',
     items: [
       {
         component: CNavItem,
-        name: 'Mahasiswa',
-        to: '/kelola/mahasiswa',
+        name: 'Izin',
+        to: '/rekap/izin',
       },
       {
         component: CNavItem,
-        name: 'Orang Tua/Wali Mahasiswa',
-        to: '/kelola/mahasiswa/orangtua',
-      },
-      {
-        component: CNavItem,
-        name: 'Dosen Pengampu',
-        to: '/kelola/dosen/pengampu',
-      },
-      {
-        component: CNavItem,
-        name: 'Dosen Wali',
-        to: '/kelola/dosen/wali',
-      },
-      {
-        component: CNavItem,
-        name: 'Kaprodi',
-        to: '/kelola/kaprodi',
+        name: 'Sakit',
+        to: '/rekap/sakit',
       },
     ],
   },
   {
     component: CNavItem,
-    name: 'Rekap Data Mahasiswa',
-    to: '/#',
-  },
-  {
-    component: CNavItem,
-    name: 'Kelola Akademik',
-    to: '#',
+    name: 'Riwayat Surat Permohonan',
+    to: '/riwayat/surat-permohonan',
   },
   {
     component: CNavTitle,
@@ -88,13 +64,13 @@ const _nav = [
     component: CNavItem,
     name: 'Setting',
     icon: <CIcon icon={cilAppsSettings} customClassName="nav-icon" />,
-    to: '/#',
+    to: '/setting',
   },
   {
     component: CNavItem,
     name: 'About',
     icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
-    to: '/#',
+    to: '/about',
   },
 ]
 
