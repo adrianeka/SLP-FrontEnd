@@ -24,6 +24,8 @@ const Login = () => {
     username: '',
     password: '',
   })
+  const [error, setError] = useState(null)
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData({
@@ -40,6 +42,7 @@ const Login = () => {
       window.location.href = '/dashboard'
     } catch (error) {
       console.error('Login failed:', error)
+      setError('Login gagal. Cek kembali username dan password Anda.')
     }
   }
   return (
@@ -89,6 +92,9 @@ const Login = () => {
                           Forgot password?
                         </CButton>
                       </CCol>
+                    </CRow>
+                    <CRow>
+                      {error && <div className="error-message alert alert-danger">{error}</div>}
                     </CRow>
                   </CForm>
                 </CCardBody>
