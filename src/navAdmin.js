@@ -50,11 +50,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Orang Tua/Wali Mahasiswa',
-        to: '/kelola/mahasiswa/orangtua',
-      },
-      {
-        component: CNavItem,
         name: 'Dosen Pengampu',
         to: '/kelola/dosen/pengampu',
       },

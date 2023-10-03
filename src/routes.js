@@ -1,11 +1,14 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
-const DosenTablePengampu = React.lazy(() => import('./views/CRUDTable/TableDosenPengampu'))
 const TableDosenWali = React.lazy(() => import('./views/CRUDTable/TableDosenWali'))
 const TableKaprodi = React.lazy(() => import('./views/CRUDTable/TableKaprodi'))
 const KelolaDataMhs = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataMhs'))
 const FormTambahMhs = React.lazy(() => import('./views/form/Admin/formCreateMhs'))
+const KelolaDataDosenPengampu = React.lazy(() =>
+  import('./views/CRUDTable/Admin/KelolaDataDosenPengampu'),
+)
+const FormTambahDosen = React.lazy(() => import('./views/form/Admin/formCreateDosen'))
 // Mahasiswa
 const DashboardMahasiswa = React.lazy(() => import('./views/dashboard/DashboardMahasiswa'))
 const TableSuratMahasiswa = React.lazy(() => import('./views/CRUDTable/Mahasiswa/TableSurat'))
@@ -23,7 +26,16 @@ const routes = [
   //   name: 'Table Orang Tua/Wali Mahasiswa',
   //   element: MahasiswaTable,
   // },
-  { path: '/kelola/dosen/pengampu', name: 'Tabel Dosen Pengampu', element: DosenTablePengampu },
+  {
+    path: '/kelola/dosen/pengampu',
+    name: 'Tabel Dosen Pengampu',
+    element: KelolaDataDosenPengampu,
+  },
+  {
+    path: '/kelola/dosen/pengampu/tambah',
+    name: 'Tabel Dosen Pengampu',
+    element: FormTambahDosen,
+  },
   { path: '/kelola/dosen/wali', name: 'Tabel Dosen Wali', element: TableDosenWali },
   { path: '/kelola/kaprodi', name: 'Tabel Kaprodi', element: TableKaprodi },
   // Dashboar Mahasiswa
