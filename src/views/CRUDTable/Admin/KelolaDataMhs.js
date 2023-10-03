@@ -68,7 +68,7 @@ const usersData = [
   },
 ]
 
-const MahasiswaTable = () => {
+const KelolaDataMhs = () => {
   const [modalDelete, setModalDelete] = useState(false)
   const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
@@ -329,4 +329,4 @@ const MahasiswaTable = () => {
   )
 }
 
-export default MahasiswaTable
+export default KelolaDataMhs
