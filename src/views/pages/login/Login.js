@@ -39,7 +39,7 @@ const Login = () => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/signin', formData)
       const token = response.data.token
-      window.location.href = '/dashboard'
+      window.location.href = `/dashboard?token=${token}`
     } catch (error) {
       console.error('Login failed:', error)
       setError('Login gagal. Cek kembali username dan password Anda.')

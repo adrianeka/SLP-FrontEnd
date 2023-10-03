@@ -1,4 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+// const token = 'your-authentication-token'
+// axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+import { useLocation } from 'react-router-dom'
+
 import {
   CButton,
   CCard,
@@ -40,30 +45,65 @@ import {
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
-const usersData = [
-  {
-    id: 0,
-    nama: 'Adrian',
-    kode: '221511000',
-    username: 'MrDr8',
-    password: 'MrDr8',
-    email: 'adrian',
-  },
-  {
-    id: 1,
-    nama: 'Reno',
-    kode: '221511000',
-    username: 'MrDr8',
-    password: 'MrDr8',
-    email: 'adrian',
-  },
-]
+// const usersData = [
+//   {
+//     id: 0,
+//     nama: 'Adrian',
+//     kode: '221511000',
+//     username: 'MrDr8',
+//     password: 'MrDr8',
+//     email: 'adrian',
+//   },
+//   {
+//     id: 1,
+//     nama: 'Reno',
+//     kode: '221511000',
+//     username: 'MrDr8',
+//     password: 'MrDr8',
+//     email: 'adrian',
+//   },
+// ]
 
 const KelolaDataDosenPengampu = () => {
   const [modalDelete, setModalDelete] = useState(false)
   const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
+  const [dosenData, setDosenData] = useState([])
+
+  const [token, setToken] = useState('')
+  const location = useLocation()
+
+  useEffect(() => {
+    // Mengambil token dari URL saat komponen dimuat pertama kali
+    const searchParams = new URLSearchParams(location.search)
+    const tokenFromURL = searchParams.get('token')
+
+    if (tokenFromURL) {
+      setToken(tokenFromURL)
+
+      // Hapus token dari URL agar tidak muncul di tampilan
+      window.history.replaceState({}, document.title, '/')
+    }
+  }, [location])
+
+  useEffect(() => {
+    const apiUrl = 'http://localhost:8080/api/admins/dosen'
+    // Token authorization
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`, // Menggunakan token yang telah disimpan
+      },
+    }
+    axios
+      .get(apiUrl, config)
+      .then((response) => {
+        setDosenData(response.data) // Menyimpan data dosen ke dalam state
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error)
+      })
+  }, [token])
 
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
@@ -82,14 +122,14 @@ const KelolaDataDosenPengampu = () => {
     setSearchText(e.target.value)
   }
 
-  const filteredData = usersData.filter((user) => {
-    //Var untuk menampung data baru
+  const filteredData = dosenData.filter((user) => {
     return (
-      searchText === '' || // Filter berdasarkan pencarian
-      user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.Kelas.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.nim.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.prodi.toLowerCase().includes(searchText.toLowerCase())
+      searchText === '' ||
+      user.kode_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.nama_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.password.toLowerCase().includes(searchText.toLowerCase())
     )
   })
   return (
@@ -103,21 +143,21 @@ const KelolaDataDosenPengampu = () => {
                 <CRow>
                   <CCol xs={8}>
                     <CRow>
-                    <CCol xs={2}>
-                      <Link to="/kelola/dosen/pengampu/tambah">
-                        <CButton variant="outline">
-                          <CIcon icon={cilUserPlus} className="mx-2" />
-                          Create
+                      <CCol xs={2}>
+                        <Link to="/kelola/dosen/pengampu/tambah">
+                          <CButton variant="outline">
+                            <CIcon icon={cilUserPlus} className="mx-2" />
+                            Create
+                          </CButton>
+                        </Link>
+                      </CCol>
+                      <CCol xs={3}>
+                        <CButton variant="outline" color="success">
+                          <CIcon icon={cilFile} className="mx-2" />
+                          Import
                         </CButton>
-                      </Link>
-                    </CCol>
-                    <CCol xs={3}>
-                      <CButton variant='outline' color='success'>
-                        <CIcon icon={cilFile} className='mx-2' />
-                        Import
-                      </CButton>
-                    </CCol>
-                    <CCol xs={6}></CCol>
+                      </CCol>
+                      <CCol xs={6}></CCol>
                     </CRow>
                   </CCol>
                   <CCol xs={4}>
