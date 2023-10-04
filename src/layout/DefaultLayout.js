@@ -1,4 +1,5 @@
 import React from 'react'
+import AppSidebarDosenWali from 'src/components/AppSidebarDosenWali'
 import {
   AppContent,
   AppSidebar,
@@ -11,7 +12,7 @@ import {
 const DefaultLayout = () => {
   return (
     <div>
-      <AppSidebarAdmin />
+      <AppSidebarMhs />
       <div className="wrapper d-flex flex-column min-vh-100 bg-light">
         <AppHeader />
         <div className="body flex-gow-1 px-3">
