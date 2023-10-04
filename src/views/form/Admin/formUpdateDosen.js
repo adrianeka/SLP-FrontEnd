@@ -26,7 +26,7 @@ import {
 } from '@coreui/icons'
 
 import axios from 'axios'
-const FormTambahDosen = () => {
+const FormUpdateDosen = () => {
   const [formData, setFormData] = useState({
     nama_dosen: '',
     kode_dosen: '',
@@ -62,7 +62,7 @@ const FormTambahDosen = () => {
   return (
     <>
       <CCard>
-        <CCardHeader>Form Tambah Dosen</CCardHeader>
+        <CCardHeader>Form Update Dosen</CCardHeader>
         <CCardBody>
           <CForm className="row g-3">
             <CCol xs={12}>
@@ -70,7 +70,7 @@ const FormTambahDosen = () => {
                 <CInputGroupText id="nama">
                   <CIcon icon={cilShortText} />
                 </CInputGroupText>
-                <CFormTextarea
+                <CFormInput
                   name="nama_dosen"
                   placeholder="Nama Lengkap"
                   floatingLabel="Nama Lengkap"
@@ -159,4 +159,4 @@ const FormTambahDosen = () => {
   )
 }
 
-export default FormTambahDosen
+export default FormUpdateDosen

@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+
 import {
   CButton,
   CCard,
@@ -40,30 +42,52 @@ import {
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
-const usersData = [
-  {
-    id: 0,
-    nama: 'Adrian',
-    kode: '221511000',
-    username: 'MrDr8',
-    password: 'MrDr8',
-    email: 'adrian',
-  },
-  {
-    id: 1,
-    nama: 'Reno',
-    kode: '221511000',
-    username: 'MrDr8',
-    password: 'MrDr8',
-    email: 'adrian',
-  },
-]
+// const usersData = [
+//   {
+//     id: 0,
+//     nama: 'Adrian',
+//     kode: '221511000',
+//     username: 'MrDr8',
+//     password: 'MrDr8',
+//     email: 'adrian',
+//   },
+//   {
+//     id: 1,
+//     nama: 'Reno',
+//     kode: '221511000',
+//     username: 'MrDr8',
+//     password: 'MrDr8',
+//     email: 'adrian',
+//   },
+// ]
 
 const KelolaDataDosenPengampu = () => {
   const [modalDelete, setModalDelete] = useState(false)
   const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
+  const [dosenData, setDosenData] = useState([])
+
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/admins/dosen'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setDosenData(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
 
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
@@ -82,14 +106,13 @@ const KelolaDataDosenPengampu = () => {
     setSearchText(e.target.value)
   }
 
-  const filteredData = usersData.filter((user) => {
-    //Var untuk menampung data baru
+  const filteredData = dosenData.filter((user) => {
     return (
-      searchText === '' || // Filter berdasarkan pencarian
-      user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.Kelas.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.nim.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.prodi.toLowerCase().includes(searchText.toLowerCase())
+      searchText === '' ||
+      user.kode_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.nama_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchText.toLowerCase())
     )
   })
   return (
@@ -141,37 +164,40 @@ const KelolaDataDosenPengampu = () => {
                     <CTableHeaderCell>Nama Dosen</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Username</CTableHeaderCell>
-                    <CTableHeaderCell>Password</CTableHeaderCell>
+
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
                   {filteredData.map((user) => (
                     <CTableRow key={user.id}>
-                      <CTableDataCell>{user.kode}</CTableDataCell>
-                      <CTableDataCell>{user.nama}</CTableDataCell>
+                      <CTableDataCell>{user.kode_dosen}</CTableDataCell>
+                      <CTableDataCell>{user.nama_dosen}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.username}</CTableDataCell>
-                      <CTableDataCell>{user.password}</CTableDataCell>
+
                       <CTableDataCell>
-                        <CButton
-                          color="primary"
-                          variant="outline"
-                          className="ms-2"
-                          title="Ubah Data Mahasiswa"
-                          onClick={() => handleUpdateModal(user)}
-                        >
-                          <CIcon icon={cilPen} />
-                        </CButton>
-                        <CButton
-                          color="danger"
-                          variant="outline"
-                          className="ms-2"
-                          title="Hapus Data Mahasiswa"
-                          onClick={() => handleDeleteModal(user)}
-                        >
-                          <CIcon icon={cilTrash} />
-                        </CButton>
+                        <CCol>
+                          <Link to="/kelola/dosen/update">
+                            <CButton
+                              color="primary"
+                              variant="outline"
+                              className="ms-2"
+                              title="Ubah Data Dosen"
+                            >
+                              <CIcon icon={cilPen} />
+                            </CButton>
+                          </Link>
+                          <CButton
+                            color="danger"
+                            variant="outline"
+                            className="ms-2"
+                            title="Hapus Data Dosen"
+                            onClick={() => handleDeleteModal(user)}
+                          >
+                            <CIcon icon={cilTrash} />
+                          </CButton>
+                        </CCol>
                       </CTableDataCell>
                     </CTableRow>
                   ))}
