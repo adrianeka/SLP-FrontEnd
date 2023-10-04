@@ -37,7 +37,7 @@ const routes = [
     name: 'Tabel Dosen Pengampu',
     element: KelolaDataDosenPengampu,
   },
-  { path: '/kelola/dosen/update', name: 'Form Update Dosen', element: FormUpdateDosen },
+  { path: '/kelola/dosen/update/:id', name: 'Form Update Dosen', element: FormUpdateDosen },
   {
     path: '/kelola/dosen/pengampu/tambah',
     name: 'Tabel Dosen Pengampu',
