@@ -77,7 +77,8 @@ const FormTambahMhs = () => {
                 <CInputGroupText id="password-mhs">
                   <CIcon icon={cilLockLocked} />
                 </CInputGroupText>
-                <CFormTextarea
+                <CFormInput
+                  type="password"
                   placeholder="Password"
                   floatingLabel="Password"
                   aria-describedby="password-mhs"

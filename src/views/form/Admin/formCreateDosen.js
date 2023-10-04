@@ -130,7 +130,8 @@ const FormTambahDosen = () => {
                 <CInputGroupText id="password-dsn">
                   <CIcon icon={cilLockLocked} />
                 </CInputGroupText>
-                <CFormTextarea
+                <CFormInput
+                  type="password"
                   name="password"
                   placeholder="Password"
                   floatingLabel="Password"
