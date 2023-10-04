@@ -154,24 +154,27 @@ const KelolaDataDosenPengampu = () => {
                       <CTableDataCell>{user.username}</CTableDataCell>
                       <CTableDataCell>{user.password}</CTableDataCell>
                       <CTableDataCell>
-                        <CButton
-                          color="primary"
-                          variant="outline"
-                          className="ms-2"
-                          title="Ubah Data Mahasiswa"
-                          onClick={() => handleUpdateModal(user)}
-                        >
-                          <CIcon icon={cilPen} />
-                        </CButton>
-                        <CButton
-                          color="danger"
-                          variant="outline"
-                          className="ms-2"
-                          title="Hapus Data Mahasiswa"
-                          onClick={() => handleDeleteModal(user)}
-                        >
-                          <CIcon icon={cilTrash} />
-                        </CButton>
+                        <CCol>
+                          <Link to="/kelola/dosen/update">
+                            <CButton
+                              color="primary"
+                              variant="outline"
+                              className="ms-2"
+                              title="Ubah Data Dosen"
+                            >
+                              <CIcon icon={cilPen} />
+                            </CButton>
+                          </Link>
+                          <CButton
+                            color="danger"
+                            variant="outline"
+                            className="ms-2"
+                            title="Hapus Data Dosen"
+                            onClick={() => handleDeleteModal(user)}
+                          >
+                            <CIcon icon={cilTrash} />
+                          </CButton>
+                        </CCol>
                       </CTableDataCell>
                     </CTableRow>
                   ))}

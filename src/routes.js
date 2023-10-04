@@ -6,9 +6,11 @@ const TableKaprodi = React.lazy(() => import('./views/CRUDTable/TableKaprodi'))
 const KelolaDataMhs = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataMhs'))
 const FormTambahMhs = React.lazy(() => import('./views/form/Admin/formCreateMhs'))
 const FormUpdateMhs = React.lazy(() => import('./views/form/Admin/formUpdateMhs'))
+// Dosen
 const KelolaDataDosenPengampu = React.lazy(() =>
   import('./views/CRUDTable/Admin/KelolaDataDosenPengampu'),
 )
+const FormUpdateDosen = React.lazy(() => import('./views/form/Admin/formUpdateDosen'))
 const FormTambahDosen = React.lazy(() => import('./views/form/Admin/formCreateDosen'))
 // Mahasiswa
 const DashboardMahasiswa = React.lazy(() => import('./views/dashboard/DashboardMahasiswa'))
@@ -33,6 +35,7 @@ const routes = [
     name: 'Tabel Dosen Pengampu',
     element: KelolaDataDosenPengampu,
   },
+  { path: '/kelola/dosen/update', name: 'Form Update Dosen', element: FormUpdateDosen },
   {
     path: '/kelola/dosen/pengampu/tambah',
     name: 'Tabel Dosen Pengampu',
