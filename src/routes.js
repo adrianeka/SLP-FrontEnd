@@ -21,9 +21,9 @@ const RiwayatSurat = React.lazy(() => import('./views/CRUDTable/Mahasiswa/Riwaya
 
 // Dosen Wali
 const DashboardDosenWali = React.lazy(() => import('./views/dashboard/DashboardDosenWali'))
-const TableMahasiswa = React.lazy(() => import('./views/CRUDTable/TableMahasiswa'))
-const TableRekapIzin = React.lazy(() => import('./views/CRUDTable/TableRekapIzin'))
-const TableRekapSakit = React.lazy(() => import('./views/CRUDTable/TableRekapSakit'))
+const TableMahasiswa = React.lazy(() => import('./views/CRUDTable/DosenWali/TableMahasiswa'))
+const TableRekapIzin = React.lazy(() => import('./views/CRUDTable/DosenWali/TableRekapIzin'))
+const TableRekapSakit = React.lazy(() => import('./views/CRUDTable/DosenWali/TableRekapSakit'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },

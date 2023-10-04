@@ -47,8 +47,16 @@ import {
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import rekapDashboard from './item/rekapDashboard'
-import usersData from './../CRUDTable/TabelMahasiswa' // Sesuaikan dengan path yang sesuai
 
+const usersData = [
+    { id: 0, nama: 'Adrian', nim: '221511000', sakit: '3', izin: '0' },
+    { id: 1, nama: 'Reno', nim: '221511000', sakit: '4', izin: '8' },
+    { id: 2, nama: 'Mahesya', nim: '221511000', sakit: '0', izin: '2' },
+    { id: 3, nama: 'Taufik', nim: '221511000', sakit: '1', izin: '2' },
+    { id: 4, nama: 'Rizki', nim: '221511000', sakit: '2', izin: '1' },
+    { id: 5, nama: 'Tendy', nim: '221511000', sakit: '1', izin: '0' },
+  ]
+  
 const getTotalSakit = () => {
   const totalSakit = usersData.reduce((acc, user) => acc + parseInt(user.sakit), 0)
   return totalSakit
