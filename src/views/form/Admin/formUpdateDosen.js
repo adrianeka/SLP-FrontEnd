@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useParams } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -16,17 +18,12 @@ import {
 } from '@coreui/react'
 import { DocsExample } from 'src/components'
 import CIcon from '@coreui/icons-react'
-import {
-  cilCalendar,
-  cilCircle,
-  cilClock,
-  cilLockLocked,
-  cilShortText,
-  cilUser,
-} from '@coreui/icons'
+import { Link } from 'react-router-dom'
+import { cilPen, cilLockLocked, cilShortText, cilUser } from '@coreui/icons'
 
-import axios from 'axios'
 const FormUpdateDosen = () => {
+  const { id } = useParams()
+  console.log(id) // Mengambil ID dari URL menggunakan useParams
   const [formData, setFormData] = useState({
     nama_dosen: '',
     kode_dosen: '',
@@ -35,28 +32,52 @@ const FormUpdateDosen = () => {
     password: '',
   })
 
+  useEffect(() => {
+    // Mengambil data Dosen dari API berdasarkan ID saat komponen dimuat
+    const fetchData = async () => {
+      try {
+        const apiUrl = `http://localhost:8080/api/admins/dosen/${id}`
+        const response = await axios.get(apiUrl, {
+          withCredentials: true,
+        })
+        const dosenData = response.data // Data Dosen yang diambil dari API
+        console.log(response.data)
+        setFormData({
+          nama_dosen: dosenData.nama_dosen,
+          kode_dosen: dosenData.kode_dosen,
+          email: dosenData.email,
+          username: dosenData.username,
+        })
+      } catch (error) {
+        console.error('Error fetching Dosen data:', error)
+      }
+    }
+
+    fetchData()
+  }, [id])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     // Handle form submission here, e.g., send the formData to an API
-    const apiUrl = 'http://localhost:8080/api/admins/dosen/create'
+    const apiUrl = `http://localhost:8080/api/admins/dosen/update/${id}`
 
-    // Create a new Dosen object from the form data
-    const newDosen = {
+    // Update Dosen object from the form data
+    const updatedDosen = {
       kode_dosen: formData.kode_dosen,
       nama_dosen: formData.nama_dosen,
       email: formData.email,
       username: formData.username,
-      password: formData.password,
     }
 
     try {
-      const response = await axios.post(apiUrl, newDosen, {
+      const response = await axios.put(apiUrl, updatedDosen, {
         withCredentials: true,
       })
+      console.log('Dosen updated successfully:', response.data)
+      // Redirect to the appropriate page after successful update
       window.location.href = '/kelola/dosen/pengampu'
-      console.log('Dosen created successfully:', response.data)
     } catch (error) {
-      console.error('Error creating Dosen:', error)
+      console.error('Error updating Dosen:', error)
     }
   }
   return (
@@ -125,27 +146,18 @@ const FormUpdateDosen = () => {
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="password-dsn">
-                  <CIcon icon={cilLockLocked} />
-                </CInputGroupText>
-                <CFormInput
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  floatingLabel="Password"
-                  aria-describedby="password-dsn"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                />
-              </CInputGroup>
-            </CCol>
           </CForm>
         </CCardBody>
         <CCardFooter>
           <CRow>
-            <CCol xs={11}></CCol>
+            <CCol xs={10}></CCol>
+            <CCol xs={1}>
+              <Link to={`/kelola/dosen/pengampu`}>
+                <CButton color="warning" variant="outline" className="ms-2" title="Back">
+                  Back
+                </CButton>
+              </Link>
+            </CCol>
             <CCol xs={1}>
               {' '}
               <CButton color="primary" variant="outline" type="submit" onClick={handleSubmit}>

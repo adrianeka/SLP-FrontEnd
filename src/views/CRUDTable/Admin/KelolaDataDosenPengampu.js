@@ -202,7 +202,7 @@ const KelolaDataDosenPengampu = () => {
 
                       <CTableDataCell>
                         <CCol>
-                          <Link to="/kelola/dosen/update">
+                          <Link to={`/kelola/dosen/update/${user.kode_dosen}`}>
                             <CButton
                               color="primary"
                               variant="outline"
@@ -242,7 +242,7 @@ const KelolaDataDosenPengampu = () => {
         <CModalHeader>
           <CModalTitle id="DeleteModal">Delete</CModalTitle>
         </CModalHeader>
-        <CModalBody>Yakin ingin hapus {selectedData ? selectedData.nama : ''} ?</CModalBody>
+        <CModalBody>Yakin ingin hapus {selectedData ? selectedData.nama_dosen : ''} ?</CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setModalDelete(false)}>
             Close
