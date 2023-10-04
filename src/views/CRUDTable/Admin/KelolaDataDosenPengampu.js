@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-// const token = 'your-authentication-token'
-// axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-import { useLocation } from 'react-router-dom'
 
 import {
   CButton,
@@ -71,39 +68,26 @@ const KelolaDataDosenPengampu = () => {
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [dosenData, setDosenData] = useState([])
 
-  const [token, setToken] = useState('')
-  const location = useLocation()
-
   useEffect(() => {
-    // Mengambil token dari URL saat komponen dimuat pertama kali
-    const searchParams = new URLSearchParams(location.search)
-    const tokenFromURL = searchParams.get('token')
-
-    if (tokenFromURL) {
-      setToken(tokenFromURL)
-
-      // Hapus token dari URL agar tidak muncul di tampilan
-      window.history.replaceState({}, document.title, '/')
-    }
-  }, [location])
-
-  useEffect(() => {
+    // URL API yang akan diambil datanya
     const apiUrl = 'http://localhost:8080/api/admins/dosen'
-    // Token authorization
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`, // Menggunakan token yang telah disimpan
-      },
-    }
+
+    // Menggunakan Axios untuk mengambil data dari API
     axios
-      .get(apiUrl, config)
+      .get(apiUrl, {
+        withCredentials: true,
+      })
       .then((response) => {
-        setDosenData(response.data) // Menyimpan data dosen ke dalam state
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setDosenData(response.data)
       })
       .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
         console.error('Error fetching data:', error)
       })
-  }, [token])
+  }, [])
 
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
@@ -128,8 +112,7 @@ const KelolaDataDosenPengampu = () => {
       user.kode_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
       user.nama_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
       user.email.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.username.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.password.toLowerCase().includes(searchText.toLowerCase())
+      user.username.toLowerCase().includes(searchText.toLowerCase())
     )
   })
   return (
@@ -181,18 +164,18 @@ const KelolaDataDosenPengampu = () => {
                     <CTableHeaderCell>Nama Dosen</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
                     <CTableHeaderCell>Username</CTableHeaderCell>
-                    <CTableHeaderCell>Password</CTableHeaderCell>
+
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
                   {filteredData.map((user) => (
                     <CTableRow key={user.id}>
-                      <CTableDataCell>{user.kode}</CTableDataCell>
-                      <CTableDataCell>{user.nama}</CTableDataCell>
+                      <CTableDataCell>{user.kode_dosen}</CTableDataCell>
+                      <CTableDataCell>{user.nama_dosen}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell>{user.username}</CTableDataCell>
-                      <CTableDataCell>{user.password}</CTableDataCell>
+
                       <CTableDataCell>
                         <CButton
                           color="primary"
