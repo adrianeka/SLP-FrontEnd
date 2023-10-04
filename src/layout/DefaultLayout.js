@@ -1,4 +1,5 @@
 import React from 'react'
+import AppSidebarDosenWali from 'src/components/AppSidebarDosenWali'
 import {
   AppContent,
   AppSidebar,
