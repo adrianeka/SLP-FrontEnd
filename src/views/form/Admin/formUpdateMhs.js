@@ -56,7 +56,7 @@ const FormUpdateMhs = () => {
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={6}>
+            <CCol md={12}>
               <CInputGroup className="mb-3">
                 <CInputGroupText id="username-mhs">
                   <CIcon icon={cilUser} />
@@ -65,19 +65,6 @@ const FormUpdateMhs = () => {
                   placeholder="Username"
                   floatingLabel="Username"
                   aria-describedby="username-mhs"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="password-mhs">
-                  <CIcon icon={cilLockLocked} />
-                </CInputGroupText>
-                <CFormInput
-                  type="password"
-                  placeholder="Password"
-                  floatingLabel="Password"
-                  aria-describedby="password-mhs"
                 />
               </CInputGroup>
             </CCol>

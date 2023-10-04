@@ -25,7 +25,7 @@ import {
   cilUser,
 } from '@coreui/icons'
 
-const FormTambahMhs = () => {
+const FormUpdateMhs = () => {
   return (
     <>
       <CCard>
@@ -37,27 +37,23 @@ const FormTambahMhs = () => {
                 <CInputGroupText id="nama">
                   <CIcon icon={cilShortText} />
                 </CInputGroupText>
-                <CFormTextarea
+                <CFormInput
                   placeholder="Nama Lengkap"
                   floatingLabel="Nama Lengkap"
                   aria-describedby="Nama"
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={6}>
+            <CCol md={12}>
               <CInputGroup className="mb-3">
-                <CInputGroupText id="Kelas">
+                <CInputGroupText id="email-mhs">
                   <CIcon icon={cilShortText} />
                 </CInputGroupText>
-                <CFormInput placeholder="Kelas" floatingLabel="Kelas" aria-describedby="kelas" />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="prodi">
-                  <CIcon icon={cilShortText} />
-                </CInputGroupText>
-                <CFormInput placeholder="Prodi" floatingLabel="Prodi" aria-describedby="prodi" />
+                <CFormInput
+                  placeholder="Email"
+                  floatingLabel="Email"
+                  aria-describedby="email-mhs"
+                />
               </CInputGroup>
             </CCol>
             <CCol md={6}>
@@ -77,7 +73,8 @@ const FormTambahMhs = () => {
                 <CInputGroupText id="password-mhs">
                   <CIcon icon={cilLockLocked} />
                 </CInputGroupText>
-                <CFormTextarea
+                <CFormInput
+                  type="password"
                   placeholder="Password"
                   floatingLabel="Password"
                   aria-describedby="password-mhs"
@@ -86,13 +83,13 @@ const FormTambahMhs = () => {
             </CCol>
             <CCol md={6}>
               <CInputGroup className="mb-3">
-                <CInputGroupText id="email-mhs">
+                <CInputGroupText id="noTelpOrgTua">
                   <CIcon icon={cilShortText} />
                 </CInputGroupText>
                 <CFormInput
-                  placeholder="Email"
-                  floatingLabel="Email"
-                  aria-describedby="email-mhs"
+                  placeholder="No Telp. Orang Tua"
+                  floatingLabel="No Telp. Orang Tua"
+                  aria-describedby="noTelpOrangTua"
                 />
               </CInputGroup>
             </CCol>
@@ -110,26 +107,51 @@ const FormTambahMhs = () => {
             </CCol>
             <CCol md={6}>
               <CInputGroup className="mb-3">
-                <CInputGroupText id="namaOrgTua">
-                  <CIcon icon={cilShortText} />
-                </CInputGroupText>
-                <CFormInput
-                  placeholder="Nama Orang Tua Mahasiswa"
-                  floatingLabel="Nama Orang Tua Mahasiswa"
-                  aria-describedby="namaOrgTua"
-                />
+                <CCol mx={12}>
+                  <CInputGroup>
+                    <CInputGroupText id="Mahasiswa Angkatan">
+                      <CIcon icon={cilShortText} />
+                    </CInputGroupText>
+                    <CFormSelect id="Mahasiswa Angkatan" style={{ height: '100%' }}>
+                      <option selected hidden>
+                        Angkatan Mahasiswa
+                      </option>
+                      <option value="2020">2020</option>
+                      <option value="2021">2021</option>
+                      <option value="2023">2022</option>
+                      <option value="2024">2023</option>
+                    </CFormSelect>
+                  </CInputGroup>
+                </CCol>
               </CInputGroup>
             </CCol>
             <CCol md={6}>
               <CInputGroup className="mb-3">
-                <CInputGroupText id="noTelpOrgTua">
+                <CInputGroupText id="Kelas">
                   <CIcon icon={cilShortText} />
                 </CInputGroupText>
-                <CFormInput
-                  placeholder="No Telp. Orang Tua"
-                  floatingLabel="No Telp. Orang Tua"
-                  aria-describedby="noTelpOrangTua"
-                />
+                <CFormSelect id="Mahasiswa Kelas" style={{ height: '100%' }}>
+                  <option selected hidden>
+                    Kelas Mahasiswa
+                  </option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                </CFormSelect>
+              </CInputGroup>
+            </CCol>
+            <CCol md={6}>
+              <CInputGroup className="mb-3">
+                <CInputGroupText id="prodi">
+                  <CIcon icon={cilShortText} />
+                </CInputGroupText>
+                <CFormSelect id="Mahasiswa Prodi" style={{ height: '100%' }}>
+                  <option selected hidden>
+                    Prodi
+                  </option>
+                  <option value="D3">D3</option>
+                  <option value="D4">D4</option>
+                </CFormSelect>
               </CInputGroup>
             </CCol>
           </CForm>
@@ -150,4 +172,4 @@ const FormTambahMhs = () => {
   )
 }
 
-export default FormTambahMhs
+export default FormUpdateMhs
