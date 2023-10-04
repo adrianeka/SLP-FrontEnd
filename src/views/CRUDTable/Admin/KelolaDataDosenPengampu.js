@@ -106,6 +106,30 @@ const KelolaDataDosenPengampu = () => {
     setSearchText(e.target.value)
   }
 
+  const handleDelete = (id) => {
+    // URL API untuk menghapus data dosen dengan id tertentu
+    const apiUrl = `http://localhost:8080/api/admins/dosen/${id}`
+
+    // Menggunakan Axios untuk mengirim permintaan DELETE
+    axios
+      .delete(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Handle ketika data berhasil dihapus
+        console.log('Data berhasil dihapus:', response.data)
+
+        setDosenData((prevData) => prevData.filter((dosen) => dosen.kode_dosen !== id))
+
+        // Tutup modal setelah berhasil menghapus
+        setModalDelete(false)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat menghapus data
+        console.error('Error deleting data:', error)
+      })
+  }
+
   const filteredData = dosenData.filter((user) => {
     return (
       searchText === '' ||
@@ -220,7 +244,9 @@ const KelolaDataDosenPengampu = () => {
           <CButton color="secondary" onClick={() => setModalDelete(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton color="danger" onClick={() => handleDelete(selectedData.kode_dosen)}>
+            Delete
+          </CButton>
         </CModalFooter>
       </CModal>
       {/* Modal Update */}
