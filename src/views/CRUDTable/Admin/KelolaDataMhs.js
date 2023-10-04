@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   CButton,
   CCard,
@@ -39,41 +40,62 @@ import {
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
-const usersData = [
-  {
-    id: 0,
-    nama: 'Adrian',
-    Kelas: '2B',
-    nim: '221511000',
-    prodi: 'D3 - Teknik Informatika',
-    username: 'MrDr8',
-    password: 'MrDr8',
-    email: 'adrian',
-    noTelp: '012312',
-    namaOrangTua: 'dsadas',
-    noTelpOrangTua: '321',
-  },
-  {
-    id: 1,
-    nama: 'Reno',
-    Kelas: '2B',
-    nim: '221511000',
-    prodi: 'D3 - Teknik Informatika',
-    username: 'MrDr8',
-    password: 'MrDr8',
-    email: 'adrian',
-    noTelp: '012312',
-    namaOrangTua: 'dsadas',
-    noTelpOrangTua: '321',
-  },
-]
+// const usersData = [
+//   {
+//     id: 0,
+//     nama: 'Adrian',
+//     Kelas: '2B',
+//     nim: '221511000',
+//     prodi: 'D3 - Teknik Informatika',
+//     username: 'MrDr8',
+//     password: 'MrDr8',
+//     email: 'adrian',
+//     noTelp: '012312',
+//     namaOrangTua: 'dsadas',
+//     noTelpOrangTua: '321',
+//   },
+//   {
+//     id: 1,
+//     nama: 'Reno',
+//     Kelas: '2B',
+//     nim: '221511000',
+//     prodi: 'D3 - Teknik Informatika',
+//     username: 'MrDr8',
+//     password: 'MrDr8',
+//     email: 'adrian',
+//     noTelp: '012312',
+//     namaOrangTua: 'dsadas',
+//     noTelpOrangTua: '321',
+//   },
+// ]
 
 const KelolaDataMhs = () => {
   const [modalDelete, setModalDelete] = useState(false)
   const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
+  const [mahasiswaData, setMahasiswaData] = useState([])
 
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/admins/mahasiswa'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setMahasiswaData(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
     setSelectedData(data)
@@ -91,14 +113,15 @@ const KelolaDataMhs = () => {
     setSearchText(e.target.value)
   }
 
-  const filteredData = usersData.filter((user) => {
+  const filteredData = mahasiswaData.filter((user) => {
     //Var untuk menampung data baru
     return (
       searchText === '' || // Filter berdasarkan pencarian
-      user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.Kelas.toLowerCase().includes(searchText.toLowerCase()) ||
       user.nim.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.prodi.toLowerCase().includes(searchText.toLowerCase())
+      user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.kela.nama_kelas.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.angkatan.tahun_angkatan.toLowerCase().includes(searchText.toLowerCase())
     )
   })
 
@@ -137,19 +160,21 @@ const KelolaDataMhs = () => {
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
-                    <CTableHeaderCell>Kelas</CTableHeaderCell>
                     <CTableHeaderCell>Nim</CTableHeaderCell>
+                    <CTableHeaderCell>Kelas</CTableHeaderCell>
                     <CTableHeaderCell>Prodi</CTableHeaderCell>
+                    <CTableHeaderCell>Angkatan</CTableHeaderCell>
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
                   {filteredData.map((user) => (
                     <CTableRow key={user.id}>
-                      <CTableDataCell>{user.nama}</CTableDataCell>
-                      <CTableDataCell>{user.Kelas}</CTableDataCell>
                       <CTableDataCell>{user.nim}</CTableDataCell>
-                      <CTableDataCell>{user.prodi}</CTableDataCell>
+                      <CTableDataCell>{user.nama}</CTableDataCell>
+                      <CTableDataCell>{user.kela.nama_kelas}</CTableDataCell>
+                      <CTableDataCell>{user.prodi.nama_prodi}</CTableDataCell>
+                      <CTableDataCell>{user.angkatan.tahun_angkatan}</CTableDataCell>
                       <CTableDataCell>
                         <CCol>
                           <Link to="/kelola/mahasiswa/update">
