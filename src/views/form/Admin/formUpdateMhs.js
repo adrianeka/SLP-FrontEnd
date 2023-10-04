@@ -25,7 +25,7 @@ import {
   cilUser,
 } from '@coreui/icons'
 
-const FormTambahMhs = () => {
+const FormUpdateMhs = () => {
   return (
     <>
       <CCard>
@@ -150,4 +150,4 @@ const FormTambahMhs = () => {
   )
 }
 
-export default FormTambahMhs
+export default FormUpdateMhs

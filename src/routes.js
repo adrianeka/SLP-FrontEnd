@@ -5,6 +5,7 @@ const TableDosenWali = React.lazy(() => import('./views/CRUDTable/TableDosenWali
 const TableKaprodi = React.lazy(() => import('./views/CRUDTable/TableKaprodi'))
 const KelolaDataMhs = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataMhs'))
 const FormTambahMhs = React.lazy(() => import('./views/form/Admin/formCreateMhs'))
+const FormUpdateMhs = React.lazy(() => import('./views/form/Admin/formUpdateMhs'))
 const KelolaDataDosenPengampu = React.lazy(() =>
   import('./views/CRUDTable/Admin/KelolaDataDosenPengampu'),
 )
@@ -21,6 +22,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/kelola/mahasiswa', name: 'Tabel Mahasiswa', element: KelolaDataMhs },
   { path: '/kelola/mahasiswa/tambah', name: 'Form Create Mahasiswa', element: FormTambahMhs },
+  { path: '/kelola/mahasiswa/update', name: ' Form Update Mahasiswa', element: FormUpdateMhs },
   // {
   //   path: '/kelola/mahasiswa/orangtua',
   //   name: 'Table Orang Tua/Wali Mahasiswa',
