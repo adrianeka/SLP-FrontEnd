@@ -24,6 +24,7 @@ import {
   cilShortText,
   cilUser,
 } from '@coreui/icons'
+import { Link } from 'react-router-dom'
 
 import axios from 'axios'
 const FormTambahDosen = () => {
@@ -31,8 +32,6 @@ const FormTambahDosen = () => {
     nama_dosen: '',
     kode_dosen: '',
     email: '',
-    username: '',
-    password: '',
   })
 
   const handleSubmit = async (e) => {
@@ -45,8 +44,8 @@ const FormTambahDosen = () => {
       kode_dosen: formData.kode_dosen,
       nama_dosen: formData.nama_dosen,
       email: formData.email,
-      username: formData.username,
-      password: formData.password,
+      username: 'a', //Biar ga error aja
+      password: 'a', //Biar ga error aja
     }
 
     try {
@@ -80,7 +79,7 @@ const FormTambahDosen = () => {
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={6}>
+            <CCol xs={12}>
               <CInputGroup className="mb-3">
                 <CInputGroupText id="kode">
                   <CIcon icon={cilShortText} />
@@ -95,7 +94,7 @@ const FormTambahDosen = () => {
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={6}>
+            <CCol xs={12}>
               <CInputGroup className="mb-3">
                 <CInputGroupText id="email-dsn">
                   <CIcon icon={cilShortText} />
@@ -110,42 +109,18 @@ const FormTambahDosen = () => {
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="username-dsn">
-                  <CIcon icon={cilUser} />
-                </CInputGroupText>
-                <CFormInput
-                  name="username"
-                  placeholder="Username"
-                  floatingLabel="Username"
-                  aria-describedby="username-dsn"
-                  value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="password-dsn">
-                  <CIcon icon={cilLockLocked} />
-                </CInputGroupText>
-                <CFormInput
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  floatingLabel="Password"
-                  aria-describedby="password-dsn"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                />
-              </CInputGroup>
-            </CCol>
           </CForm>
         </CCardBody>
         <CCardFooter>
           <CRow>
-            <CCol xs={11}></CCol>
+            <CCol xs={10}></CCol>
+            <CCol md={1}>
+              <Link to={`/kelola/dosen/pengampu`}>
+                <CButton color="secondary" variant="outline" className="ms-2" title="Back">
+                  Back
+                </CButton>
+              </Link>
+            </CCol>
             <CCol xs={1}>
               {' '}
               <CButton color="primary" variant="outline" type="submit" onClick={handleSubmit}>

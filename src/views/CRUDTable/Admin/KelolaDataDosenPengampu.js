@@ -42,25 +42,6 @@ import {
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
-// const usersData = [
-//   {
-//     id: 0,
-//     nama: 'Adrian',
-//     kode: '221511000',
-//     username: 'MrDr8',
-//     password: 'MrDr8',
-//     email: 'adrian',
-//   },
-//   {
-//     id: 1,
-//     nama: 'Reno',
-//     kode: '221511000',
-//     username: 'MrDr8',
-//     password: 'MrDr8',
-//     email: 'adrian',
-//   },
-// ]
-
 const KelolaDataDosenPengampu = () => {
   const [modalDelete, setModalDelete] = useState(false)
   const [modalUpdate, setModalUpdate] = useState(false)
@@ -148,9 +129,9 @@ const KelolaDataDosenPengampu = () => {
             <CCardBody>
               <CForm className="mb-3">
                 <CRow>
-                  <CCol xs={8}>
+                  <CCol md={8} xs={6}>
                     <CRow>
-                      <CCol xs={2}>
+                      <CCol md={2}>
                         <Link to="/kelola/dosen/pengampu/tambah">
                           <CButton variant="outline">
                             <CIcon icon={cilUserPlus} className="mx-2" />
@@ -158,7 +139,7 @@ const KelolaDataDosenPengampu = () => {
                           </CButton>
                         </Link>
                       </CCol>
-                      <CCol xs={3}>
+                      <CCol md={3}>
                         <CButton variant="outline" color="success">
                           <CIcon icon={cilFile} className="mx-2" />
                           Import
@@ -167,7 +148,7 @@ const KelolaDataDosenPengampu = () => {
                       <CCol xs={6}></CCol>
                     </CRow>
                   </CCol>
-                  <CCol xs={4}>
+                  <CCol md={4} xs={6}>
                     <CInputGroup className="search-input">
                       <CFormInput
                         placeholder="Search"
@@ -187,8 +168,6 @@ const KelolaDataDosenPengampu = () => {
                     <CTableHeaderCell>Kode Dosen</CTableHeaderCell>
                     <CTableHeaderCell>Nama Dosen</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
-                    <CTableHeaderCell>Username</CTableHeaderCell>
-
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -198,8 +177,6 @@ const KelolaDataDosenPengampu = () => {
                       <CTableDataCell>{user.kode_dosen}</CTableDataCell>
                       <CTableDataCell>{user.nama_dosen}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
-                      <CTableDataCell>{user.username}</CTableDataCell>
-
                       <CTableDataCell>
                         <CCol>
                           <Link to={`/kelola/dosen/update/${user.kode_dosen}`}>
