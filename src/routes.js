@@ -3,6 +3,9 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const TableKaprodi = React.lazy(() => import('./views/CRUDTable/TableKaprodi'))
 const KelolaDataMhs = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataMhs'))
+const KelolaDataJadwal = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataJadwal'))
+const KelolaDataSemester = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataSemester'))
+const KelolaDataMatkul = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataMatkul'))
 const FormTambahMhs = React.lazy(() => import('./views/form/Admin/formCreateMhs'))
 const FormUpdateMhs = React.lazy(() => import('./views/form/Admin/formUpdateMhs'))
 const KelolaDataDosenPengampu = React.lazy(() =>
@@ -46,6 +49,9 @@ const routes = [
   },
   { path: '/kelola/dosen/wali', name: 'Tabel Dosen Wali', element: KelolaDataDosenWali },
   { path: '/kelola/kaprodi', name: 'Tabel Kaprodi', element: TableKaprodi },
+  { path: '/kelola/akademik/jadwal', name: 'Tabel Jadwal Mata Kuliah', element: KelolaDataJadwal },
+  { path: '/kelola/akademik/semester', name: 'Tabel Semester', element: KelolaDataSemester },
+  { path: '/kelola/akademik/matkul', name: 'Tabel Mata Kuliah', element: KelolaDataMatkul },
   // Dashboard Mahasiswa
   { path: '/dashboardMhs', name: 'Dashboard Mahasiswa', element: DashboardMahasiswa },
   { path: '/drafts', name: 'Draft Surat Perizinan', element: TableSuratMahasiswa },
