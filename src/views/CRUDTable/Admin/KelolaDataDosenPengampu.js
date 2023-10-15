@@ -173,9 +173,9 @@ const KelolaDataDosenPengampu = () => {
             <CCardBody>
               <CForm className="mb-3">
                 <CRow>
-                  <CCol xs={8}>
+                  <CCol md={8} xs={6}>
                     <CRow>
-                      <CCol xs={2}>
+                      <CCol md={2}>
                         <Link to="/kelola/dosen/pengampu/tambah">
                           <CButton variant="outline">
                             <CIcon icon={cilUserPlus} className="mx-2" />
@@ -225,7 +225,7 @@ const KelolaDataDosenPengampu = () => {
                       <CCol xs={6}></CCol>
                     </CRow>
                   </CCol>
-                  <CCol xs={4}>
+                  <CCol md={4} xs={6}>
                     <CInputGroup className="search-input">
                       <CFormInput
                         placeholder="Search"
@@ -245,8 +245,6 @@ const KelolaDataDosenPengampu = () => {
                     <CTableHeaderCell>Kode Dosen</CTableHeaderCell>
                     <CTableHeaderCell>Nama Dosen</CTableHeaderCell>
                     <CTableHeaderCell>Email</CTableHeaderCell>
-                    <CTableHeaderCell>Username</CTableHeaderCell>
-
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -263,8 +261,6 @@ const KelolaDataDosenPengampu = () => {
                         <CTableDataCell>{user.kode_dosen}</CTableDataCell>
                         <CTableDataCell>{user.nama_dosen}</CTableDataCell>
                         <CTableDataCell>{user.email}</CTableDataCell>
-                        <CTableDataCell>{user.username}</CTableDataCell>
-
                         <CTableDataCell>
                           <CCol>
                             <Link to={`/kelola/dosen/update/${user.kode_dosen}`}>
