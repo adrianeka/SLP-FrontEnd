@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import {
   CAvatar,
@@ -21,6 +21,7 @@ import {
 import { CChartLine } from '@coreui/react-chartjs'
 import { getStyle, hexToRgba } from '@coreui/utils'
 import CIcon from '@coreui/icons-react'
+import AuthService from 'src/services/authService'
 import {
   cibCcAmex,
   cibCcApplePay,
@@ -54,8 +55,17 @@ import avatar6 from 'src/assets/images/avatars/6.jpg'
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import rekapDashboard from './item/rekapDashboard'
+import Cookies from 'js-cookie'
 
 const Dashboard = () => {
+  useEffect(() => {
+    const data = localStorage.getItem('admin')
+    if (data) {
+    } else {
+      window.location.href = '/login'
+    }
+  })
+
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
   const progressExample = [
@@ -196,7 +206,7 @@ const Dashboard = () => {
                 }}
               >
                 <CCardBody>
-                  <div className="text-white">Izin</div>
+                  <div className="text-white"></div>
                 </CCardBody>
               </CCard>
             </CCol>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AppSidebarDosenWali from 'src/components/AppSidebarDosenWali'
 import {
   AppContent,
@@ -10,12 +10,27 @@ import {
 } from '../components/index'
 
 const DefaultLayout = () => {
+  useEffect(() => {
+    const user =
+      JSON.parse(localStorage.getItem('admin')) ?? JSON.parse(localStorage.getItem('mahasiswa'))
+    // Assuming 'user.roles' contains the user's role (e.g., 'admin' or 'mahasiswa')
+
+    if (!user) {
+      window.location.href = '/login'
+    } else {
+      setUserRole(user.roles)
+    }
+  }, [])
+
+  const [userRole, setUserRole] = useState('') // State to store the user's role
+
   return (
     <div>
-      <AppSidebarAdmin />
+      {userRole === 'admin' ? <AppSidebarAdmin /> : null}
+      {userRole === 'mahasiswa' ? <AppSidebarMhs /> : null}
       <div className="wrapper d-flex flex-column min-vh-100 bg-light">
         <AppHeader />
-        <div className="body flex-gow-1 px-3">
+        <div className="body flex-grow-1 px-3">
           <AppContent />
         </div>
         <AppFooter />
