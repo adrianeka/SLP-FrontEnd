@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import * as XLSX from 'xlsx'
+import React, { useState, useEffect } from 'react'
+import { read, utils, writeFile } from 'xlsx'
+import axios from 'axios'
 import {
   CButton,
   CCard,
@@ -36,8 +37,8 @@ import {
   cilShortText,
   cilCalendar,
   cilClock,
-  cilUserPlus,
   cilFile,
+  cilUserPlus,
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
@@ -45,7 +46,7 @@ const usersData = [
   {
     id: 0,
     nama: 'Adrian',
-    Kelas: '2B',
+    kelas: '2B',
     nim: '221511000',
     prodi: 'D3 - Teknik Informatika',
     username: 'MrDr8',
@@ -58,7 +59,7 @@ const usersData = [
   {
     id: 1,
     nama: 'Reno',
-    Kelas: '2B',
+    kelas: '2B',
     nim: '221511000',
     prodi: 'D3 - Teknik Informatika',
     username: 'MrDr8',
@@ -71,90 +72,81 @@ const usersData = [
 ]
 
 const KelolaDataMhs = () => {
+  const [importData, setImport] = useState([]) // State untuk menampung hasil import
+  const [rawData, setRaw] = useState([]) // State untuk menampung data dari excel sebelum import
+  const [modalImport, setModalImport] = useState(false) //State untuk modal import
   const [modalDelete, setModalDelete] = useState(false)
   const [modalUpdate, setModalUpdate] = useState(false)
-  const [modalImport, setModalImport] = useState(false)
-  const [searchText, setSearchText] = useState('') //State untuk pencarian
-  const [selectedData, setSelectedData] = useState(null) //State untuk id dari tabel
-  const [data, setData] = useState([])
-  const [importMessage, setImportMessage] = useState('')
-  const [isImporting, setIsImporting] = useState(false)
+  const [searchText, setSearchText] = useState('') //State untuk seatch
+  const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
+  const [mahasiswaData, setMahasiswaData] = useState([])
+
+  const handleImport = ($event) => {
+    //Handle Import
+    const files = $event.target.files
+    if (files) {
+      const file = files[0]
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const wb = read(event.target.result)
+        const sheets = wb.SheetNames
+
+        if (sheets) {
+          const rows = utils.sheet_to_json(wb.Sheets[sheets[0]])
+          setRaw(rows)
+        }
+      }
+      reader.readAsArrayBuffer(file)
+    }
+  }
+
+  const handleImportModal = async (e) => {
+    e.preventDefault()
+    //Handle saat button import di klik
+    // setImport(rawData) // Menampung hasil import
+    const importedData = rawData.map((data) => ({
+      nim: data['Nim'],
+      nama: data['Nama Lengkap'],
+      username: data['Username'],
+      password: data['Password'],
+      no_telp: data['No Telepon'],
+      no_telp_orang_tua: data['No Telepon Orang Tua'],
+      prodiId: data['Prodi'],
+      kelasId: data['Kelas'],
+      angkatanId: data['Angkatan'],
+    }))
+    setImport(importedData)
+    setModalImport(false) //Menutup modal
+  }
 
   const handleDeleteModal = (data) => {
-    // Menampilkan modal saat tombol hapus diklik
+    // Handle saat tombol hapus diklik
     setSelectedData(data)
-    setModalDelete(true)
+    setModalDelete(true) // Menampilkan modal
   }
 
   const handleUpdateModal = (data) => {
-    // Menampilkan modal saat tombol ubah diklik
+    // Handle saat tombol hapus diklik
     setSelectedData(data)
-    setModalUpdate(true)
-  }
-
-  const handleImportModal = () => {
-    // Menampilkan modal impor
-    setModalImport(true)
+    setModalUpdate(true) // Menampilkan modal
   }
 
   const handleSearchChange = (e) => {
-    // Menangani perubahan pencarian saat diketik
+    //Handle search saat di ketik
     setSearchText(e.target.value)
   }
 
-  const handleFileUpload = (e) => {
-    if (e.target.files.length === 0) {
-      // Tidak ada file yang dipilih, keluar dari fungsi
-      return
-    }
-
-    const file = e.target.files[0]
-    const reader = new FileReader()
-
-    reader.onloadstart = () => {
-      // Proses impor dimulai
-      setIsImporting(true)
-    }
-
-    reader.onload = (event) => {
-      const binaryData = event.target.result
-      try {
-        const workbook = XLSX.read(binaryData, { type: 'binary' })
-        const sheetName = workbook.SheetNames[0]
-        if (sheetName) {
-          const sheet = workbook.Sheets[sheetName]
-          const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 })
-          setData(jsonData)
-
-          // Set pesan import berhasil
-          setImportMessage('Import berhasil!')
-          console.log(jsonData)
-        } else {
-          // Tidak ada sheet yang valid dalam file
-          setImportMessage('File Excel tidak valid.')
-        }
-      } catch (error) {
-        // Terjadi kesalahan saat membaca file Excel
-        setImportMessage('Terjadi kesalahan saat membaca file Excel.')
-      } finally {
-        // Proses impor selesai
-        setIsImporting(false)
-      }
-    }
-
-    reader.readAsBinaryString(file)
-  }
-  const filteredData = data
-  // const filteredData = usersData.filter((user) => {
-  //   // Variabel untuk menampung data yang difilter
-  //   return (
-  //     searchText === '' || // Filter berdasarkan pencarian
-  //     user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
-  //     user.Kelas.toLowerCase().includes(searchText.toLowerCase()) ||
-  //     user.nim.toLowerCase().includes(searchText.toLowerCase()) ||
-  //     user.prodi.toLowerCase().includes(searchText.toLowerCase())
-  //   )
-  // })
+  const filteredData = importData.filter((user) => {
+    //Var untuk menampung data baru
+    return (
+      searchText === '' || // Filter berdasarkan pencarian
+      user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.kelas.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.nim.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.prodiId.toLowerCase().includes(searchText.toLowerCase())
+    )
+  })
+  console.log(importData)
   return (
     <div>
       <CRow>
@@ -164,9 +156,9 @@ const KelolaDataMhs = () => {
             <CCardBody>
               <CForm className="mb-3">
                 <CRow>
-                  <CCol xs={8}>
+                  <CCol md={8} xs={6}>
                     <CRow>
-                      <CCol xs={2}>
+                      <CCol md={2}>
                         <Link to="/kelola/mahasiswa/tambah">
                           <CButton variant="outline">
                             <CIcon icon={cilUserPlus} className="mx-2" />
@@ -174,25 +166,24 @@ const KelolaDataMhs = () => {
                           </CButton>
                         </Link>
                       </CCol>
-                      <CCol xs={3}>
-                        {/* <CButton variant="outline" color="success" onClick={handleImportModal}> */}
-                        <CForm>
-                        <CButton variant="outline" color="success">
+                      <CCol md={3}>
+                        <CButton
+                          variant="outline"
+                          color="success"
+                          onClick={() => setModalImport(true)}
+                        >
                           <CIcon icon={cilFile} className="mx-2" />
-                          <CFormInput
-                            type="file"
-                            accept=".xlsx, .xls" onChange={handleFileUpload}
-                           />
+                          Import
                         </CButton>
-                        </CForm>
                       </CCol>
+                      <CCol xs={6}></CCol>
                     </CRow>
                   </CCol>
-                  <CCol xs={4}>
+                  <CCol md={4} xs={6}>
                     <CInputGroup className="search-input">
                       <CFormInput
                         placeholder="Search"
-                        value={searchText}
+                        value={searchText} // Mengikat nilai pencarian ke state searchText
                         onChange={handleSearchChange}
                       />
                       <CInputGroupText id="search-icon">
@@ -206,7 +197,7 @@ const KelolaDataMhs = () => {
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
-                    <CTableHeaderCell>Kelas</CTableHeaderCell>
+                    <CTableHeaderCell>kelas</CTableHeaderCell>
                     <CTableHeaderCell>Nim</CTableHeaderCell>
                     <CTableHeaderCell>Prodi</CTableHeaderCell>
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
@@ -216,9 +207,20 @@ const KelolaDataMhs = () => {
                   {filteredData.map((user) => (
                     <CTableRow key={user.id}>
                       <CTableDataCell>{user.nama}</CTableDataCell>
-                      <CTableDataCell>{user.Kelas}</CTableDataCell>
+                      <CTableDataCell>
+                        {user.kelas === 1
+                          ? 'A'
+                          : user.kelas === 2
+                          ? 'B'
+                          : user.kelas === 3
+                          ? 'C'
+                          : ''}
+                      </CTableDataCell>
                       <CTableDataCell>{user.nim}</CTableDataCell>
-                      <CTableDataCell>{user.prodi}</CTableDataCell>
+                      <CTableDataCell>
+                        {user.prodi === 1 ? 'D3' : user.prodi === 2 ? 'D4' : ''}
+                      </CTableDataCell>
+
                       <CTableDataCell>
                         <CCol>
                           <Link to="/kelola/mahasiswa/update">
@@ -252,6 +254,28 @@ const KelolaDataMhs = () => {
           </CCard>
         </CCol>
       </CRow>
+      {/* Modal Import */}
+      <CModal
+        backdrop="static"
+        visible={modalImport}
+        onClose={() => setModalImport(false)}
+        aria-labelledby="ImportModal"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle id="ImportModal">Import From Excel</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CFormInput type="file" accept=".xlsx" onChange={handleImport} />
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setModalImport(false)}>
+            Close
+          </CButton>
+          <CButton color="primary" onClick={handleImportModal}>
+            Import
+          </CButton>
+        </CModalFooter>
+      </CModal>
       {/* Modal Delete */}
       <CModal
         backdrop="static"
@@ -286,32 +310,6 @@ const KelolaDataMhs = () => {
             Close
           </CButton>
           <CButton color="primary">Update</CButton>
-        </CModalFooter>
-      </CModal>
-      {/* Modal Import */}
-      <CModal
-        backdrop="static"
-        visible={modalImport}
-        onClose={() => setModalImport(false)}
-        aria-labelledby="ImportModal"
-      >
-        <CModalHeader closeButton>
-          <CModalTitle id="ImportModal">Import Excel</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <p>Pilih file Excel untuk diimpor:</p>
-          <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
-          {!isImporting && importMessage && (
-            <div className="text-success mt-2">{importMessage}</div>
-          )}
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalImport(false)}>
-            Tutup
-          </CButton>
-          <CButton color="success" onClick={(e) => handleFileUpload(e)}>
-            Import
-          </CButton>
         </CModalFooter>
       </CModal>
     </div>
