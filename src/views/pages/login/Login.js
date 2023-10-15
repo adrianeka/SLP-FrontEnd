@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -18,34 +18,53 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import polban from './../../../assets/images/polban.png'
+import AuthService from 'src/services/authService'
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  })
-  const [error, setError] = useState(null)
+  const form = useRef()
+  const checkBtn = useRef()
+  const navigate = useNavigate()
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+  const onChangeUsername = (e) => {
+    const username = e.target.value
+    setUsername(username)
   }
-  const handleLogin = async (e) => {
+
+  const onChangePassword = (e) => {
+    const password = e.target.value
+    setPassword(password)
+  }
+
+  const handleLogin = (e) => {
     e.preventDefault()
 
-    try {
-      const response = await axios.post('http://localhost:8080/api/auth/signin', formData, {
-        withCredentials: true, // Include cookies with the request
-      })
+    setMessage('')
+    setLoading(true)
 
-      window.location.href = '/dashboard'
-    } catch (error) {
-      console.error('Login failed:', error)
-      setError('Login gagal. Cek kembali username dan password Anda.')
-    }
+    AuthService.login(username, password).then(
+      (response) => {
+        const userRole = response.roles
+        if (userRole === 'admin') {
+          navigate('/dashboard')
+        } else if (userRole === 'mahasiswa') {
+          navigate('/dashboardMhs')
+        }
+        window.location.reload()
+      },
+      (error) => {
+        const resMessage =
+          (error.response && error.response.data && error.response.data.message) ||
+          error.message ||
+          error.toString()
+
+        setLoading(false)
+        setMessage(resMessage)
+      },
+    )
   }
   return (
     <div className="bg-dark min-vh-100 d-flex flex-row align-items-center">
@@ -55,7 +74,7 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <CForm onSubmit={handleLogin} ref={form}>
                     <h1>Login</h1>
                     <p className="text-medium-emphasis">Sign In to your account</p>
                     <CInputGroup className="mb-3">
@@ -63,11 +82,11 @@ const Login = () => {
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
                       <CFormInput
+                        type="text"
                         name="username"
+                        value={username}
+                        onChange={onChangeUsername}
                         placeholder="Username"
-                        autoComplete="username"
-                        value={formData.username}
-                        onChange={handleInputChange}
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
@@ -77,15 +96,14 @@ const Login = () => {
                       <CFormInput
                         type="password"
                         name="password"
+                        value={password}
+                        onChange={onChangePassword}
                         placeholder="Password"
-                        autoComplete="current-password"
-                        value={formData.password}
-                        onChange={handleInputChange}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="light" className="px-4" onClick={handleLogin}>
+                        <CButton color="light" className="px-4" type="submit">
                           Login
                         </CButton>
                       </CCol>
@@ -96,7 +114,8 @@ const Login = () => {
                       </CCol>
                     </CRow>
                     <CRow>
-                      {error && <div className="error-message alert alert-danger">{error}</div>}
+                      {loading && <p>Loading...</p>}
+                      {message && <p className="error-message alert alert-danger">{message}</p>}
                     </CRow>
                   </CForm>
                 </CCardBody>

@@ -24,9 +24,11 @@ const DashboardDosenWali = React.lazy(() => import('./views/dashboard/DashboardD
 const TableMahasiswa = React.lazy(() => import('./views/CRUDTable/DosenWali/TableMahasiswa'))
 const TableRekapIzin = React.lazy(() => import('./views/CRUDTable/DosenWali/TableRekapIzin'))
 const TableRekapSakit = React.lazy(() => import('./views/CRUDTable/DosenWali/TableRekapSakit'))
-
+const Login = React.lazy(() => import('./views/pages/login/Login'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
+  { path: '/login', name: 'Login', element: Login },
+
   //Admin
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/kelola/mahasiswa', name: 'Tabel Mahasiswa', element: KelolaDataMhs },
@@ -68,6 +70,12 @@ const routes = [
   { path: '/kelolaWali/mahasiswa', name: 'Tabel Mahasiswa', element: TableMahasiswa },
   { path: 'table/rekap/izin', name: 'Tabel Izin Mahasiswa', element: TableRekapIzin },
   { path: 'table/rekap/sakit', name: 'Tabel Sakit Mahasiswa', element: TableRekapSakit },
+
+  {
+    path: '/kelola/mahasiswa/update/:id',
+    name: 'Form Update Mahasiswa',
+    element: FormUpdateMhs,
+  },
 ]
 
 export default routes

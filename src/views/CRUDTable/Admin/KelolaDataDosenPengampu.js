@@ -5,13 +5,11 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardFooter,
   CCardHeader,
   CCol,
   CRow,
   CTable,
   CTableBody,
-  CTableCaption,
   CTableDataCell,
   CTableHead,
   CTableHeaderCell,
@@ -27,6 +25,7 @@ import {
   CInputGroupText,
   CFormTextarea,
   CFormSelect,
+  CFormLabel,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -41,25 +40,6 @@ import {
   cilFile,
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
-
-// const usersData = [
-//   {
-//     id: 0,
-//     nama: 'Adrian',
-//     kode: '221511000',
-//     username: 'MrDr8',
-//     password: 'MrDr8',
-//     email: 'adrian',
-//   },
-//   {
-//     id: 1,
-//     nama: 'Reno',
-//     kode: '221511000',
-//     username: 'MrDr8',
-//     password: 'MrDr8',
-//     email: 'adrian',
-//   },
-// ]
 
 const KelolaDataDosenPengampu = () => {
   const [modalDelete, setModalDelete] = useState(false)
@@ -139,6 +119,51 @@ const KelolaDataDosenPengampu = () => {
       user.username.toLowerCase().includes(searchText.toLowerCase())
     )
   })
+
+  const [modalExport, setModalExport] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const handleExportModal = () => {
+    setModalExport(true)
+  }
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0])
+  }
+  const handleImportExcel = async () => {
+    try {
+      const formData = new FormData()
+      formData.append('excel', selectedFile)
+
+      // Make a POST request to your backend API for Excel file upload
+      const response = await axios.post('http://localhost:8080/api/admins/import/dosen', formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
+      // Handle the response (success or failure)
+      console.log(response.data)
+
+      if (response.data.success) {
+        // Close the import modal on success
+        setModalExport(false)
+
+        // Fetch and update the data in the table
+        const apiUrl = 'http://localhost:8080/api/admins/dosen'
+        const updatedDataResponse = await axios.get(apiUrl, {
+          withCredentials: true,
+        })
+
+        // Update the table data
+        setDosenData(updatedDataResponse.data)
+      }
+    } catch (error) {
+      // Handle error if the request fails
+      console.error('Error uploading Excel file:', error)
+    }
+  }
+
   return (
     <div>
       <CRow>
@@ -159,11 +184,44 @@ const KelolaDataDosenPengampu = () => {
                         </Link>
                       </CCol>
                       <CCol xs={3}>
-                        <CButton variant="outline" color="success">
+                        <CButton variant="outline" color="success" onClick={handleExportModal}>
                           <CIcon icon={cilFile} className="mx-2" />
-                          Import
+                          Import Excel
                         </CButton>
                       </CCol>
+
+                      <CModal
+                        backdrop="static"
+                        visible={modalExport}
+                        onClose={() => setModalExport(false)}
+                        aria-labelledby="ExportModalLabel"
+                      >
+                        <CModalHeader>
+                          <CModalTitle id="ExportModalLabel">Import to Excel</CModalTitle>
+                        </CModalHeader>
+                        <CModalBody>
+                          <CForm>
+                            <CFormInput
+                              name="file"
+                              type="file"
+                              id="formFile"
+                              label="File Excel"
+                              accept=".xlsx, .xls"
+                              onChange={handleFileChange}
+                            />
+                          </CForm>
+                          <p className="text-muted">Hanya menerima tipe file .xlsx dan .xls</p>
+                        </CModalBody>
+                        <CModalFooter>
+                          <CButton color="secondary" onClick={() => setModalExport(false)}>
+                            Close
+                          </CButton>
+                          <CButton color="success" onClick={handleImportExcel}>
+                            Import
+                          </CButton>
+                        </CModalFooter>
+                      </CModal>
+
                       <CCol xs={6}></CCol>
                     </CRow>
                   </CCol>
@@ -193,42 +251,50 @@ const KelolaDataDosenPengampu = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {filteredData.map((user) => (
-                    <CTableRow key={user.id}>
-                      <CTableDataCell>{user.kode_dosen}</CTableDataCell>
-                      <CTableDataCell>{user.nama_dosen}</CTableDataCell>
-                      <CTableDataCell>{user.email}</CTableDataCell>
-                      <CTableDataCell>{user.username}</CTableDataCell>
+                  {filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center">
+                        No Data
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((user) => (
+                      <CTableRow key={user.id}>
+                        <CTableDataCell>{user.kode_dosen}</CTableDataCell>
+                        <CTableDataCell>{user.nama_dosen}</CTableDataCell>
+                        <CTableDataCell>{user.email}</CTableDataCell>
+                        <CTableDataCell>{user.username}</CTableDataCell>
 
-                      <CTableDataCell>
-                        <CCol>
-                          <Link to={`/kelola/dosen/update/${user.kode_dosen}`}>
+                        <CTableDataCell>
+                          <CCol>
+                            <Link to={`/kelola/dosen/update/${user.kode_dosen}`}>
+                              <CButton
+                                color="primary"
+                                variant="outline"
+                                className="ms-2"
+                                title="Ubah Data Dosen"
+                              >
+                                <CIcon icon={cilPen} />
+                              </CButton>
+                            </Link>
                             <CButton
-                              color="primary"
+                              color="danger"
                               variant="outline"
                               className="ms-2"
-                              title="Ubah Data Dosen"
+                              title="Hapus Data Dosen"
+                              onClick={() => handleDeleteModal(user)}
                             >
-                              <CIcon icon={cilPen} />
+                              <CIcon icon={cilTrash} />
                             </CButton>
-                          </Link>
-                          <CButton
-                            color="danger"
-                            variant="outline"
-                            className="ms-2"
-                            title="Hapus Data Dosen"
-                            onClick={() => handleDeleteModal(user)}
-                          >
-                            <CIcon icon={cilTrash} />
-                          </CButton>
-                        </CCol>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
+                          </CCol>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>
-            <CCardFooter>Ini Footer</CCardFooter>
+            {/* <CCardFooter>Ini Footer</CCardFooter> */}
           </CCard>
         </CCol>
       </CRow>
