@@ -99,7 +99,7 @@ const KelolaDataMatkul = () => {
                   <CCol md={8} xs={6}>
                     <CRow>
                       <CCol md={2}>
-                        <Link to="/kelola/akademik/jadwal/tambah">
+                        <Link to="/kelola/akademik/matkul/tambah">
                           <CButton variant="outline">
                             <CIcon icon={cilUserPlus} className="mx-2" />
                             Create

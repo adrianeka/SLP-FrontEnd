@@ -11,8 +11,11 @@ const FormUpdateMhs = React.lazy(() => import('./views/form/Admin/formUpdateMhs'
 const KelolaDataDosenPengampu = React.lazy(() =>
   import('./views/CRUDTable/Admin/KelolaDataDosenPengampu'),
 )
+const FormUpdateMatkul = React.lazy(() => import('./views/form/Admin/formUpdateMatkul'))
 const FormUpdateDosen = React.lazy(() => import('./views/form/Admin/formUpdateDosen'))
 const FormTambahDosen = React.lazy(() => import('./views/form/Admin/formCreateDosen'))
+const FormTambahJadwal = React.lazy(() => import('./views/form/Admin/formCreateJadwal'))
+const FormTambahMatkul = React.lazy(() => import('./views/form/Admin/formCreateMatkul'))
 const KelolaDataDosenWali = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataDosenWali'))
 // Mahasiswa
 const DashboardMahasiswa = React.lazy(() => import('./views/dashboard/DashboardMahasiswa'))
@@ -52,6 +55,21 @@ const routes = [
   { path: '/kelola/akademik/jadwal', name: 'Tabel Jadwal Mata Kuliah', element: KelolaDataJadwal },
   { path: '/kelola/akademik/semester', name: 'Tabel Semester', element: KelolaDataSemester },
   { path: '/kelola/akademik/matkul', name: 'Tabel Mata Kuliah', element: KelolaDataMatkul },
+  {
+    path: '/kelola/akademik/jadwal/tambah',
+    name: 'From Create Jadwal Mata Kuliah',
+    element: FormTambahJadwal,
+  },
+  {
+    path: '/kelola/akademik/matkul/tambah',
+    name: 'From Create Mata Kuliah',
+    element: FormTambahMatkul,
+  },
+  {
+    path: '/kelola/akademik/matkul/update/:id',
+    name: 'Form Update Matkul',
+    element: FormUpdateMatkul,
+  },
   // Dashboard Mahasiswa
   { path: '/dashboardMhs', name: 'Dashboard Mahasiswa', element: DashboardMahasiswa },
   { path: '/drafts', name: 'Draft Surat Perizinan', element: TableSuratMahasiswa },
