@@ -17,6 +17,8 @@ const FormTambahDosen = React.lazy(() => import('./views/form/Admin/formCreateDo
 const FormTambahJadwal = React.lazy(() => import('./views/form/Admin/formCreateJadwal'))
 const FormTambahMatkul = React.lazy(() => import('./views/form/Admin/formCreateMatkul'))
 const KelolaDataDosenWali = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataDosenWali'))
+const FormTambahSemester = React.lazy(() => import('./views/form/Admin/formCreateSemester'))
+const FormUpdateSemester = React.lazy(() => import('./views/form/Admin/formUpdateSemester'))
 // Mahasiswa
 const DashboardMahasiswa = React.lazy(() => import('./views/dashboard/DashboardMahasiswa'))
 const TableSuratMahasiswa = React.lazy(() => import('./views/CRUDTable/Mahasiswa/TableSurat'))
@@ -69,6 +71,16 @@ const routes = [
     path: '/kelola/akademik/matkul/update/:id',
     name: 'Form Update Matkul',
     element: FormUpdateMatkul,
+  },
+  {
+    path: '/kelola/akademik/semester/tambah',
+    name: 'Form Create Semester',
+    element: FormTambahSemester,
+  },
+  {
+    path: '/kelola/akademik/semester/update/:id',
+    name: 'Form Update Semester',
+    element: FormUpdateSemester,
   },
   // Dashboard Mahasiswa
   { path: '/dashboardMhs', name: 'Dashboard Mahasiswa', element: DashboardMahasiswa },
