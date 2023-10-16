@@ -131,34 +131,19 @@ const FormUpdateDosen = () => {
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="username-dsn">
-                  <CIcon icon={cilUser} />
-                </CInputGroupText>
-                <CFormInput
-                  name="username"
-                  placeholder="Username"
-                  floatingLabel="Username"
-                  aria-describedby="username-dsn"
-                  value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                />
-              </CInputGroup>
-            </CCol>
           </CForm>
         </CCardBody>
         <CCardFooter>
           <CRow>
             <CCol xs={10}></CCol>
-            <CCol xs={1}>
+            <CCol md={1}>
               <Link to={`/kelola/dosen/pengampu`}>
-                <CButton color="warning" variant="outline" className="ms-2" title="Back">
+                <CButton color="secondary" variant="outline" className="ms-2" title="Back">
                   Back
                 </CButton>
               </Link>
             </CCol>
-            <CCol xs={1}>
+            <CCol md={1}>
               {' '}
               <CButton color="primary" variant="outline" type="submit" onClick={handleSubmit}>
                 Submit
