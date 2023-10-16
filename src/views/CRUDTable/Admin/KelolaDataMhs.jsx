@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { read, utils, writeFile } from 'xlsx'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import { read, utils } from 'xlsx';
+import axios from 'axios';
 import {
   CButton,
   CCard,
@@ -27,126 +27,75 @@ import {
   CInputGroupText,
   CFormTextarea,
   CFormSelect,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import {
-  cilPen,
-  cilSend,
-  cilTrash,
-  cilSearch,
-  cilShortText,
-  cilCalendar,
-  cilClock,
-  cilFile,
-  cilUserPlus,
-} from '@coreui/icons'
-import { Link } from 'react-router-dom'
-
-const usersData = [
-  {
-    id: 0,
-    nama: 'Adrian',
-    kelas: '2B',
-    nim: '221511000',
-    prodi: 'D3 - Teknik Informatika',
-    username: 'MrDr8',
-    password: 'MrDr8',
-    email: 'adrian',
-    noTelp: '012312',
-    namaOrangTua: 'dsadas',
-    noTelpOrangTua: '321',
-  },
-  {
-    id: 1,
-    nama: 'Reno',
-    kelas: '2B',
-    nim: '221511000',
-    prodi: 'D3 - Teknik Informatika',
-    username: 'MrDr8',
-    password: 'MrDr8',
-    email: 'adrian',
-    noTelp: '012312',
-    namaOrangTua: 'dsadas',
-    noTelpOrangTua: '321',
-  },
-]
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
+import { cilPen, cilTrash, cilSearch, cilFile, cilUserPlus } from '@coreui/icons';
+import { Link } from 'react-router-dom';
 
 const KelolaDataMhs = () => {
-  const [importData, setImport] = useState([]) // State untuk menampung hasil import
-  const [rawData, setRaw] = useState([]) // State untuk menampung data dari excel sebelum import
-  const [modalImport, setModalImport] = useState(false) //State untuk modal import
-  const [modalDelete, setModalDelete] = useState(false)
-  const [modalUpdate, setModalUpdate] = useState(false)
-  const [searchText, setSearchText] = useState('') //State untuk seatch
-  const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
-  const [mahasiswaData, setMahasiswaData] = useState([])
+  const [importData, setImport] = useState([]);
+  const [rawData, setRaw] = useState([]);
+  const [modalImport, setModalImport] = useState(false);
+  const [modalDelete, setModalDelete] = useState(false);
+  const [modalUpdate, setModalUpdate] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [selectedData, setSelectedData] = useState(null);
+  const [mahasiswaData, setMahasiswaData] = useState([]);
 
   const handleImport = ($event) => {
-    //Handle Import
-    const files = $event.target.files
+    const files = $event.target.files;
     if (files) {
-      const file = files[0]
-      const reader = new FileReader()
+      const file = files[0];
+      const reader = new FileReader();
       reader.onload = (event) => {
-        const wb = read(event.target.result)
-        const sheets = wb.SheetNames
-
+        const wb = read(event.target.result);
+        const sheets = wb.SheetNames;
         if (sheets) {
-          const rows = utils.sheet_to_json(wb.Sheets[sheets[0]])
-          setRaw(rows)
+          const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
+          setRaw(rows);
         }
-      }
-      reader.readAsArrayBuffer(file)
+      };
+      reader.readAsArrayBuffer(file);
     }
-  }
+  };
 
   const handleImportModal = async (e) => {
-    e.preventDefault()
-    //Handle saat button import di klik
-    // setImport(rawData) // Menampung hasil import
-    const importedData = rawData.map((data) => ({
+    e.preventDefault();
+    const importedData = rawData.map((data, index) => ({
+      id: index,
       nim: data['Nim'],
       nama: data['Nama Lengkap'],
-      username: data['Username'],
-      password: data['Password'],
-      no_telp: data['No Telepon'],
-      no_telp_orang_tua: data['No Telepon Orang Tua'],
-      prodiId: data['Prodi'],
-      kelasId: data['Kelas'],
-      angkatanId: data['Angkatan'],
-    }))
-    setImport(importedData)
-    setModalImport(false) //Menutup modal
-  }
+      kelas: data['Kelas'],
+      prodi: data['Prodi'],
+    }));
+    setImport(importedData);
+    setModalImport(false);
+  };
 
   const handleDeleteModal = (data) => {
-    // Handle saat tombol hapus diklik
-    setSelectedData(data)
-    setModalDelete(true) // Menampilkan modal
-  }
+    setSelectedData(data);
+    setModalDelete(true);
+  };
 
   const handleUpdateModal = (data) => {
-    // Handle saat tombol hapus diklik
-    setSelectedData(data)
-    setModalUpdate(true) // Menampilkan modal
-  }
+    setSelectedData(data);
+    setModalUpdate(true);
+  };
 
   const handleSearchChange = (e) => {
-    //Handle search saat di ketik
-    setSearchText(e.target.value)
-  }
+    setSearchText(e.target.value);
+  };
 
   const filteredData = importData.filter((user) => {
-    //Var untuk menampung data baru
     return (
-      searchText === '' || // Filter berdasarkan pencarian
+      searchText === '' ||
       user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
       user.kelas.toLowerCase().includes(searchText.toLowerCase()) ||
       user.nim.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.prodiId.toLowerCase().includes(searchText.toLowerCase())
-    )
-  })
-  console.log(importData)
+      user.prodi.toLowerCase().includes(searchText.toLowerCase())
+    );
+  });
+
   return (
     <div>
       <CRow>
@@ -167,11 +116,7 @@ const KelolaDataMhs = () => {
                         </Link>
                       </CCol>
                       <CCol md={3}>
-                        <CButton
-                          variant="outline"
-                          color="success"
-                          onClick={() => setModalImport(true)}
-                        >
+                        <CButton variant="outline" color="success" onClick={() => setModalImport(true)}>
                           <CIcon icon={cilFile} className="mx-2" />
                           Import
                         </CButton>
@@ -183,7 +128,7 @@ const KelolaDataMhs = () => {
                     <CInputGroup className="search-input">
                       <CFormInput
                         placeholder="Search"
-                        value={searchText} // Mengikat nilai pencarian ke state searchText
+                        value={searchText}
                         onChange={handleSearchChange}
                       />
                       <CInputGroupText id="search-icon">
@@ -207,20 +152,9 @@ const KelolaDataMhs = () => {
                   {filteredData.map((user) => (
                     <CTableRow key={user.id}>
                       <CTableDataCell>{user.nama}</CTableDataCell>
-                      <CTableDataCell>
-                        {user.kelas === 1
-                          ? 'A'
-                          : user.kelas === 2
-                          ? 'B'
-                          : user.kelas === 3
-                          ? 'C'
-                          : ''}
-                      </CTableDataCell>
+                      <CTableDataCell>{user.kelas}</CTableDataCell>
                       <CTableDataCell>{user.nim}</CTableDataCell>
-                      <CTableDataCell>
-                        {user.prodi === 1 ? 'D3' : user.prodi === 2 ? 'D4' : ''}
-                      </CTableDataCell>
-
+                      <CTableDataCell>{user.prodi}</CTableDataCell>
                       <CTableDataCell>
                         <CCol>
                           <Link to="/kelola/mahasiswa/update">
@@ -254,15 +188,9 @@ const KelolaDataMhs = () => {
           </CCard>
         </CCol>
       </CRow>
-      {/* Modal Import */}
-      <CModal
-        backdrop="static"
-        visible={modalImport}
-        onClose={() => setModalImport(false)}
-        aria-labelledby="ImportModal"
-      >
+      <CModal backdrop="static" visible={modalImport} onClose={() => setModalImport(false)}>
         <CModalHeader closeButton>
-          <CModalTitle id="ImportModal">Import From Excel</CModalTitle>
+          <CModalTitle>Import From Excel</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CFormInput type="file" accept=".xlsx" onChange={handleImport} />
@@ -276,15 +204,9 @@ const KelolaDataMhs = () => {
           </CButton>
         </CModalFooter>
       </CModal>
-      {/* Modal Delete */}
-      <CModal
-        backdrop="static"
-        visible={modalDelete}
-        onClose={() => setModalDelete(false)}
-        aria-labelledby="DeleteModal"
-      >
+      <CModal backdrop="static" visible={modalDelete} onClose={() => setModalDelete(false)}>
         <CModalHeader closeButton>
-          <CModalTitle id="DeleteModal">Delete</CModalTitle>
+          <CModalTitle>Delete</CModalTitle>
         </CModalHeader>
         <CModalBody>Yakin ingin hapus {selectedData ? selectedData.nama : ''} ?</CModalBody>
         <CModalFooter>
@@ -294,15 +216,9 @@ const KelolaDataMhs = () => {
           <CButton color="danger">Delete</CButton>
         </CModalFooter>
       </CModal>
-      {/* Modal Update */}
-      <CModal
-        backdrop="static"
-        visible={modalUpdate}
-        onClose={() => setModalUpdate(false)}
-        aria-labelledby="UpdateModal"
-      >
+      <CModal backdrop="static" visible={modalUpdate} onClose={() => setModalUpdate(false)}>
         <CModalHeader closeButton>
-          <CModalTitle id="UpdateModal">Update</CModalTitle>
+          <CModalTitle>Update</CModalTitle>
         </CModalHeader>
         <CModalBody>{/* Isi formulir pembaruan di sini */}</CModalBody>
         <CModalFooter>
@@ -313,7 +229,7 @@ const KelolaDataMhs = () => {
         </CModalFooter>
       </CModal>
     </div>
-  )
-}
+  );
+};
 
-export default KelolaDataMhs
+export default KelolaDataMhs;
