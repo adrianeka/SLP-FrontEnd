@@ -91,6 +91,14 @@ const calculatePercentage = (value, total) => {
 }
 
 const Dashboard = () => {
+  useEffect(() => {
+    const data = localStorage.getItem('dosenwali')
+    if (!data) {
+      window.location.href = '/login'
+    } else {
+      console.log(data)
+    }
+  })
   const totalSakit = getTotalSakit()
   const totalIzin = getTotalIzin()
   const totalMahasiswa = getTotalMahasiswa()

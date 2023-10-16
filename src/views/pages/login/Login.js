@@ -22,7 +22,6 @@ import AuthService from 'src/services/authService'
 
 const Login = () => {
   const form = useRef()
-  const checkBtn = useRef()
   const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -52,6 +51,8 @@ const Login = () => {
           navigate('/dashboard')
         } else if (userRole === 'mahasiswa') {
           navigate('/dashboardMhs')
+        } else if (userRole === 'dosen_wali') {
+          navigate('/dashboardDosenWali')
         }
         window.location.reload()
       },
