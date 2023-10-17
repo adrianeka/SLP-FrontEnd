@@ -41,29 +41,32 @@ import {
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
-const usersData = [
-  {
-    id: 0,
-    kode_matakuliah: '21IF2010',
-    nama_matkul: 'Basis Data',
-    tipe: 'Teori',
-    sks: '2',
-    prodi: 'D3',
-  },
-  {
-    id: 0,
-    kode_matakuliah: '21IF2011',
-    nama_matkul: 'Basis Data',
-    tipe: 'Praktek',
-    sks: '2',
-    prodi: 'D3',
-  },
-]
-
 const KelolaDataMatkul = () => {
   const [modalDelete, setModalDelete] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
+  const [matkulData, setMatkulData] = useState([])
+
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/admins/detailMatkul'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setMatkulData(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
 
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
@@ -75,17 +78,54 @@ const KelolaDataMatkul = () => {
     //Handle search saat di ketik
     setSearchText(e.target.value)
   }
-  const filteredData = usersData.filter((data) => {
+  const filteredData = matkulData.filter((data) => {
     //Search filter data
     return (
       searchText === '' ||
-      data.kode_matakuliah.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.nama_matkul.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.id_detailMatkul.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.mataKuliah.id_matakuliah.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.mataKuliah.nama_matakuliah.toLowerCase().includes(searchText.toLowerCase()) ||
       data.tipe.toLowerCase().includes(searchText.toLowerCase()) ||
       data.sks.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.prodi.toLowerCase().includes(searchText.toLowerCase())
+      data.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase())
     )
   })
+
+  const handleDelete = (id_matkul, id_detailmatkul) => {
+    // URL API untuk menghapus data pada tabel matkul dan detailMatkul
+    const apiUrlMatkul = `http://localhost:8080/api/admins/matkul/${id_matkul}`
+    const apiUrlDetMatkul = `http://localhost:8080/api/admins/detailMatkul/${id_detailmatkul}`
+    console.log(id_matkul)
+    console.log(id_detailmatkul)
+
+    // Menggunakan Axios untuk mengirim dua permintaan DELETE secara bersamaan
+    axios
+      .all([
+        axios.delete(apiUrlMatkul, {
+          withCredentials: true,
+        }),
+        axios.delete(apiUrlDetMatkul, {
+          withCredentials: true,
+        }),
+      ])
+      .then(
+        axios.spread((responseMatkul, responseDetMatkul) => {
+          // Handle ketika kedua permintaan DELETE berhasil
+          console.log(responseMatkul.data, responseDetMatkul.data)
+
+          // Lakukan pembaruan pada data Anda atau tindakan lain yang sesuai
+          setMatkulData((prevData) =>
+            prevData.filter((matkul) => matkul.id_detailMatkul !== id_detailmatkul),
+          )
+          // Tutup modal setelah berhasil menghapus
+          setModalDelete(false)
+        }),
+      )
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat menghapus data
+        console.error('Error deleting data:', error)
+      })
+  }
 
   return (
     <div>
@@ -131,26 +171,29 @@ const KelolaDataMatkul = () => {
                     <CTableHeaderCell>Tipe</CTableHeaderCell>
                     <CTableHeaderCell>SKS</CTableHeaderCell>
                     <CTableHeaderCell>Prodi</CTableHeaderCell>
+                    <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
                   {filteredData.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="text-center">
+                      <td colSpan="6" className="text-center">
                         No Data
                       </td>
                     </tr>
                   ) : (
                     filteredData.map((matkul) => (
-                      <CTableRow key={matkul.id}>
-                        <CTableDataCell>{matkul.kode_matakuliah}</CTableDataCell>
-                        <CTableDataCell>{matkul.nama_matkul}</CTableDataCell>
+                      <CTableRow key={matkul.id_detailMatkul}>
+                        <CTableDataCell>{matkul.mataKuliah.id_matakuliah}</CTableDataCell>
+                        <CTableDataCell>{matkul.mataKuliah.nama_matakuliah}</CTableDataCell>
                         <CTableDataCell>{matkul.tipe}</CTableDataCell>
                         <CTableDataCell>{matkul.sks}</CTableDataCell>
-                        <CTableDataCell>{matkul.prodi}</CTableDataCell>
+                        <CTableDataCell>{matkul.prodi.nama_prodi}</CTableDataCell>
                         <CTableDataCell>
                           <CCol>
-                            <Link to={`/kelola/akademik/matkul/update/${matkul.id}`}>
+                            <Link
+                              to={`/kelola/akademik/matkul/update/${matkul.id_detailMatkul}-${matkul.mataKuliah.id_matakuliah}`}
+                            >
                               <CButton
                                 color="primary"
                                 variant="outline"
@@ -192,13 +235,20 @@ const KelolaDataMatkul = () => {
           <CModalTitle id="DeleteModal">Delete</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          Yakin ingin hapus matkul {selectedData ? selectedData.kode_matakuliah : ''} ?
+          Yakin ingin hapus matkul {selectedData ? selectedData.mataKuliah.id_matakuliah : ''} ?
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setModalDelete(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton
+            color="danger"
+            onClick={() =>
+              handleDelete(selectedData.mataKuliah.id_matakuliah, selectedData.id_detailMatkul)
+            }
+          >
+            Delete
+          </CButton>
         </CModalFooter>
       </CModal>
     </div>
