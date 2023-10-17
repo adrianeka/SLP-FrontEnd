@@ -89,25 +89,21 @@ const KelolaDataMhs = () => {
       kelas: data['Kelas'],
       prodi: data['Prodi'],
     }))
-
     setImport(importedData)
     setModalImport(false)
   }
 
-  const handleDeleteModal = (nim) => {
-    // Handle saat tombol hapus diklik
-    setSelectedData({ nim }) // Set the selected data with the nim
-    setModalDelete(true) // Menampilkan modal
+  const handleDeleteModal = (data) => {
+    setSelectedData(data)
+    setModalDelete(true)
   }
 
   const handleUpdateModal = (data) => {
-    // Handle saat tombol hapus diklik
     setSelectedData(data)
-    setModalUpdate(true) // Menampilkan modal
+    setModalUpdate(true)
   }
 
   const handleSearchChange = (e) => {
-    //Handle search saat di ketik
     setSearchText(e.target.value)
   }
 
