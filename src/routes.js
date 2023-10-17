@@ -1,4 +1,5 @@
 import React from 'react'
+import FormCreateDosenWali from './views/form/Admin/formCreateDosenWali'
 //Admin
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const TableKaprodi = React.lazy(() => import('./views/CRUDTable/TableKaprodi'))
@@ -19,6 +20,8 @@ const FormTambahMatkul = React.lazy(() => import('./views/form/Admin/formCreateM
 const KelolaDataDosenWali = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataDosenWali'))
 const FormTambahSemester = React.lazy(() => import('./views/form/Admin/formCreateSemester'))
 const FormUpdateSemester = React.lazy(() => import('./views/form/Admin/formUpdateSemester'))
+const FormTambahDosenWali = React.lazy(() => import('./views/form/Admin/formCreateDosenWali'))
+const FormUpdateDosenWali = React.lazy(() => import('./views/form/Admin/formUpdateDosenWali'))
 // Mahasiswa
 const DashboardMahasiswa = React.lazy(() => import('./views/dashboard/DashboardMahasiswa'))
 const TableSuratMahasiswa = React.lazy(() => import('./views/CRUDTable/Mahasiswa/TableSurat'))
@@ -53,6 +56,16 @@ const routes = [
     element: FormTambahDosen,
   },
   { path: '/kelola/dosen/wali', name: 'Tabel Dosen Wali', element: KelolaDataDosenWali },
+  {
+    path: '/kelola/dosen/wali/tambah',
+    name: 'Form Create Dosen Wali',
+    element: FormTambahDosenWali,
+  },
+  {
+    path: '/kelola/dosen/wali/update/:id',
+    name: 'Form Update Dosen Wali',
+    element: FormUpdateDosenWali,
+  },
   { path: '/kelola/kaprodi', name: 'Tabel Kaprodi', element: TableKaprodi },
   { path: '/kelola/akademik/jadwal', name: 'Tabel Jadwal Mata Kuliah', element: KelolaDataJadwal },
   { path: '/kelola/akademik/semester', name: 'Tabel Semester', element: KelolaDataSemester },
