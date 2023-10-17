@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -8,16 +10,127 @@ import {
   CCol,
   CForm,
   CFormInput,
+  CFormSelect,
   CFormTextarea,
   CInputGroup,
   CInputGroupText,
   CRow,
-  CFormSelect,
 } from '@coreui/react'
+import { DocsExample } from 'src/components'
 import CIcon from '@coreui/icons-react'
-import { cilCalendar, cilCircle, cilClock, cilShortText } from '@coreui/icons'
+import {
+  cilCalendar,
+  cilCircle,
+  cilClock,
+  cilLockLocked,
+  cilShortText,
+  cilUser,
+} from '@coreui/icons'
 
 const FormCreateMatkul = () => {
+  const [formData, setFormData] = useState({
+    id_mataKuliah: '',
+    nama_mataKuliah: '',
+    sks: '',
+    tipe: '',
+    id_prodi: '',
+  })
+
+  const [prodiData, setProdiData] = useState([])
+  useEffect(() => {
+    const apiUrl = 'http://localhost:8080/api/admins/prodi' // Replace with your actual API endpoint
+    axios
+      .get(apiUrl, { withCredentials: true })
+      .then((response) => {
+        setProdiData(response.data)
+        console.log(response.data) // Assuming your response data is an array of objects with value and label properties
+      })
+      .catch((error) => {
+        console.error('Error fetching Prodi data:', error)
+      })
+  }, [])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const apiUrl_detailMatkul = 'http://localhost:8080/api/admins/detailMatkul/create'
+    const apiUrl_Matkul = 'http://localhost:8080/api/admins/matkul/create'
+    const apiUrl_GetLatestIdMatkul = 'http://localhost:8080/api/admins/detailMatkul/id'
+
+    try {
+      // Langkah 1: Ambil id_matkul terbaru dari server
+      const latestMatkulResponse = await axios.get(apiUrl_GetLatestIdMatkul, {
+        withCredentials: true,
+      })
+
+      if (latestMatkulResponse.data && latestMatkulResponse.data.length > 0) {
+        const latestMatkulId = Math.max(
+          ...latestMatkulResponse.data.map((item) => parseInt(item.id_detailMatkul)),
+        )
+        console.log(latestMatkulId)
+
+        const newDetailMatkul = {
+          matkul_id: formData.id_mataKuliah,
+          sks: formData.sks,
+          tipe: `${formData.tipe === '01' ? 'Teori' : 'Praktek'}`,
+          prodi_id: formData.id_prodi,
+          id_detailMatkul: latestMatkulId + 1,
+        }
+
+        const newMatkul = {
+          id_matakuliah: formData.id_mataKuliah,
+          nama_matakuliah: formData.nama_mataKuliah,
+        }
+
+        console.log(newMatkul)
+        console.log(newDetailMatkul)
+
+        // Lakukan permintaan kedua
+        const responseMatkul = await axios.post(apiUrl_Matkul, newMatkul, {
+          withCredentials: true,
+        })
+        console.log('Mata Kuliah created successfully:', responseMatkul.data)
+
+        // Lakukan permintaan pertama
+        const responseDetailMatkul = await axios.post(apiUrl_detailMatkul, newDetailMatkul, {
+          withCredentials: true,
+        })
+        console.log('Detail Mata Kuliah created successfully:', responseDetailMatkul.data)
+
+        window.location.href = '/kelola/akademik/matkul'
+      } else {
+        const latestMatkulId = 1
+        console.log(latestMatkulId)
+        const newDetailMatkul = {
+          id_mataKuliah: formData.id_mataKuliah,
+          sks: formData.sks,
+          tipe: `${formData.tipe === '01' ? 'Teori' : 'Praktek'}`,
+          id_prodi: formData.id_prodi,
+          id_detailMatkul: latestMatkulId,
+        }
+
+        const newMatkul = {
+          id_matakuliah: formData.id_mataKuliah,
+          nama_matakuliah: formData.nama_mataKuliah,
+        }
+        // Lakukan permintaan kedua
+        const responseMatkul = await axios.post(apiUrl_Matkul, newMatkul, {
+          withCredentials: true,
+        })
+        console.log('Mata Kuliah created successfully:', responseMatkul.data)
+        // Lakukan permintaan pertama
+        const responseDetailMatkul = await axios.post(apiUrl_detailMatkul, newDetailMatkul, {
+          withCredentials: true,
+        })
+        console.log('Detail Mata Kuliah created successfully:', responseDetailMatkul.data)
+
+        window.location.href = '/kelola/akademik/matkul'
+      }
+    } catch (error) {
+      console.error('Error creating Mata kuliah:', error)
+    }
+  }
+
   return (
     <>
       <CCard>
@@ -34,6 +147,8 @@ const FormCreateMatkul = () => {
                   placeholder="Kode Matkul"
                   floatingLabel="Kode Matkul"
                   aria-describedby="kode_matkul"
+                  value={formData.id_mataKuliah}
+                  onChange={(e) => setFormData({ ...formData, id_mataKuliah: e.target.value })}
                 />
               </CInputGroup>
             </CCol>
@@ -47,19 +162,8 @@ const FormCreateMatkul = () => {
                   placeholder="Nama Matkul"
                   floatingLabel="Nama Matkul"
                   aria-describedby="nama_matkul"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="tipe_matkul">
-                  <CIcon icon={cilShortText} />
-                </CInputGroupText>
-                <CFormInput
-                  name="tipe"
-                  placeholder="Tipe Matkul"
-                  floatingLabel="Tipe Matkul"
-                  aria-describedby="tipe_matkul"
+                  value={formData.nama_mataKuliah}
+                  onChange={(e) => setFormData({ ...formData, nama_mataKuliah: e.target.value })}
                 />
               </CInputGroup>
             </CCol>
@@ -73,26 +177,65 @@ const FormCreateMatkul = () => {
                   placeholder="SKS"
                   floatingLabel="SKS"
                   aria-describedby="sks_matkul"
+                  value={formData.sks}
+                  onChange={(e) => setFormData({ ...formData, sks: e.target.value })}
                 />
               </CInputGroup>
             </CCol>
+            <CCol md={6}></CCol>
             <CCol md={6}>
-              <CFormSelect id="Prodi" label="Program Studi">
-                <option selected hidden>
-                  Pilih..
-                </option>
-                <option value="D3">D3</option>
-                <option value="D4">D4</option>
-              </CFormSelect>
+              <CInputGroup className="mb-3">
+                <CInputGroupText id="tipe">
+                  <CIcon icon={cilShortText} />
+                </CInputGroupText>
+                <CFormSelect
+                  id="tipe"
+                  placeholder="Tipe Mata Kuliah"
+                  onChange={(e) => setFormData({ ...formData, tipe: e.target.value })}
+                >
+                  <option hidden>Tipe MataKuliah</option>
+                  <option value="01">Teori</option>
+                  <option value="02">Praktek</option>
+                </CFormSelect>
+              </CInputGroup>
+            </CCol>
+
+            <CCol md={6}>
+              <CInputGroup>
+                <CInputGroupText id="Prodi MataKuliah">
+                  <CIcon icon={cilShortText} />
+                </CInputGroupText>
+                <CFormSelect
+                  name="prodi_id"
+                  id="Prodi MataKuliah"
+                  style={{ height: '100%' }}
+                  value={formData.id_prodi} // Add this line
+                  onChange={(e) => setFormData({ ...formData, id_prodi: e.target.value })}
+                >
+                  <option hidden>Prodi</option>
+                  {prodiData.map((prodi) => (
+                    <option key={prodi.id_prodi} value={prodi.id_prodi}>
+                      {prodi.nama_prodi}
+                    </option>
+                  ))}
+                </CFormSelect>
+              </CInputGroup>
             </CCol>
           </CForm>
         </CCardBody>
         <CCardFooter>
           <CRow>
-            <CCol xs={11}></CCol>
+            <CCol xs={10}></CCol>
+            <CCol xs={1}>
+              <Link to={`/kelola/akademik/matkul`}>
+                <CButton color="secondary" variant="outline" className="ms-2" title="Back">
+                  Back
+                </CButton>
+              </Link>
+            </CCol>
             <CCol xs={1}>
               {' '}
-              <CButton color="primary" variant="outline">
+              <CButton color="primary" variant="outline" onClick={handleSubmit}>
                 Submit
               </CButton>
             </CCol>
