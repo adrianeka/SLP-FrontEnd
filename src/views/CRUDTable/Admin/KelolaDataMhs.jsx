@@ -112,24 +112,24 @@ const KelolaDataMhs = () => {
   }
 
   const handleDelete = (nim) => {
-    const apiUrl = `http://localhost:8080/api/admins/mahasiswa/destroy/${nim}`;
-  
+    const apiUrl = `http://localhost:8080/api/admins/mahasiswa/destroy/${nim}`
+
     // Send a DELETE request to delete the data
     axios
       .delete(apiUrl, {
         withCredentials: true,
       })
       .then((response) => {
-        console.log('Data berhasil dihapus:', response.data);
-  
+        console.log('Data berhasil dihapus:', response.data)
+
         // Update the state to remove the deleted data
-        setMahasiswaData((prevData) => prevData.filter((mahasiswa) => mahasiswa.nim !== nim));
-        setModalDelete(false);  // Close the delete modal
+        setMahasiswaData((prevData) => prevData.filter((mahasiswa) => mahasiswa.nim !== nim))
+        setModalDelete(false) // Close the delete modal
       })
       .catch((error) => {
-        console.error('Error deleting data:', error);
-      });
-  };
+        console.error('Error deleting data:', error)
+      })
+  }
 
   const filteredData = mahasiswaData.filter((user) => {
     //Var untuk menampung data baru
