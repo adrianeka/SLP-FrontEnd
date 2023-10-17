@@ -45,7 +45,7 @@ const usersData = [
   },
 ]
 
-const TableRekapSakit = () => {
+const TableRekapIzin = () => {
   const [selectedStatus, setSelectedStatus] = useState('All')
   const [searchText, setSearchText] = useState('') // State untuk nilai pencarian
   const [modalExport, setModalExport] = useState(false)
@@ -53,7 +53,7 @@ const TableRekapSakit = () => {
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/dosenWali/perizinan/sakit'
+    const apiUrl = 'http://localhost:8080/api/dosenWali/perizinan/izin'
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -247,4 +247,4 @@ const TableRekapSakit = () => {
   )
 }
 
-export default TableRekapSakit
+export default TableRekapIzin

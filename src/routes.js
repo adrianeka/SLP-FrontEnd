@@ -34,6 +34,9 @@ const DashboardDosenWali = React.lazy(() => import('./views/dashboard/DashboardD
 const TableMahasiswa = React.lazy(() => import('./views/CRUDTable/DosenWali/TableMahasiswa'))
 const TableRekapIzin = React.lazy(() => import('./views/CRUDTable/DosenWali/TableRekapIzin'))
 const TableRekapSakit = React.lazy(() => import('./views/CRUDTable/DosenWali/TableRekapSakit'))
+const RiwayatSuratPermohonan = React.lazy(() =>
+  import('./views/CRUDTable/DosenWali/RiwayatSuratPermohonan'),
+)
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -118,7 +121,11 @@ const routes = [
   { path: '/kelolaWali/mahasiswa', name: 'Tabel Mahasiswa', element: TableMahasiswa },
   { path: 'table/rekap/izin', name: 'Tabel Izin Mahasiswa', element: TableRekapIzin },
   { path: 'table/rekap/sakit', name: 'Tabel Sakit Mahasiswa', element: TableRekapSakit },
-
+  {
+    path: '/riwayat/surat-permohonan',
+    name: 'Riwayat Surat Permohonan',
+    element: RiwayatSuratPermohonan,
+  },
   {
     path: '/kelola/mahasiswa/update/:id',
     name: 'Form Update Mahasiswa',
