@@ -150,10 +150,10 @@ const FormUpdateDosenWali = () => {
   return (
     <>
       <CCard>
-        <CCardHeader>Form Tambah Dosen Wali</CCardHeader>
+        <CCardHeader>Form Update Dosen Wali</CCardHeader>
         <CCardBody>
           <CForm className="row g-3">
-            <CCol md={6}>
+            <CCol md={12}>
               <CInputGroup className="mb-3">
                 <CInputGroupText id="username-dsn">
                   <CIcon icon={cilUser} />
@@ -168,22 +168,7 @@ const FormUpdateDosenWali = () => {
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="password-dsn">
-                  <CIcon icon={cilLockLocked} />
-                </CInputGroupText>
-                <CFormInput
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                  floatingLabel="Password"
-                  aria-describedby="password-dsn"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                />
-              </CInputGroup>
-            </CCol>
+
             <CCol md={6}>
               <CInputGroup className="mb-3">
                 <CInputGroupText id="Tingkat">

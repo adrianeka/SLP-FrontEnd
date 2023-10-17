@@ -36,6 +36,19 @@ const FormSakitMhs = () => {
     }
   }, [])
 
+  const [semesterData, setSemesterData] = useState([])
+  useEffect(() => {
+    const apiUrl = 'http://localhost:8080/api/mahasiswa/semester/active' // Replace with your actual API endpoint
+    axios
+      .get(apiUrl, { withCredentials: true })
+      .then((response) => {
+        setSemesterData(response.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching semester data:', error)
+      })
+  }, [])
+
   useEffect(() => {
     const apiUrl = 'http://localhost:8080/api/mahasiswa/detail_matkul'
 
@@ -81,6 +94,7 @@ const FormSakitMhs = () => {
       'matakuliah',
       formData.matakuliah.map((option) => option.value),
     )
+    newPerizinan.append('id_semester', semesterData[0].id_semester)
     try {
       const response = await axios.post(apiUrl, newPerizinan, {
         withCredentials: true,
@@ -88,7 +102,7 @@ const FormSakitMhs = () => {
           'Content-Type': 'multipart/form-data',
         },
       })
-      window.location.href = '/pengajuan/form/sakit'
+      window.location.href = '/riwayat'
       console.log('Perizinan created successfully:', response.data)
     } catch (error) {
       console.error('Error creating Perizinan:', error)
@@ -129,18 +143,7 @@ const FormSakitMhs = () => {
                   aria-describedby="tanggal-awal"
                   value={formData.tanggal_awal}
                   onChange={(e) => {
-                    const selectedDate = new Date(e.target.value)
-                    const today = new Date()
-
-                    // Periksa apakah tanggal yang dipilih adalah hari ini atau lebih besar dari hari ini
-                    if (selectedDate <= today) {
-                      setFormData({ ...formData, tanggal_awal: e.target.value })
-                    } else {
-                      // Tampilkan pesan kesalahan atau lakukan tindakan yang sesuai
-                      alert('Anda hanya dapat memilih tanggal hari ini atau sebelumnya.')
-                      // Atau tetapkan tanggal ke tanggal hari ini
-                      setFormData({ ...formData, tanggal_awal: today.toISOString().split('T')[0] })
-                    }
+                    setFormData({ ...formData, tanggal_awal: e.target.value })
                   }}
                 />
               </CInputGroup>

@@ -186,37 +186,45 @@ const KelolaDataDosenWali = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {filteredData.map((data) => (
-                    <CTableRow key={data.id}>
-                      <CTableDataCell>{data.dosen}</CTableDataCell>
-                      <CTableDataCell>{data.kelas}</CTableDataCell>
-                      <CTableDataCell>{data.prodi}</CTableDataCell>
-                      <CTableDataCell>{data.angkatan}</CTableDataCell>
-                      <CTableDataCell>
-                        <CCol>
-                          <Link to={`/kelola/dosen/wali/update/${data.id_dosenwali}`}>
+                  {filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center">
+                        No Data
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((data) => (
+                      <CTableRow key={data.id}>
+                        <CTableDataCell>{data.dosen}</CTableDataCell>
+                        <CTableDataCell>{data.kelas}</CTableDataCell>
+                        <CTableDataCell>{data.prodi}</CTableDataCell>
+                        <CTableDataCell>{data.angkatan}</CTableDataCell>
+                        <CTableDataCell>
+                          <CCol>
+                            {/* <Link to={`/kelola/dosen/wali/update/${data.id_dosenwali}`}>
+                              <CButton
+                                color="primary"
+                                variant="outline"
+                                className="ms-2"
+                                title="Ubah Data Dosen"
+                              >
+                                <CIcon icon={cilPen} />
+                              </CButton>
+                            </Link> */}
                             <CButton
-                              color="primary"
+                              color="danger"
                               variant="outline"
                               className="ms-2"
-                              title="Ubah Data Dosen"
+                              title="Hapus Data Dosen"
+                              onClick={() => handleDeleteModal(data)}
                             >
-                              <CIcon icon={cilPen} />
+                              <CIcon icon={cilTrash} />
                             </CButton>
-                          </Link>
-                          <CButton
-                            color="danger"
-                            variant="outline"
-                            className="ms-2"
-                            title="Hapus Data Dosen"
-                            onClick={() => handleDeleteModal(data)}
-                          >
-                            <CIcon icon={cilTrash} />
-                          </CButton>
-                        </CCol>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
+                          </CCol>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>

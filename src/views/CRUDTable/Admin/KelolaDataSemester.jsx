@@ -225,7 +225,7 @@ const KelolaDataSemester = () => {
                           <CTableDataCell>{semesterName}</CTableDataCell>
                           <CTableDataCell>{tahunAjar}</CTableDataCell>
                           <CTableDataCell>
-                            {semester.status_semester === '1' ? 'Aktif' : 'Tidak Aktif'}
+                            {semester.status_semester == 1 ? 'Aktif' : 'Tidak Aktif'}
                           </CTableDataCell>
                           <CTableDataCell>
                             <CCol>

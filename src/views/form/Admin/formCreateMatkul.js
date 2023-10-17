@@ -55,77 +55,36 @@ const FormCreateMatkul = () => {
 
     const apiUrl_detailMatkul = 'http://localhost:8080/api/admins/detailMatkul/create'
     const apiUrl_Matkul = 'http://localhost:8080/api/admins/matkul/create'
-    const apiUrl_GetLatestIdMatkul = 'http://localhost:8080/api/admins/detailMatkul/id'
 
     try {
-      // Langkah 1: Ambil id_matkul terbaru dari server
-      const latestMatkulResponse = await axios.get(apiUrl_GetLatestIdMatkul, {
+      const newDetailMatkul = {
+        matkul_id: formData.id_mataKuliah,
+        sks: formData.sks,
+        tipe: `${formData.tipe === '01' ? 'Teori' : 'Praktek'}`,
+        prodi_id: formData.id_prodi,
+      }
+
+      const newMatkul = {
+        id_matakuliah: formData.id_mataKuliah,
+        nama_matakuliah: formData.nama_mataKuliah,
+      }
+
+      console.log(newMatkul)
+      console.log(newDetailMatkul)
+
+      // Lakukan permintaan kedua
+      const responseMatkul = await axios.post(apiUrl_Matkul, newMatkul, {
         withCredentials: true,
       })
+      console.log('Mata Kuliah created successfully:', responseMatkul.data)
 
-      if (latestMatkulResponse.data && latestMatkulResponse.data.length > 0) {
-        const latestMatkulId = Math.max(
-          ...latestMatkulResponse.data.map((item) => parseInt(item.id_detailMatkul)),
-        )
-        console.log(latestMatkulId)
+      // Lakukan permintaan pertama
+      const responseDetailMatkul = await axios.post(apiUrl_detailMatkul, newDetailMatkul, {
+        withCredentials: true,
+      })
+      console.log('Detail Mata Kuliah created successfully:', responseDetailMatkul.data)
 
-        const newDetailMatkul = {
-          matkul_id: formData.id_mataKuliah,
-          sks: formData.sks,
-          tipe: `${formData.tipe === '01' ? 'Teori' : 'Praktek'}`,
-          prodi_id: formData.id_prodi,
-          id_detailMatkul: latestMatkulId + 1,
-        }
-
-        const newMatkul = {
-          id_matakuliah: formData.id_mataKuliah,
-          nama_matakuliah: formData.nama_mataKuliah,
-        }
-
-        console.log(newMatkul)
-        console.log(newDetailMatkul)
-
-        // Lakukan permintaan kedua
-        const responseMatkul = await axios.post(apiUrl_Matkul, newMatkul, {
-          withCredentials: true,
-        })
-        console.log('Mata Kuliah created successfully:', responseMatkul.data)
-
-        // Lakukan permintaan pertama
-        const responseDetailMatkul = await axios.post(apiUrl_detailMatkul, newDetailMatkul, {
-          withCredentials: true,
-        })
-        console.log('Detail Mata Kuliah created successfully:', responseDetailMatkul.data)
-
-        window.location.href = '/kelola/akademik/matkul'
-      } else {
-        const latestMatkulId = 1
-        console.log(latestMatkulId)
-        const newDetailMatkul = {
-          id_mataKuliah: formData.id_mataKuliah,
-          sks: formData.sks,
-          tipe: `${formData.tipe === '01' ? 'Teori' : 'Praktek'}`,
-          id_prodi: formData.id_prodi,
-          id_detailMatkul: latestMatkulId,
-        }
-
-        const newMatkul = {
-          id_matakuliah: formData.id_mataKuliah,
-          nama_matakuliah: formData.nama_mataKuliah,
-        }
-        // Lakukan permintaan kedua
-        const responseMatkul = await axios.post(apiUrl_Matkul, newMatkul, {
-          withCredentials: true,
-        })
-        console.log('Mata Kuliah created successfully:', responseMatkul.data)
-        // Lakukan permintaan pertama
-        const responseDetailMatkul = await axios.post(apiUrl_detailMatkul, newDetailMatkul, {
-          withCredentials: true,
-        })
-        console.log('Detail Mata Kuliah created successfully:', responseDetailMatkul.data)
-
-        window.location.href = '/kelola/akademik/matkul'
-      }
+      window.location.href = '/kelola/akademik/matkul'
     } catch (error) {
       console.error('Error creating Mata kuliah:', error)
     }
