@@ -19,7 +19,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilCalendar, cilCircle, cilClock, cilShortText } from '@coreui/icons'
 
-const FormCreateSemester = () => {
+const FormUpdateSemester = () => {
   const { id } = useParams()
   console.log(id) // Mengambil ID dari URL menggunakan useParams
   const [formData, setFormData] = useState({
@@ -164,4 +164,4 @@ const FormCreateSemester = () => {
   )
 }
 
-export default FormCreateSemester
+export default FormUpdateSemester
