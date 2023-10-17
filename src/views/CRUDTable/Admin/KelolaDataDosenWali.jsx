@@ -55,7 +55,13 @@ const KelolaDataDosenWali = () => {
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [dosenData, setDosenData] = useState([]) //State untuk menampung data dosen
   const [isCreateMode, setIsCreateMode] = useState(true) // State untuk set modal jadi update atau create
-
+  useEffect(() => {
+    const data = localStorage.getItem('admin')
+    if (data) {
+    } else {
+      window.location.href = '/login'
+    }
+  })
   useEffect(() => {
     // URL API untuk mengambil data dosen
     const apiUrl = 'http://localhost:8080/api/admins/dosen'
@@ -227,7 +233,7 @@ const KelolaDataDosenWali = () => {
               <CFormSelect
                 id="Angkatan"
                 style={{ height: '100%' }}
-                value={isCreateMode ? '' : selectedData ? selectedData.tingkat : ''}
+                // value={isCreateMode ? '' : selectedData ? selectedData.tingkat : ''}
               >
                 <option selected hidden>
                   Angkatan

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { read, utils } from 'xlsx';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import { read, utils } from 'xlsx'
+import axios from 'axios'
 import {
   CButton,
   CCard,
@@ -27,64 +27,63 @@ import {
   CInputGroupText,
   CFormTextarea,
   CFormSelect,
-} from '@coreui/react';
-import CIcon from '@coreui/icons-react';
-import { cilPen, cilTrash, cilSearch, cilFile, cilUserPlus } from '@coreui/icons';
-import { Link } from 'react-router-dom';
+} from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import { cilPen, cilTrash, cilSearch, cilFile, cilUserPlus } from '@coreui/icons'
+import { Link } from 'react-router-dom'
 
 const KelolaDataMhs = () => {
-  const [importData, setImport] = useState([]);
-  const [rawData, setRaw] = useState([]);
-  const [modalImport, setModalImport] = useState(false);
-  const [modalDelete, setModalDelete] = useState(false);
-  const [modalUpdate, setModalUpdate] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [selectedData, setSelectedData] = useState(null);
-  const [mahasiswaData, setMahasiswaData] = useState([]);
+  const [importData, setImport] = useState([])
+  const [rawData, setRaw] = useState([])
+  const [modalImport, setModalImport] = useState(false)
+  const [modalDelete, setModalDelete] = useState(false)
+  const [modalUpdate, setModalUpdate] = useState(false)
+  const [searchText, setSearchText] = useState('')
+  const [selectedData, setSelectedData] = useState(null)
 
   const handleImport = ($event) => {
-    const files = $event.target.files;
+    const files = $event.target.files
     if (files) {
-      const file = files[0];
-      const reader = new FileReader();
+      const file = files[0]
+      const reader = new FileReader()
       reader.onload = (event) => {
-        const wb = read(event.target.result);
-        const sheets = wb.SheetNames;
+        const wb = read(event.target.result)
+        const sheets = wb.SheetNames
         if (sheets) {
-          const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
-          setRaw(rows);
+          const rows = utils.sheet_to_json(wb.Sheets[sheets[0]])
+          setRaw(rows)
         }
-      };
-      reader.readAsArrayBuffer(file);
+      }
+      reader.readAsArrayBuffer(file)
     }
-  };
+  }
 
   const handleImportModal = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     const importedData = rawData.map((data, index) => ({
       id: index,
       nim: data['Nim'],
       nama: data['Nama Lengkap'],
       kelas: data['Kelas'],
       prodi: data['Prodi'],
-    }));
-    setImport(importedData);
-    setModalImport(false);
-  };
+    }))
+    setImport(importedData)
+    setModalImport(false)
+  }
 
   const handleDeleteModal = (data) => {
-    setSelectedData(data);
-    setModalDelete(true);
-  };
+    setSelectedData(data)
+    setModalDelete(true)
+  }
 
   const handleUpdateModal = (data) => {
-    setSelectedData(data);
-    setModalUpdate(true);
-  };
+    setSelectedData(data)
+    setModalUpdate(true)
+  }
 
   const handleSearchChange = (e) => {
-    setSearchText(e.target.value);
-  };
+    setSearchText(e.target.value)
+  }
 
   const filteredData = importData.filter((user) => {
     return (
@@ -93,8 +92,8 @@ const KelolaDataMhs = () => {
       user.kelas.toLowerCase().includes(searchText.toLowerCase()) ||
       user.nim.toLowerCase().includes(searchText.toLowerCase()) ||
       user.prodi.toLowerCase().includes(searchText.toLowerCase())
-    );
-  });
+    )
+  })
 
   return (
     <div>
@@ -116,7 +115,11 @@ const KelolaDataMhs = () => {
                         </Link>
                       </CCol>
                       <CCol md={3}>
-                        <CButton variant="outline" color="success" onClick={() => setModalImport(true)}>
+                        <CButton
+                          variant="outline"
+                          color="success"
+                          onClick={() => setModalImport(true)}
+                        >
                           <CIcon icon={cilFile} className="mx-2" />
                           Import
                         </CButton>
@@ -229,7 +232,7 @@ const KelolaDataMhs = () => {
         </CModalFooter>
       </CModal>
     </div>
-  );
-};
+  )
+}
 
-export default KelolaDataMhs;
+export default KelolaDataMhs

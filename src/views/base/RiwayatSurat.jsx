@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CNav,
   CNavItem,
@@ -30,40 +30,33 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPen, cilSearch, cilSend, cilTrash } from '@coreui/icons'
-
-const usersData = [
-  {
-    id: 0,
-    judulSurat: 'Judul',
-    tanggal: '12 September 2022',
-    jenis: 'Sakit',
-    alasan: '221511000',
-    surat: 'dadasd.jpg',
-    status: 'On Going',
-  },
-  {
-    id: 1,
-    judulSurat: 'Judul',
-    tanggal: '13 September 2022',
-    jenis: 'Izin',
-    alasan: '221511001',
-    surat: 'dadasd.jpg',
-    status: 'Rejected',
-  },
-  {
-    id: 2,
-    judulSurat: 'Judul',
-    tanggal: '14 September 2022',
-    jenis: 'Sakit',
-    alasan: '221511002',
-    surat: 'dadasd.jpg',
-    status: 'Accepted',
-  },
-]
+import axios from 'axios'
 
 const RiwayatSurat = () => {
   const [selectedStatus, setSelectedStatus] = useState('All')
   const [searchText, setSearchText] = useState('') // State untuk nilai pencarian
+  const [perizinanData, setPerizinanData] = useState([])
+
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/mahasiswa/perizinan'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setPerizinanData(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
 
   const handleStatusChange = (status) => {
     setSelectedStatus(status)
@@ -73,14 +66,15 @@ const RiwayatSurat = () => {
     setSearchText(e.target.value)
   }
 
-  const filteredData = usersData.filter((user) => {
+  const filteredData = perizinanData.filter((user) => {
     return (
       (selectedStatus === 'All' || user.status === selectedStatus) && // Filter berdasarkan status
       (searchText === '' || // Filter berdasarkan pencarian
-        user.judulSurat.toLowerCase().includes(searchText.toLowerCase()) ||
-        user.tanggal.toLowerCase().includes(searchText.toLowerCase()) ||
+        user.id_perizinan.toLowerCase().includes(searchText.toLowerCase()) ||
+        user.tanggal_awal.toLowerCase().includes(searchText.toLowerCase()) ||
+        user.tanggal_akhir.toLowerCase().includes(searchText.toLowerCase()) ||
         user.jenis.toLowerCase().includes(searchText.toLowerCase()) ||
-        user.alasan.toLowerCase().includes(searchText.toLowerCase()) ||
+        user.keterangan.toLowerCase().includes(searchText.toLowerCase()) ||
         user.surat.toLowerCase().includes(searchText.toLowerCase()) ||
         user.status.toLowerCase().includes(searchText.toLowerCase()))
     )
@@ -159,22 +153,28 @@ const RiwayatSurat = () => {
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow className="text-center">
-                    <CTableHeaderCell>Nama Surat</CTableHeaderCell>
-                    <CTableHeaderCell>Tanggal</CTableHeaderCell>
                     <CTableHeaderCell>Jenis Surat</CTableHeaderCell>
                     <CTableHeaderCell>Alasan</CTableHeaderCell>
                     <CTableHeaderCell>Bukti Surat</CTableHeaderCell>
+                    <CTableHeaderCell>Tanggal Awal</CTableHeaderCell>
+                    <CTableHeaderCell>Tanggal Akhir</CTableHeaderCell>
                     <CTableHeaderCell>status</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
                   {filteredData.map((user) => (
                     <CTableRow key={user.id} className="text-center">
-                      <CTableDataCell>Judul Surat</CTableDataCell>
-                      <CTableDataCell>{user.tanggal}</CTableDataCell>
                       <CTableDataCell>{user.jenis}</CTableDataCell>
-                      <CTableDataCell>{user.alasan}</CTableDataCell>
-                      <CTableDataCell>{user.surat}</CTableDataCell>
+                      <CTableDataCell>{user.keterangan}</CTableDataCell>
+                      <CTableDataCell>
+                        <a
+                          href={`http://localhost:8080/api/mahasiswa/perizinan/surat/{user.surat}`}
+                        >
+                          Link Text
+                        </a>
+                      </CTableDataCell>
+                      <CTableDataCell>{user.tanggal_awal}</CTableDataCell>
+                      <CTableDataCell>{user.tanggal_akhir}</CTableDataCell>
                       <CTableDataCell>
                         <CBadge
                           color={
