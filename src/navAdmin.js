@@ -76,7 +76,7 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Jawal Matakuliah',
+        name: 'Jadwal Matakuliah',
         to: '/kelola/akademik/jadwal',
       },
       {
