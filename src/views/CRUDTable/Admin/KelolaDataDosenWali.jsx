@@ -50,18 +50,9 @@ const usersData = [
 
 const KelolaDataDosenWali = () => {
   const [modalDelete, setModalDelete] = useState(false) //Handle Klik Modal Delete
-  const [modalCreate, setModalCreate] = useState(false) //Handle Klik Modal Create
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [searchText, setSearchText] = useState('') //State untuk seatch
-  const [dosenData, setDosenData] = useState([]) //State untuk menampung data dosen
-  const [isCreateMode, setIsCreateMode] = useState(true) // State untuk set modal jadi update atau create
-  useEffect(() => {
-    const data = localStorage.getItem('admin')
-    if (data) {
-    } else {
-      window.location.href = '/login'
-    }
-  })
+  const [dosenWaliData, setDosenWaliData] = useState([]) //State untuk menampung data dosen
   useEffect(() => {
     // URL API untuk mengambil data dosen
     const apiUrl = 'http://localhost:8080/api/admins/dosen'
@@ -72,10 +63,30 @@ const KelolaDataDosenWali = () => {
         withCredentials: true,
       })
       .then((response) => {
+        const currentYear = new Date().getFullYear() // Mendapatkan tahun saat ini
         // Mengatur data dosen ke dalam state dosenData
+        const dosenWaliData = response.data.map((item) => {
+          return {
+            id_dosenwali: item.id_dosenwali,
+            username: item.username,
+            password: item.password,
+            dosen_id: item.dosen_id,
+            angkatan_id: item.angkatan_id,
+            kelas_id: item.kelas_id,
+            prodi_id: item.prodi_id,
+            prodi: item.prodi ? item.prodi.nama_prodi : '', // Mengambil nama_prodi dari objek prodi jika ada
+            angkatan: item.angkatan ? item.angkatan.tahun_angkatan : '', // Mengambil tahun_angkatan dari objek angkatan jika ada
+            kelas: item.kela
+              ? currentYear - parseInt(item.angkatan.tahun_angkatan) + 1 + item.kela.nama_kelas
+              : '', // Mengambil nama_kelas dari objek kela jika ada
+            dosen: item.dosen ? item.dosen.nama_dosen : '', // Mengambil nama_dosen dari objek dosen jika ada
+          }
+        })
 
-        console.log(response.data)
-        setDosenData(response.data)
+        console.log(dosenWaliData)
+
+        // Set state dosenWaliData setelah mendapatkan data yang telah diubah
+        setDosenWaliData(dosenWaliData)
       })
       .catch((error) => {
         // Handle error jika terjadi kesalahan saat mengambil data dari API
@@ -88,31 +99,48 @@ const KelolaDataDosenWali = () => {
     setSelectedData(data) //Mengambil data id saat ingin menghapus
     setModalDelete(true) // Menampilkan modal
   }
-  const handleCreateModal = (e) => {
-    //Handle saat tombol create di klik
-    setModalCreate(true) //Menampilkan Modal
+
+  const handleDelete = (id) => {
+    // URL API untuk menghapus data semester dengan id tertentu
+    const apiUrl = `http://localhost:8080/api/admins/dosen_wali/delete/${id}`
+
+    // Menggunakan Axios untuk mengirim permintaan DELETE
+    axios
+      .delete(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Handle ketika data berhasil dihapus
+        console.log('Data berhasil dihapus:', response.data)
+
+        setDosenWaliData((prevData) =>
+          prevData.filter((dosenWali) => dosenWali.id_dosenwali !== id),
+        )
+
+        // Tutup modal setelah berhasil menghapus
+        setModalDelete(false)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat menghapus data
+        console.error('Error deleting data:', error)
+      })
   }
-  const handleUpdateModal = (data) => {
-    //Handle Saat tombol update di klik
-    setIsCreateMode(false) //setUpdate
-    setSelectedData(data) //Mengambil data saat ingin update
-    setModalCreate(true) //Menampilkan Modal
-  }
+
   const handleSearchChange = (e) => {
     //Handle search saat di ketik
     setSearchText(e.target.value)
   }
-  const filteredData = usersData.filter((data) => {
+  const filteredData = dosenWaliData.filter((data) => {
     //Search filter data
     return (
       searchText === '' ||
-      data.tingkat.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.angkatan.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.kela.toLowerCase().includes(searchText.toLowerCase()) ||
       data.prodi.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.kelas.toLowerCase().includes(searchText.toLowerCase()) ||
       data.wali.toLowerCase().includes(searchText.toLowerCase())
     )
   })
-  console.log(dosenData)
+  // console.log(selectedData)
   return (
     <div>
       <CRow>
@@ -125,10 +153,12 @@ const KelolaDataDosenWali = () => {
                   <CCol md={8} xs={6}>
                     <CRow>
                       <CCol md={2}>
-                        <CButton variant="outline" onClick={handleCreateModal}>
-                          <CIcon icon={cilUserPlus} className="mx-2" />
-                          Create
-                        </CButton>
+                        <Link to={'/kelola/dosen/wali/tambah'}>
+                          <CButton variant="outline">
+                            <CIcon icon={cilUserPlus} className="mx-2" />
+                            Create
+                          </CButton>
+                        </Link>
                       </CCol>
                     </CRow>
                   </CCol>
@@ -149,31 +179,32 @@ const KelolaDataDosenWali = () => {
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow>
-                    <CTableHeaderCell>Angkatan</CTableHeaderCell>
-                    <CTableHeaderCell>Prodi</CTableHeaderCell>
-                    <CTableHeaderCell>Kelas</CTableHeaderCell>
                     <CTableHeaderCell>Dosen Wali</CTableHeaderCell>
+                    <CTableHeaderCell>Kelas</CTableHeaderCell>
+                    <CTableHeaderCell>Prodi</CTableHeaderCell>
+                    <CTableHeaderCell>Angkatan</CTableHeaderCell>
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
                   {filteredData.map((data) => (
                     <CTableRow key={data.id}>
-                      <CTableDataCell>{data.tingkat}</CTableDataCell>
-                      <CTableDataCell>{data.prodi}</CTableDataCell>
+                      <CTableDataCell>{data.dosen}</CTableDataCell>
                       <CTableDataCell>{data.kelas}</CTableDataCell>
-                      <CTableDataCell>{data.wali}</CTableDataCell>
+                      <CTableDataCell>{data.prodi}</CTableDataCell>
+                      <CTableDataCell>{data.angkatan}</CTableDataCell>
                       <CTableDataCell>
                         <CCol>
-                          <CButton
-                            color="primary"
-                            variant="outline"
-                            className="ms-2"
-                            title="Ubah Data Dosen"
-                            onClick={() => handleUpdateModal(data)}
-                          >
-                            <CIcon icon={cilPen} />
-                          </CButton>
+                          <Link to={`/kelola/dosen/wali/update/${data.id_dosenwali}`}>
+                            <CButton
+                              color="primary"
+                              variant="outline"
+                              className="ms-2"
+                              title="Ubah Data Dosen"
+                            >
+                              <CIcon icon={cilPen} />
+                            </CButton>
+                          </Link>
                           <CButton
                             color="danger"
                             variant="outline"
@@ -203,115 +234,25 @@ const KelolaDataDosenWali = () => {
         <CModalHeader>
           <CModalTitle id="DeleteModal">Delete</CModalTitle>
         </CModalHeader>
-        <CModalBody>Yakin ingin delete?</CModalBody>
+        <CModalBody>
+          Yakin ingin delete{' '}
+          {selectedData
+            ? selectedData.dosen +
+              ' (' +
+              selectedData.dosen_id +
+              ') ' +
+              selectedData.kelas +
+              ' ' +
+              selectedData.prodi
+            : ''}{' '}
+          ?
+        </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setModalDelete(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
-        </CModalFooter>
-      </CModal>
-      {/* Modal create */}
-      <CModal
-        backdrop="static"
-        visible={modalCreate}
-        onClose={() => {
-          setModalCreate(false)
-          setIsCreateMode(true)
-        }}
-        aria-labelledby="StaticBackdropExampleLabel"
-      >
-        <CModalHeader>
-          <CModalTitle id="CreateModall">{isCreateMode ? 'Create' : 'Update'}</CModalTitle>
-        </CModalHeader>
-        <CForm className="row g-3 mx-2 my-2">
-          <CCol xs={12}>
-            <CInputGroup>
-              <CInputGroupText id="Tingkat">
-                <CIcon icon={cilShortText} />
-              </CInputGroupText>
-              <CFormSelect
-                id="Angkatan"
-                style={{ height: '100%' }}
-                // value={isCreateMode ? '' : selectedData ? selectedData.tingkat : ''}
-              >
-                <option selected hidden>
-                  Angkatan
-                </option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-                <option value="2023">2022</option>
-                <option value="2024">2023</option>
-              </CFormSelect>
-            </CInputGroup>
-          </CCol>
-          <CCol xs={12}>
-            <CInputGroup>
-              <CInputGroupText id="Prodi">
-                <CIcon icon={cilShortText} />
-              </CInputGroupText>
-              <CFormSelect
-                id="Prodi"
-                style={{ height: '100%' }}
-                value={isCreateMode ? '' : selectedData ? selectedData.prodi : ''}
-              >
-                <option selected hidden>
-                  Prodi
-                </option>
-                <option value="D3">D3</option>
-                <option value="D4">D4</option>
-              </CFormSelect>
-            </CInputGroup>
-          </CCol>
-          <CCol xs={12}>
-            <CInputGroup>
-              <CInputGroupText id="Kelas">
-                <CIcon icon={cilShortText} />
-              </CInputGroupText>
-              <CFormSelect
-                id="Kelas"
-                style={{ height: '100%' }}
-                value={isCreateMode ? '' : selectedData ? selectedData.kelas : ''}
-              >
-                <option selected hidden>
-                  Kelas
-                </option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-              </CFormSelect>
-            </CInputGroup>
-          </CCol>
-          <CCol xs={12}>
-            <CRow>
-              <CInputGroup>
-                <CInputGroupText id="Dosen Wali">
-                  <CIcon icon={cilShortText} />
-                </CInputGroupText>
-                <CCol>
-                  <Select
-                    id="Dosen Wali"
-                    options={dosenData.map((data) => ({
-                      value: data.kode_dosen,
-                      label: data.nama_dosen,
-                    }))}
-                    isSearchable
-                    isClearable
-                  />
-                </CCol>
-              </CInputGroup>
-            </CRow>
-          </CCol>
-        </CForm>
-        <CModalFooter>
-          <CButton
-            color="secondary"
-            onClose={() => {
-              setModalCreate(false)
-              setIsCreateMode(true)
-            }}
-          >
-            Close
+          <CButton color="danger" onClick={() => handleDelete(selectedData.id_dosenwali)}>
+            Delete
           </CButton>
           <CButton color="primary">{isCreateMode ? 'Submit' : 'Save'}</CButton>
         </CModalFooter>
