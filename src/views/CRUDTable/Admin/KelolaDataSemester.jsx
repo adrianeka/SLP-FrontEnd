@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import DataTable from 'react-data-table-component'
+
 import {
   CButton,
   CCard,
@@ -225,7 +225,7 @@ const KelolaDataSemester = () => {
                           <CTableDataCell>{semesterName}</CTableDataCell>
                           <CTableDataCell>{tahunAjar}</CTableDataCell>
                           <CTableDataCell>
-                            {semester.status_semester === '1' ? 'Aktif' : 'Tidak Aktif'}
+                            {semester.status_semester == 1 ? 'Aktif' : 'Tidak Aktif'}
                           </CTableDataCell>
                           <CTableDataCell>
                             <CCol>

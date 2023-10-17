@@ -53,8 +53,8 @@ const KelolaDataDosenWali = () => {
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [dosenWaliData, setDosenWaliData] = useState([]) //State untuk menampung data dosen
   useEffect(() => {
-    // URL API untuk mengambil data dosen
-    const apiUrl = 'http://localhost:8080/api/admins/dosen'
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/admins/dosen_wali'
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -186,37 +186,45 @@ const KelolaDataDosenWali = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {filteredData.map((data) => (
-                    <CTableRow key={data.id}>
-                      <CTableDataCell>{data.dosen}</CTableDataCell>
-                      <CTableDataCell>{data.kelas}</CTableDataCell>
-                      <CTableDataCell>{data.prodi}</CTableDataCell>
-                      <CTableDataCell>{data.angkatan}</CTableDataCell>
-                      <CTableDataCell>
-                        <CCol>
-                          <Link to={`/kelola/dosen/wali/update/${data.id_dosenwali}`}>
+                  {filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center">
+                        No Data
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((data) => (
+                      <CTableRow key={data.id}>
+                        <CTableDataCell>{data.dosen}</CTableDataCell>
+                        <CTableDataCell>{data.kelas}</CTableDataCell>
+                        <CTableDataCell>{data.prodi}</CTableDataCell>
+                        <CTableDataCell>{data.angkatan}</CTableDataCell>
+                        <CTableDataCell>
+                          <CCol>
+                            {/* <Link to={`/kelola/dosen/wali/update/${data.id_dosenwali}`}>
+                              <CButton
+                                color="primary"
+                                variant="outline"
+                                className="ms-2"
+                                title="Ubah Data Dosen"
+                              >
+                                <CIcon icon={cilPen} />
+                              </CButton>
+                            </Link> */}
                             <CButton
-                              color="primary"
+                              color="danger"
                               variant="outline"
                               className="ms-2"
-                              title="Ubah Data Dosen"
+                              title="Hapus Data Dosen"
+                              onClick={() => handleDeleteModal(data)}
                             >
-                              <CIcon icon={cilPen} />
+                              <CIcon icon={cilTrash} />
                             </CButton>
-                          </Link>
-                          <CButton
-                            color="danger"
-                            variant="outline"
-                            className="ms-2"
-                            title="Hapus Data Dosen"
-                            onClick={() => handleDeleteModal(data)}
-                          >
-                            <CIcon icon={cilTrash} />
-                          </CButton>
-                        </CCol>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
+                          </CCol>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>
@@ -253,7 +261,6 @@ const KelolaDataDosenWali = () => {
           <CButton color="danger" onClick={() => handleDelete(selectedData.id_dosenwali)}>
             Delete
           </CButton>
-          <CButton color="primary">{isCreateMode ? 'Submit' : 'Save'}</CButton>
         </CModalFooter>
       </CModal>
     </div>

@@ -92,7 +92,7 @@ const RiwayatSurat = () => {
           <CCard>
             <CCardHeader>Riwayat Surat Perizinan Mahasiswa</CCardHeader>
             <CCardBody>
-              <CNav variant="tabs" className="my-3">
+              <CNav variant="tabs" className="my-3 mx-3">
                 <CNavItem>
                   <CButton
                     variant="outline"

@@ -41,6 +41,8 @@ const KelolaDataMhs = () => {
   const [searchText, setSearchText] = useState('')
   const [selectedData, setSelectedData] = useState(null)
   const [mahasiswaData, setMahasiswaData] = useState([])
+  const [modalExport, setModalExport] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
 
   useEffect(() => {
     // URL API yang akan diambil datanya
@@ -63,34 +65,49 @@ const KelolaDataMhs = () => {
       })
   }, [])
 
-  const handleImport = ($event) => {
-    const files = $event.target.files
-    if (files) {
-      const file = files[0]
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const wb = read(event.target.result)
-        const sheets = wb.SheetNames
-        if (sheets) {
-          const rows = utils.sheet_to_json(wb.Sheets[sheets[0]])
-          setRaw(rows)
-        }
-      }
-      reader.readAsArrayBuffer(file)
-    }
+  const handleExportModal = () => {
+    setModalExport(true)
   }
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0])
+  }
+  const handleImportExcel = async () => {
+    try {
+      const formData = new FormData()
+      formData.append('excel', selectedFile)
 
-  const handleImportModal = async (e) => {
-    e.preventDefault()
-    const importedData = rawData.map((data, index) => ({
-      id: index, // Assign a proper id here, for example, data['Nim']
-      nim: data['Nim'],
-      nama: data['Nama Lengkap'],
-      kelas: data['Kelas'],
-      prodi: data['Prodi'],
-    }))
-    setImport(importedData)
-    setModalImport(false)
+      // Make a POST request to your backend API for Excel file upload
+      const response = await axios.post(
+        'http://localhost:8080/api/admins/import/mahasiswa',
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+
+      // Handle the response (success or failure)
+      console.log(response.data)
+
+      if (response.data.success) {
+        // Close the import modal on success
+        setModalExport(false)
+
+        // Fetch and update the data in the table
+        const apiUrl = 'http://localhost:8080/api/admins/mahasiswa'
+        const updatedDataResponse = await axios.get(apiUrl, {
+          withCredentials: true,
+        })
+
+        // Update the table data
+        setMahasiswaData(updatedDataResponse.data)
+      }
+    } catch (error) {
+      // Handle error if the request fails
+      console.error('Error uploading Excel file:', error)
+    }
   }
 
   const handleDeleteModal = (data) => {
@@ -159,11 +176,7 @@ const KelolaDataMhs = () => {
                         </Link>
                       </CCol>
                       <CCol md={3}>
-                        <CButton
-                          variant="outline"
-                          color="success"
-                          onClick={() => setModalImport(true)}
-                        >
+                        <CButton variant="outline" color="success" onClick={handleExportModal}>
                           <CIcon icon={cilFile} className="mx-2" />
                           Import
                         </CButton>
@@ -192,6 +205,7 @@ const KelolaDataMhs = () => {
                     <CTableHeaderCell>kelas</CTableHeaderCell>
                     <CTableHeaderCell>Nim</CTableHeaderCell>
                     <CTableHeaderCell>Prodi</CTableHeaderCell>
+                    <CTableHeaderCell>Angkatan</CTableHeaderCell>
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -205,9 +219,9 @@ const KelolaDataMhs = () => {
                   ) : (
                     filteredData.map((user) => (
                       <CTableRow key={user.id}>
-                        <CTableDataCell>{user.nim}</CTableDataCell>
                         <CTableDataCell>{user.nama}</CTableDataCell>
                         <CTableDataCell>{user.kela.nama_kelas}</CTableDataCell>
+                        <CTableDataCell>{user.nim}</CTableDataCell>
                         <CTableDataCell>{user.prodi.nama_prodi}</CTableDataCell>
                         <CTableDataCell>{user.angkatan.tahun_angkatan}</CTableDataCell>
                         <CTableDataCell>
@@ -229,12 +243,7 @@ const KelolaDataMhs = () => {
                               className="ms-2"
                               title={`Hapus Data Mahasiswa ${user.nama}`}
                               onClick={() => {
-                                if (user && user.nim) {
-                                  console.log('Clicked delete for item with nim:', user.nim)
-                                  handleDeleteModal(user.nim) // Pass nim instead of user
-                                } else {
-                                  console.error('Invalid data for deletion:', user.nim)
-                                }
+                                handleDeleteModal(user)
                               }}
                             >
                               <CIcon icon={cilTrash} />
@@ -251,18 +260,18 @@ const KelolaDataMhs = () => {
           </CCard>
         </CCol>
       </CRow>
-      <CModal backdrop="static" visible={modalImport} onClose={() => setModalImport(false)}>
+      <CModal backdrop="static" visible={modalExport} onClose={() => setModalExport(false)}>
         <CModalHeader closeButton>
           <CModalTitle>Import From Excel</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <CFormInput type="file" accept=".xlsx" onChange={handleImport} />
+          <CFormInput name="file" type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalImport(false)}>
+          <CButton color="secondary" onClick={() => setModalExport(false)}>
             Close
           </CButton>
-          <CButton color="primary" onClick={handleImportModal}>
+          <CButton color="primary" onClick={handleImportExcel}>
             Import
           </CButton>
         </CModalFooter>
