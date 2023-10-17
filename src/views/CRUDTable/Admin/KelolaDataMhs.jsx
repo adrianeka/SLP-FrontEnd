@@ -42,6 +42,27 @@ const KelolaDataMhs = () => {
   const [selectedData, setSelectedData] = useState(null)
   const [mahasiswaData, setMahasiswaData] = useState([])
 
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/admins/mahasiswa'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setMahasiswaData(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
+
   const handleImport = ($event) => {
     const files = $event.target.files
     if (files) {
@@ -62,37 +83,63 @@ const KelolaDataMhs = () => {
   const handleImportModal = async (e) => {
     e.preventDefault()
     const importedData = rawData.map((data, index) => ({
-      id: index,
+      id: index, // Assign a proper id here, for example, data['Nim']
       nim: data['Nim'],
       nama: data['Nama Lengkap'],
       kelas: data['Kelas'],
       prodi: data['Prodi'],
     }))
+
     setImport(importedData)
     setModalImport(false)
   }
 
-  const handleDeleteModal = (data) => {
-    setSelectedData(data)
-    setModalDelete(true)
+  const handleDeleteModal = (nim) => {
+    // Handle saat tombol hapus diklik
+    setSelectedData({ nim }) // Set the selected data with the nim
+    setModalDelete(true) // Menampilkan modal
   }
 
   const handleUpdateModal = (data) => {
+    // Handle saat tombol hapus diklik
     setSelectedData(data)
-    setModalUpdate(true)
+    setModalUpdate(true) // Menampilkan modal
   }
 
   const handleSearchChange = (e) => {
+    //Handle search saat di ketik
     setSearchText(e.target.value)
   }
 
-  const filteredData = importData.filter((user) => {
+  const handleDelete = (nim) => {
+    const apiUrl = `http://localhost:8080/api/admins/mahasiswa/destroy/${nim}`;
+  
+    // Send a DELETE request to delete the data
+    axios
+      .delete(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log('Data berhasil dihapus:', response.data);
+  
+        // Update the state to remove the deleted data
+        setMahasiswaData((prevData) => prevData.filter((mahasiswa) => mahasiswa.nim !== nim));
+        setModalDelete(false);  // Close the delete modal
+      })
+      .catch((error) => {
+        console.error('Error deleting data:', error);
+      });
+  };
+
+  const filteredData = mahasiswaData.filter((user) => {
+    //Var untuk menampung data baru
     return (
-      searchText === '' ||
-      user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.kelas.toLowerCase().includes(searchText.toLowerCase()) ||
+      searchText === '' || // Filter berdasarkan pencarian
       user.nim.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.prodi.toLowerCase().includes(searchText.toLowerCase())
+      user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.kela.nama_kelas.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.angkatan.tahun_angkatan.toLowerCase().includes(searchText.toLowerCase())
     )
   })
 
@@ -153,38 +200,54 @@ const KelolaDataMhs = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {filteredData.map((user) => (
-                    <CTableRow key={user.id}>
-                      <CTableDataCell>{user.nama}</CTableDataCell>
-                      <CTableDataCell>{user.kelas}</CTableDataCell>
-                      <CTableDataCell>{user.nim}</CTableDataCell>
-                      <CTableDataCell>{user.prodi}</CTableDataCell>
-                      <CTableDataCell>
-                        <CCol>
-                          <Link to="/kelola/mahasiswa/update">
+                  {filteredData.length === 0 ? (
+                    <tr key="no-data">
+                      <td colSpan="6" className="text-center">
+                        No Data
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((user) => (
+                      <CTableRow key={user.id}>
+                        <CTableDataCell>{user.nim}</CTableDataCell>
+                        <CTableDataCell>{user.nama}</CTableDataCell>
+                        <CTableDataCell>{user.kela.nama_kelas}</CTableDataCell>
+                        <CTableDataCell>{user.prodi.nama_prodi}</CTableDataCell>
+                        <CTableDataCell>{user.angkatan.tahun_angkatan}</CTableDataCell>
+                        <CTableDataCell>
+                          <CCol>
+                            <Link to={`/kelola/mahasiswa/update/${user.nim}`}>
+                              <CButton
+                                color="primary"
+                                variant="outline"
+                                className="ms-2"
+                                title="Ubah Data Mahasiswa"
+                                onClick={() => handleUpdateModal(user)}
+                              >
+                                <CIcon icon={cilPen} />
+                              </CButton>
+                            </Link>
                             <CButton
-                              color="primary"
+                              color="danger"
                               variant="outline"
                               className="ms-2"
-                              title="Ubah Data Mahasiswa"
-                              onClick={() => handleUpdateModal(user)}
+                              title={`Hapus Data Mahasiswa ${user.nama}`}
+                              onClick={() => {
+                                if (user && user.nim) {
+                                  console.log('Clicked delete for item with nim:', user.nim)
+                                  handleDeleteModal(user.nim) // Pass nim instead of user
+                                } else {
+                                  console.error('Invalid data for deletion:', user.nim)
+                                }
+                              }}
                             >
-                              <CIcon icon={cilPen} />
+                              <CIcon icon={cilTrash} />
                             </CButton>
-                          </Link>
-                          <CButton
-                            color="danger"
-                            variant="outline"
-                            className="ms-2"
-                            title="Hapus Data Mahasiswa"
-                            onClick={() => handleDeleteModal(user)}
-                          >
-                            <CIcon icon={cilTrash} />
-                          </CButton>
-                        </CCol>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
+                          </CCol>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>
@@ -217,7 +280,12 @@ const KelolaDataMhs = () => {
           <CButton color="secondary" onClick={() => setModalDelete(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton
+            color="danger"
+            onClick={() => handleDelete(selectedData ? selectedData.nim : null)}
+          >
+            Delete
+          </CButton>
         </CModalFooter>
       </CModal>
       <CModal backdrop="static" visible={modalUpdate} onClose={() => setModalUpdate(false)}>
