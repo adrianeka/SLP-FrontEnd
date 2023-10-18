@@ -33,27 +33,14 @@ import CIcon from '@coreui/icons-react'
 import { cilPen, cilSearch, cilSend, cilTrash } from '@coreui/icons'
 import axios from 'axios'
 
-const usersData = [
-  {
-    id_perizinan: 0,
-    tanggal_awal: '2-12-2023',
-    tanggal_akhir: '2-12-2023',
-    jenis: 'izin',
-    keterangan: '-',
-    surat: '-',
-    status: 'Menunggu Verifikasi',
-  },
-]
-
-const TableRekapSakit = () => {
+const RiwayatSurat = () => {
   const [selectedStatus, setSelectedStatus] = useState('All')
   const [searchText, setSearchText] = useState('') // State untuk nilai pencarian
-  const [modalExport, setModalExport] = useState(false)
   const [perizinanData, setPerizinanData] = useState([])
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/dosenWali/perizinan/sakit'
+    const apiUrl = 'http://localhost:8080/api/mahasiswa/perizinan'
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -71,43 +58,17 @@ const TableRekapSakit = () => {
         console.error('Error fetching data:', error)
       })
   }, [])
-  // Pengecekan apakah mahasiswaTable adalah sebuah array
-  if (!Array.isArray(usersData)) {
-    console.error('mahasiswaTable is not an array')
-    return null // Tampilkan pesan kesalahan atau tindakan yang sesuai
-  }
 
   const handleStatusChange = (status) => {
     setSelectedStatus(status)
   }
-
+  const [modalExport, setModalExport] = useState(false)
   const handleExportModal = () => {
     setModalExport(true)
   }
 
   const handleSearchChange = (e) => {
     setSearchText(e.target.value)
-  }
-
-  const handleVerif = async (id, keterangan) => {
-    console.log(id)
-    console.log(keterangan)
-    // Handle form submission here, e.g., send the formData to an API
-    const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/update/${id}`
-
-    // Membuat objek updateDosenWali
-    const Approved = {
-      status: keterangan,
-    }
-    try {
-      const response = await axios.put(apiUrl, Approved, {
-        withCredentials: true,
-      })
-      console.log(response.data)
-      setPerizinanData((prevData) => prevData.filter((item) => item.id_perizinan !== id))
-    } catch (error) {
-      console.error('Error updating Dosen Wali:', error)
-    }
   }
 
   const filteredData = perizinanData.filter((user) => {
@@ -129,8 +90,54 @@ const TableRekapSakit = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Data Permohonan Izin Mahasiswa</CCardHeader>
+            <CCardHeader>Riwayat Surat Perizinan Mahasiswa</CCardHeader>
             <CCardBody>
+              <CNav variant="tabs" className="my-3 mx-3">
+                <CNavItem>
+                  <CButton
+                    variant="outline"
+                    color="primary"
+                    onClick={() => {
+                      handleStatusChange('All')
+                    }}
+                  >
+                    All
+                  </CButton>
+                </CNavItem>
+                <CNavItem>
+                  <CButton
+                    variant="outline"
+                    color="primary"
+                    onClick={() => {
+                      handleStatusChange('Menunggu Verifikasi')
+                    }}
+                  >
+                    On Going
+                  </CButton>
+                </CNavItem>
+                <CNavItem>
+                  <CButton
+                    variant="outline"
+                    color="primary"
+                    onClick={() => {
+                      handleStatusChange('Diverifikasi')
+                    }}
+                  >
+                    Accepted
+                  </CButton>
+                </CNavItem>
+                <CNavItem>
+                  <CButton
+                    variant="outline"
+                    color="primary"
+                    onClick={() => {
+                      handleStatusChange('Rejected')
+                    }}
+                  >
+                    Rejected
+                  </CButton>
+                </CNavItem>
+              </CNav>
               <CForm className="mb-3">
                 <CRow>
                   <CCol xs={8}></CCol>
@@ -157,7 +164,6 @@ const TableRekapSakit = () => {
                     <CTableHeaderCell>Tanggal Awal</CTableHeaderCell>
                     <CTableHeaderCell>Tanggal Akhir</CTableHeaderCell>
                     <CTableHeaderCell>status</CTableHeaderCell>
-                    <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -205,34 +211,11 @@ const TableRekapSakit = () => {
                               ? 'warning'
                               : user.status === 'Diverifikasi'
                               ? 'success'
-                              : user.status === 'Ditolak'
-                              ? 'danger'
                               : 'danger'
                           }
                         >
                           {user.status}
                         </CBadge>
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <CCol>
-                          <CButton
-                            color="success"
-                            variant="outline"
-                            className="ms-2"
-                            onClick={() => handleVerif(user.id_perizinan, 'Diverifikasi')}
-                          >
-                            Disetujui
-                          </CButton>
-
-                          <CButton
-                            color="danger"
-                            variant="outline"
-                            className="ms-2"
-                            onClick={() => handleVerif(user.id_perizinan, 'Ditolak')}
-                          >
-                            Ditolak
-                          </CButton>
-                        </CCol>
                       </CTableDataCell>
                     </CTableRow>
                   ))}
@@ -247,4 +230,4 @@ const TableRekapSakit = () => {
   )
 }
 
-export default TableRekapSakit
+export default RiwayatSurat

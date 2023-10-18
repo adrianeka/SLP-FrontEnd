@@ -1,5 +1,4 @@
 import React from 'react'
-import FormCreateDosenWali from './views/form/Admin/formCreateDosenWali'
 //Admin
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const TableKaprodi = React.lazy(() => import('./views/CRUDTable/TableKaprodi'))
@@ -18,10 +17,6 @@ const FormTambahDosen = React.lazy(() => import('./views/form/Admin/formCreateDo
 const FormTambahJadwal = React.lazy(() => import('./views/form/Admin/formCreateJadwal'))
 const FormTambahMatkul = React.lazy(() => import('./views/form/Admin/formCreateMatkul'))
 const KelolaDataDosenWali = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataDosenWali'))
-const FormTambahSemester = React.lazy(() => import('./views/form/Admin/formCreateSemester'))
-const FormUpdateSemester = React.lazy(() => import('./views/form/Admin/formUpdateSemester'))
-const FormTambahDosenWali = React.lazy(() => import('./views/form/Admin/formCreateDosenWali'))
-const FormUpdateDosenWali = React.lazy(() => import('./views/form/Admin/formUpdateDosenWali'))
 // Mahasiswa
 const DashboardMahasiswa = React.lazy(() => import('./views/dashboard/DashboardMahasiswa'))
 const TableSuratMahasiswa = React.lazy(() => import('./views/CRUDTable/Mahasiswa/TableSurat'))
@@ -34,9 +29,6 @@ const DashboardDosenWali = React.lazy(() => import('./views/dashboard/DashboardD
 const TableMahasiswa = React.lazy(() => import('./views/CRUDTable/DosenWali/TableMahasiswa'))
 const TableRekapIzin = React.lazy(() => import('./views/CRUDTable/DosenWali/TableRekapIzin'))
 const TableRekapSakit = React.lazy(() => import('./views/CRUDTable/DosenWali/TableRekapSakit'))
-const RiwayatSuratPermohonan = React.lazy(() =>
-  import('./views/CRUDTable/DosenWali/RiwayatSuratPermohonan'),
-)
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -59,16 +51,6 @@ const routes = [
     element: FormTambahDosen,
   },
   { path: '/kelola/dosen/wali', name: 'Tabel Dosen Wali', element: KelolaDataDosenWali },
-  {
-    path: '/kelola/dosen/wali/tambah',
-    name: 'Form Create Dosen Wali',
-    element: FormTambahDosenWali,
-  },
-  {
-    path: '/kelola/dosen/wali/update/:id',
-    name: 'Form Update Dosen Wali',
-    element: FormUpdateDosenWali,
-  },
   { path: '/kelola/kaprodi', name: 'Tabel Kaprodi', element: TableKaprodi },
   { path: '/kelola/akademik/jadwal', name: 'Tabel Jadwal Mata Kuliah', element: KelolaDataJadwal },
   { path: '/kelola/akademik/semester', name: 'Tabel Semester', element: KelolaDataSemester },
@@ -87,16 +69,6 @@ const routes = [
     path: '/kelola/akademik/matkul/update/:id',
     name: 'Form Update Matkul',
     element: FormUpdateMatkul,
-  },
-  {
-    path: '/kelola/akademik/semester/tambah',
-    name: 'Form Create Semester',
-    element: FormTambahSemester,
-  },
-  {
-    path: '/kelola/akademik/semester/update/:id',
-    name: 'Form Update Semester',
-    element: FormUpdateSemester,
   },
   // Dashboard Mahasiswa
   { path: '/dashboardMhs', name: 'Dashboard Mahasiswa', element: DashboardMahasiswa },
@@ -121,11 +93,7 @@ const routes = [
   { path: '/kelolaWali/mahasiswa', name: 'Tabel Mahasiswa', element: TableMahasiswa },
   { path: 'table/rekap/izin', name: 'Tabel Izin Mahasiswa', element: TableRekapIzin },
   { path: 'table/rekap/sakit', name: 'Tabel Sakit Mahasiswa', element: TableRekapSakit },
-  {
-    path: '/riwayat/surat-permohonan',
-    name: 'Riwayat Surat Permohonan',
-    element: RiwayatSuratPermohonan,
-  },
+
   {
     path: '/kelola/mahasiswa/update/:id',
     name: 'Form Update Mahasiswa',

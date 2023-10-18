@@ -46,7 +46,7 @@ const KelolaDataSemester = () => {
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [semesterData, setSemesterData] = useState([])
-
+  const [tableData, setTableData] = useState([])
   useEffect(() => {
     // URL API yang akan diambil datanya
     const apiUrl = 'http://localhost:8080/api/admins/semester'
@@ -67,6 +67,19 @@ const KelolaDataSemester = () => {
         console.error('Error fetching data:', error)
       })
   }, [])
+
+  useEffect(() => {
+    if (semesterData.length > 0) {
+      const firstSemester = semesterData[0]
+      const [semesterName, tahunAjar] = firstSemester.nama_semester.split(' ')
+      setTableData({
+        id_semester: firstSemester.id_semester,
+        tahun_ajar: tahunAjar,
+        nama_semester: semesterName,
+        status_semester: firstSemester.status_semester === '1' ? 'Ganjil' : 'Genap',
+      })
+    }
+  }, [semesterData])
 
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
@@ -108,10 +121,49 @@ const KelolaDataSemester = () => {
       searchText === '' ||
       (data.nama_semester && data.nama_semester.toLowerCase().includes(searchText.toLowerCase())) ||
       (data.id_semester && data.id_semester.toLowerCase().includes(searchText.toLowerCase())) ||
-      (data.status && data.status.toLowerCase().includes(searchText.toLowerCase()))
+      (data.status_semester &&
+        data.status_semester.toLowerCase().includes(searchText.toLowerCase()))
     )
   })
-
+  // Data Table Columns
+  // const columns = [
+  //   {
+  //     name: 'Semester',
+  //     selector: (row) => row.nama_semester,
+  //     sortable: true,
+  //   },
+  //   {
+  //     name: 'Tahun Ajar',
+  //     selector: (row) => row.id_semester,
+  //     sortable: true,
+  //   },
+  //   {
+  //     name: 'Status',
+  //     selector: (row) => row.status_semester,
+  //     sortable: true,
+  //   },
+  //   {
+  //     name: 'Actions',
+  //     cell: (row) => (
+  //       <div>
+  //         <Link to={`/kelola/akademik/semester/update/${row.id_semester}`}>
+  //           <CButton color="primary" variant="outline" className="ms-2" title="Ubah Data Semester">
+  //             <CIcon icon={cilPen} />
+  //           </CButton>
+  //         </Link>
+  //         <CButton
+  //           color="danger"
+  //           variant="outline"
+  //           className="ms-2"
+  //           title="Hapus Data Semester"
+  //           onClick={() => handleDeleteModal(row)}
+  //         >
+  //           <CIcon icon={cilTrash} />
+  //         </CButton>
+  //       </div>
+  //     ),
+  //   },
+  // ]
   return (
     <div>
       <CRow>
@@ -148,6 +200,7 @@ const KelolaDataSemester = () => {
                   </CCol>
                 </CRow>
               </CForm>
+              {/* <DataTable columns={columns} data={filteredData} /> */}
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow className="text-center">
@@ -172,7 +225,7 @@ const KelolaDataSemester = () => {
                           <CTableDataCell>{semesterName}</CTableDataCell>
                           <CTableDataCell>{tahunAjar}</CTableDataCell>
                           <CTableDataCell>
-                            {semester.status_semester === '1' ? 'Aktif' : 'Tidak Aktif'}
+                            {semester.status_semester == 1 ? 'Aktif' : 'Tidak Aktif'}
                           </CTableDataCell>
                           <CTableDataCell>
                             <CCol>

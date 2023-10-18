@@ -41,35 +41,73 @@ const KelolaDataMhs = () => {
   const [searchText, setSearchText] = useState('')
   const [selectedData, setSelectedData] = useState(null)
   const [mahasiswaData, setMahasiswaData] = useState([])
+  const [modalExport, setModalExport] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
 
-  const handleImport = ($event) => {
-    const files = $event.target.files
-    if (files) {
-      const file = files[0]
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const wb = read(event.target.result)
-        const sheets = wb.SheetNames
-        if (sheets) {
-          const rows = utils.sheet_to_json(wb.Sheets[sheets[0]])
-          setRaw(rows)
-        }
-      }
-      reader.readAsArrayBuffer(file)
-    }
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/admins/mahasiswa'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setMahasiswaData(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
+
+  const handleExportModal = () => {
+    setModalExport(true)
   }
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0])
+  }
+  const handleImportExcel = async () => {
+    try {
+      const formData = new FormData()
+      formData.append('excel', selectedFile)
 
-  const handleImportModal = async (e) => {
-    e.preventDefault()
-    const importedData = rawData.map((data, index) => ({
-      id: index,
-      nim: data['Nim'],
-      nama: data['Nama Lengkap'],
-      kelas: data['Kelas'],
-      prodi: data['Prodi'],
-    }))
-    setImport(importedData)
-    setModalImport(false)
+      // Make a POST request to your backend API for Excel file upload
+      const response = await axios.post(
+        'http://localhost:8080/api/admins/import/mahasiswa',
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+
+      // Handle the response (success or failure)
+      console.log(response.data)
+
+      if (response.data.success) {
+        // Close the import modal on success
+        setModalExport(false)
+
+        // Fetch and update the data in the table
+        const apiUrl = 'http://localhost:8080/api/admins/mahasiswa'
+        const updatedDataResponse = await axios.get(apiUrl, {
+          withCredentials: true,
+        })
+
+        // Update the table data
+        setMahasiswaData(updatedDataResponse.data)
+      }
+    } catch (error) {
+      // Handle error if the request fails
+      console.error('Error uploading Excel file:', error)
+    }
   }
 
   const handleDeleteModal = (data) => {
@@ -86,13 +124,35 @@ const KelolaDataMhs = () => {
     setSearchText(e.target.value)
   }
 
-  const filteredData = importData.filter((user) => {
+  const handleDelete = (nim) => {
+    const apiUrl = `http://localhost:8080/api/admins/mahasiswa/destroy/${nim}`
+
+    // Send a DELETE request to delete the data
+    axios
+      .delete(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log('Data berhasil dihapus:', response.data)
+
+        // Update the state to remove the deleted data
+        setMahasiswaData((prevData) => prevData.filter((mahasiswa) => mahasiswa.nim !== nim))
+        setModalDelete(false) // Close the delete modal
+      })
+      .catch((error) => {
+        console.error('Error deleting data:', error)
+      })
+  }
+
+  const filteredData = mahasiswaData.filter((user) => {
+    //Var untuk menampung data baru
     return (
-      searchText === '' ||
-      user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.kelas.toLowerCase().includes(searchText.toLowerCase()) ||
+      searchText === '' || // Filter berdasarkan pencarian
       user.nim.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.prodi.toLowerCase().includes(searchText.toLowerCase())
+      user.nama.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.kela.nama_kelas.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.angkatan.tahun_angkatan.toLowerCase().includes(searchText.toLowerCase())
     )
   })
 
@@ -116,11 +176,7 @@ const KelolaDataMhs = () => {
                         </Link>
                       </CCol>
                       <CCol md={3}>
-                        <CButton
-                          variant="outline"
-                          color="success"
-                          onClick={() => setModalImport(true)}
-                        >
+                        <CButton variant="outline" color="success" onClick={handleExportModal}>
                           <CIcon icon={cilFile} className="mx-2" />
                           Import
                         </CButton>
@@ -149,42 +205,54 @@ const KelolaDataMhs = () => {
                     <CTableHeaderCell>kelas</CTableHeaderCell>
                     <CTableHeaderCell>Nim</CTableHeaderCell>
                     <CTableHeaderCell>Prodi</CTableHeaderCell>
+                    <CTableHeaderCell>Angkatan</CTableHeaderCell>
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {filteredData.map((user) => (
-                    <CTableRow key={user.id}>
-                      <CTableDataCell>{user.nama}</CTableDataCell>
-                      <CTableDataCell>{user.kelas}</CTableDataCell>
-                      <CTableDataCell>{user.nim}</CTableDataCell>
-                      <CTableDataCell>{user.prodi}</CTableDataCell>
-                      <CTableDataCell>
-                        <CCol>
-                          <Link to="/kelola/mahasiswa/update">
+                  {filteredData.length === 0 ? (
+                    <tr key="no-data">
+                      <td colSpan="6" className="text-center">
+                        No Data
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((user) => (
+                      <CTableRow key={user.id}>
+                        <CTableDataCell>{user.nama}</CTableDataCell>
+                        <CTableDataCell>{user.kela.nama_kelas}</CTableDataCell>
+                        <CTableDataCell>{user.nim}</CTableDataCell>
+                        <CTableDataCell>{user.prodi.nama_prodi}</CTableDataCell>
+                        <CTableDataCell>{user.angkatan.tahun_angkatan}</CTableDataCell>
+                        <CTableDataCell>
+                          <CCol>
+                            <Link to={`/kelola/mahasiswa/update/${user.nim}`}>
+                              <CButton
+                                color="primary"
+                                variant="outline"
+                                className="ms-2"
+                                title="Ubah Data Mahasiswa"
+                                onClick={() => handleUpdateModal(user)}
+                              >
+                                <CIcon icon={cilPen} />
+                              </CButton>
+                            </Link>
                             <CButton
-                              color="primary"
+                              color="danger"
                               variant="outline"
                               className="ms-2"
-                              title="Ubah Data Mahasiswa"
-                              onClick={() => handleUpdateModal(user)}
+                              title={`Hapus Data Mahasiswa ${user.nama}`}
+                              onClick={() => {
+                                handleDeleteModal(user)
+                              }}
                             >
-                              <CIcon icon={cilPen} />
+                              <CIcon icon={cilTrash} />
                             </CButton>
-                          </Link>
-                          <CButton
-                            color="danger"
-                            variant="outline"
-                            className="ms-2"
-                            title="Hapus Data Mahasiswa"
-                            onClick={() => handleDeleteModal(user)}
-                          >
-                            <CIcon icon={cilTrash} />
-                          </CButton>
-                        </CCol>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
+                          </CCol>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>
@@ -192,18 +260,18 @@ const KelolaDataMhs = () => {
           </CCard>
         </CCol>
       </CRow>
-      <CModal backdrop="static" visible={modalImport} onClose={() => setModalImport(false)}>
+      <CModal backdrop="static" visible={modalExport} onClose={() => setModalExport(false)}>
         <CModalHeader closeButton>
           <CModalTitle>Import From Excel</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <CFormInput type="file" accept=".xlsx" onChange={handleImport} />
+          <CFormInput name="file" type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalImport(false)}>
+          <CButton color="secondary" onClick={() => setModalExport(false)}>
             Close
           </CButton>
-          <CButton color="primary" onClick={handleImportModal}>
+          <CButton color="primary" onClick={handleImportExcel}>
             Import
           </CButton>
         </CModalFooter>
@@ -217,7 +285,12 @@ const KelolaDataMhs = () => {
           <CButton color="secondary" onClick={() => setModalDelete(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton
+            color="danger"
+            onClick={() => handleDelete(selectedData ? selectedData.nim : null)}
+          >
+            Delete
+          </CButton>
         </CModalFooter>
       </CModal>
       <CModal backdrop="static" visible={modalUpdate} onClose={() => setModalUpdate(false)}>

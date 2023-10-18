@@ -14,6 +14,7 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
@@ -115,7 +116,7 @@ const Login = () => {
                       </CCol>
                     </CRow>
                     <CRow>
-                      {loading && <p>Loading...</p>}
+                      {loading && <CSpinner color="info" />}
                       {message && <p className="error-message alert alert-danger">{message}</p>}
                     </CRow>
                   </CForm>
