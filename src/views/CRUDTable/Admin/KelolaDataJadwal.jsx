@@ -41,53 +41,35 @@ import {
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
-const usersData = [
-  {
-    id: 0,
-    nama_matkul: 'Basis Data',
-    hari: 'Selasa',
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '2B',
-    Prodi: 'D3',
-  },
-  {
-    id: 1,
-    nama_matkul: 'Aljabar Linier',
-    hari: 'Selasa',
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '2B',
-    Prodi: 'D3',
-  },
-  {
-    id: 2,
-    nama_matkul: 'Dasar Dasar Pemrograman',
-    hari: 'Rabu',
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '1B',
-    Prodi: 'D3',
-  },
-  {
-    id: 3,
-    nama_matkul: 'Pemrograman Beriorientasi Objek',
-    hari: 'Kamis',
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '2B',
-    Prodi: 'D3',
-  },
-  {
-    id: 4,
-    nama_matkul: 'Pengantar Rekayasa Perangkat Lunak',
-    hari: "Jum'at",
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '2B',
-    Prodi: 'D3',
-  },
-]
-
 const KelolaDataJadwal = () => {
   const [modalDelete, setModalDelete] = useState(false)
-  const [searchText, setSearchText] = useState('') //State untuk seatch
+  const [modalCreate, setModalCreate] = useState(false)
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
+  const [searchText, setSearchText] = useState('') //State untuk seatch
+  const [jadwalData, setJadwalData] = useState([])
+  const [isCreateMode, setIsCreateMode] = useState(true)
+  const [modalUpdate, setModalUpdate] = useState(false)
+
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/admins/jadwal'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setJadwalData(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
 
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
@@ -95,19 +77,58 @@ const KelolaDataJadwal = () => {
     setModalDelete(true) // Menampilkan modal
   }
 
+  const handleCreateModal = (e) => {
+    //Handle saat tombol create di klik
+    setModalCreate(true) //Menampilkan Modal
+  }
+
+  const handleUpdateModal = (data) => {
+    // Handle saat tombol update diklik
+    setIsCreateMode(false)
+    setSelectedData(data)
+    setModalUpdate(true) // Menampilkan modal
+  }
+
   const handleSearchChange = (e) => {
     //Handle search saat di ketik
     setSearchText(e.target.value)
   }
-  const filteredData = usersData.filter((data) => {
+
+  const handleDelete = (id) => {
+    // URL API untuk menghapus data dosen dengan id tertentu
+    const apiUrl = `http://localhost:8080/api/admins/jadwal/${id}`
+
+    // Menggunakan Axios untuk mengirim permintaan DELETE
+    axios
+      .delete(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Handle ketika data berhasil dihapus
+        console.log('Data berhasil dihapus:', response.data)
+
+        setJadwalData((prevData) => prevData.filter((jadwal) => jadwal.id_jadwal !== id))
+
+        // Tutup modal setelah berhasil menghapus
+        setModalDelete(false)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat menghapus data
+        console.error('Error deleting data:', error)
+      })
+  }
+
+  const filteredData = jadwalData.filter((data) => {
     //Search filter data
     return (
       searchText === '' ||
-      data.nama_matkul.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.detailMatkul.mataKuliah.nama_matakuliah
+        .toLowerCase()
+        .includes(searchText.toLowerCase()) ||
       data.hari.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.Semester.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.Kelas.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.Prodi.toLowerCase().includes(searchText.toLowerCase())
+      data.semester.nama_semester.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.kela.nama_kelas.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.detailMatkul.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase())
     )
   })
 
@@ -123,12 +144,12 @@ const KelolaDataJadwal = () => {
                   <CCol md={8} xs={6}>
                     <CRow>
                       <CCol md={2}>
-                        <Link to="/kelola/akademik/jadwal/tambah">
-                          <CButton variant="outline">
-                            <CIcon icon={cilUserPlus} className="mx-2" />
-                            Create
-                          </CButton>
-                        </Link>
+                        {/* <Link to="/kelola/akademik/jadwal/tambah"> */}
+                        <CButton variant="outline" onClick={handleCreateModal}>
+                          <CIcon icon={cilUserPlus} className="mx-2" />
+                          Create
+                        </CButton>
+                        {/* </Link> */}
                       </CCol>
                       <CCol xs={6}></CCol>
                     </CRow>
@@ -161,18 +182,20 @@ const KelolaDataJadwal = () => {
                 <CTableBody>
                   {filteredData.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="text-center">
+                      <td colSpan="6" className="text-center">
                         No Data
                       </td>
                     </tr>
                   ) : (
                     filteredData.map((jadwal) => (
                       <CTableRow key={jadwal.id}>
-                        <CTableDataCell>{jadwal.nama_matkul}</CTableDataCell>
+                        <CTableDataCell>
+                          {jadwal.detailMatkul.mataKuliah.nama_matakuliah}
+                        </CTableDataCell>
                         <CTableDataCell>{jadwal.hari}</CTableDataCell>
-                        <CTableDataCell>{jadwal.Semester}</CTableDataCell>
-                        <CTableDataCell>{jadwal.Kelas}</CTableDataCell>
-                        <CTableDataCell>{jadwal.Prodi}</CTableDataCell>
+                        <CTableDataCell>{jadwal.semester.nama_semester}</CTableDataCell>
+                        <CTableDataCell>{jadwal.kela.nama_kelas}</CTableDataCell>
+                        <CTableDataCell>{jadwal.detailMatkul.prodi.nama_prodi}</CTableDataCell>
                         <CTableDataCell>
                           <CCol>
                             <Link to={`/kelola/akademik/jadwal/update/${jadwal.id}`}>
@@ -221,7 +244,136 @@ const KelolaDataJadwal = () => {
           <CButton color="secondary" onClick={() => setModalDelete(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton color="danger" onClick={() => handleDelete(selectedData.id_jadwal)}>
+            Delete
+          </CButton>
+        </CModalFooter>
+      </CModal>
+      Modal create
+      <CModal
+        backdrop="static"
+        visible={modalCreate}
+        onClose={() => {
+          setModalCreate(false)
+          setIsCreateMode(true)
+        }}
+        aria-labelledby="StaticBackdropExampleLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="CreateModall">{isCreateMode ? 'Create' : 'Update'}</CModalTitle>
+        </CModalHeader>
+        <CForm className="row g-3 mx-2 my-2">
+          <CCol xs={12}>
+            <CInputGroup>
+              <CInputGroupText id="NamaMataKuliah">
+                <CIcon icon={cilShortText} />
+              </CInputGroupText>
+              <CFormSelect
+                id="NamaMataKuliah"
+                style={{ height: '100%' }}
+                value={isCreateMode ? '' : selectedData ? selectedData.namaMataKuliah : ''}
+              >
+                <option selected hidden>
+                  Nama Mata Kuliah
+                </option>
+                <option value="Matkul 1">Matkul 1</option>
+                <option value="Matkul 2">Matkul 2</option>
+                <option value="Matkul 3">Matkul 3</option>
+                <option value="Matkul 4">Matkul 4</option>
+              </CFormSelect>
+            </CInputGroup>
+          </CCol>
+          <CCol xs={12}>
+            <CInputGroup>
+              <CInputGroupText id="Hari">
+                <CIcon icon={cilShortText} />
+              </CInputGroupText>
+              <CFormSelect
+                id="Hari"
+                style={{ height: '100%' }}
+                value={isCreateMode ? '' : selectedData ? selectedData.hari : ''}
+              >
+                <option selected hidden>
+                  Hari
+                </option>
+                <option value="Senin">Senin</option>
+                <option value="Selasa">Selasa</option>
+                <option value="Rabu">Rabu</option>
+                <option value="Kamis">Kamis</option>
+                <option value="Jum&#39;at">Jum&#39;at</option>
+              </CFormSelect>
+            </CInputGroup>
+          </CCol>
+          <CCol xs={12}>
+            <CInputGroup>
+              <CInputGroupText id="Semester">
+                <CIcon icon={cilShortText} />
+              </CInputGroupText>
+              <CFormSelect
+                id="Semester"
+                style={{ height: '100%' }}
+                value={isCreateMode ? '' : selectedData ? selectedData.semester : ''}
+              >
+                <option selected hidden>
+                  Semester
+                </option>
+                <option value="Ganjil 2023/2024">Ganjil 2023/2024</option>
+                <option value="Genap 2023/2024">Genap 2023/2024</option>
+              </CFormSelect>
+            </CInputGroup>
+          </CCol>
+          <CCol xs={12}>
+            <CRow>
+              <CInputGroup>
+                <CInputGroupText id="Kelas">
+                  <CIcon icon={cilShortText} />
+                </CInputGroupText>
+                <CFormSelect
+                  id="Kelas"
+                  style={{ height: '100%' }}
+                  value={isCreateMode ? '' : selectedData ? selectedData.kelas : ''}
+                >
+                  <option selected hidden>
+                    Kelas
+                  </option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                </CFormSelect>
+              </CInputGroup>
+            </CRow>
+          </CCol>
+          <CCol xs={12}>
+            <CRow>
+              <CInputGroup>
+                <CInputGroupText id="Prodi">
+                  <CIcon icon={cilShortText} />
+                </CInputGroupText>
+                <CFormSelect
+                  id="Prodi"
+                  style={{ height: '100%' }}
+                  value={isCreateMode ? '' : selectedData ? selectedData.prodi : ''}
+                >
+                  <option selected hidden>
+                    Prodi
+                  </option>
+                  <option value="Ganjil 2023/2024">D3</option>
+                  <option value="Genap 2023/2024">D4</option>
+                </CFormSelect>
+              </CInputGroup>
+            </CRow>
+          </CCol>
+        </CForm>
+        <CModalFooter>
+          <CButton
+            color="secondary"
+            onClose={() => {
+              setModalCreate(false)
+              setIsCreateMode(true)
+            }}
+          >
+            Close
+          </CButton>
+          <CButton color="primary">{isCreateMode ? 'Submit' : 'Save'}</CButton>
         </CModalFooter>
       </CModal>
     </div>
