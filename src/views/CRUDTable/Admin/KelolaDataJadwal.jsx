@@ -120,7 +120,7 @@ const KelolaDataJadwal = () => {
     //Search filter data
     return (
       searchText === '' ||
-      data.detailMatkul.mataKuliah.nama_matakuliah
+      `${data.detailMatkul.mataKuliah.nama_matakuliah} (${data.detailMatkul.tipe})`
         .toLowerCase()
         .includes(searchText.toLowerCase()) ||
       data.hari.toLowerCase().includes(searchText.toLowerCase()) ||
