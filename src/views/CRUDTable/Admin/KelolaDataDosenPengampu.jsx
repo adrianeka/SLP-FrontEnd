@@ -115,8 +115,7 @@ const KelolaDataDosenPengampu = () => {
       searchText === '' ||
       user.kode_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
       user.nama_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.username.toLowerCase().includes(searchText.toLowerCase())
+      user.email.toLowerCase().includes(searchText.toLowerCase())
     )
   })
 

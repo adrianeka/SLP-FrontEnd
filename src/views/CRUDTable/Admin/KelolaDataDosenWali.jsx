@@ -134,9 +134,9 @@ const KelolaDataDosenWali = () => {
     return (
       searchText === '' ||
       data.angkatan.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.kela.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.kelas.toLowerCase().includes(searchText.toLowerCase()) ||
       data.prodi.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.wali.toLowerCase().includes(searchText.toLowerCase())
+      data.dosen.toLowerCase().includes(searchText.toLowerCase())
     )
   })
   // console.log(selectedData)

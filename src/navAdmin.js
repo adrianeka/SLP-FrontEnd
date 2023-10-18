@@ -25,10 +25,6 @@ const _nav = [
     name: 'Dashboard',
     to: '/dashboard',
     icon: <CIcon icon={cilApplications} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
   },
   {
     component: CNavItem,
@@ -90,22 +86,6 @@ const _nav = [
         to: '/kelola/akademik/matkul',
       },
     ],
-  },
-  {
-    component: CNavTitle,
-    name: 'App',
-  },
-  {
-    component: CNavItem,
-    name: 'Setting',
-    icon: <CIcon icon={cilAppsSettings} customClassName="nav-icon" />,
-    to: '/#',
-  },
-  {
-    component: CNavItem,
-    name: 'About',
-    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
-    to: '/#',
   },
 ]
 

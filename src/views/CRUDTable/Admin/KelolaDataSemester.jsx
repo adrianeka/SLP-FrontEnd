@@ -117,12 +117,15 @@ const KelolaDataSemester = () => {
   }
 
   const filteredData = semesterData.filter((data) => {
+    const namaSemester = (data.nama_semester || '').toString().toLowerCase()
+    const idSemester = (data.id_semester || '').toString().toLowerCase()
+    const statusSemester = (data.status_semester || '').toString().toLowerCase()
+
     return (
       searchText === '' ||
-      (data.nama_semester && data.nama_semester.toLowerCase().includes(searchText.toLowerCase())) ||
-      (data.id_semester && data.id_semester.toLowerCase().includes(searchText.toLowerCase())) ||
-      (data.status_semester &&
-        data.status_semester.toLowerCase().includes(searchText.toLowerCase()))
+      namaSemester.includes(searchText.toLowerCase()) ||
+      idSemester.includes(searchText.toLowerCase()) ||
+      statusSemester.includes(searchText.toLowerCase())
     )
   })
   // Data Table Columns

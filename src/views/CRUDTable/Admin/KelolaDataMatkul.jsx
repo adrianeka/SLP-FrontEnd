@@ -79,14 +79,13 @@ const KelolaDataMatkul = () => {
     setSearchText(e.target.value)
   }
   const filteredData = matkulData.filter((data) => {
-    //Search filter data
+    const sks = data.sks.toString() // Convert to string if it's not already
     return (
       searchText === '' ||
-      data.id_detailMatkul.toLowerCase().includes(searchText.toLowerCase()) ||
       data.mataKuliah.id_matakuliah.toLowerCase().includes(searchText.toLowerCase()) ||
       data.mataKuliah.nama_matakuliah.toLowerCase().includes(searchText.toLowerCase()) ||
       data.tipe.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.sks.toLowerCase().includes(searchText.toLowerCase()) ||
+      sks.toLowerCase().includes(searchText.toLowerCase()) || // Use sks instead of data.sks
       data.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase())
     )
   })

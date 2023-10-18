@@ -156,6 +156,7 @@ const KelolaDataMhs = () => {
     )
   })
 
+  const currentYear = new Date().getFullYear()
   return (
     <div>
       <CRow>
@@ -220,7 +221,9 @@ const KelolaDataMhs = () => {
                     filteredData.map((user) => (
                       <CTableRow key={user.id}>
                         <CTableDataCell>{user.nama}</CTableDataCell>
-                        <CTableDataCell>{user.kela.nama_kelas}</CTableDataCell>
+                        <CTableDataCell>
+                          {currentYear - user.angkatan.tahun_angkatan + 1 + user.kela.nama_kelas}
+                        </CTableDataCell>
                         <CTableDataCell>{user.nim}</CTableDataCell>
                         <CTableDataCell>{user.prodi.nama_prodi}</CTableDataCell>
                         <CTableDataCell>{user.angkatan.tahun_angkatan}</CTableDataCell>
