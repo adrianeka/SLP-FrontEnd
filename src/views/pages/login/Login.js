@@ -72,78 +72,85 @@ const Login = () => {
     <div className="bg-dark min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
-          {loading ? (
-            <CSpinner color="light" size="lg" />
-          ) : (
-            <CCol md={8}>
-              <CCardGroup>
-                <CCard className="p-4">
-                  <CCardBody>
-                    <CForm onSubmit={handleLogin} ref={form}>
-                      <h1>Login</h1>
-                      <p className="text-medium-emphasis">Sign In to your account</p>
-                      <CInputGroup className="mb-3">
-                        <CInputGroupText>
-                          <CIcon icon={cilUser} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="text"
-                          name="username"
-                          value={username}
-                          onChange={onChangeUsername}
-                          placeholder="Username"
-                        />
-                      </CInputGroup>
-                      <CInputGroup className="mb-4">
-                        <CInputGroupText>
-                          <CIcon icon={cilLockLocked} />
-                        </CInputGroupText>
-                        <CFormInput
-                          type="password"
-                          name="password"
-                          value={password}
-                          onChange={onChangePassword}
-                          placeholder="Password"
-                        />
-                      </CInputGroup>
-                      <CRow>
-                        <CCol xs={6}>
-                          <CButton color="light" className="px-4" type="submit">
+          <CCol md={8}>
+            <CCardGroup>
+              <CCard className="p-4">
+                <CCardBody>
+                  <CForm onSubmit={handleLogin} ref={form}>
+                    <h1>Login</h1>
+                    <p className="text-medium-emphasis">Sign In to your account</p>
+                    <CInputGroup className="mb-3">
+                      <CInputGroupText>
+                        <CIcon icon={cilUser} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="text"
+                        name="username"
+                        value={username}
+                        onChange={onChangeUsername}
+                        placeholder="Username"
+                      />
+                    </CInputGroup>
+                    <CInputGroup className="mb-4">
+                      <CInputGroupText>
+                        <CIcon icon={cilLockLocked} />
+                      </CInputGroupText>
+                      <CFormInput
+                        type="password"
+                        name="password"
+                        value={password}
+                        onChange={onChangePassword}
+                        placeholder="Password"
+                      />
+                    </CInputGroup>
+                    <CRow>
+                      <CCol xs={6}>
+                        {loading ? (
+                          <CButton
+                            color="light"
+                            className="px-4 text-center"
+                            type="submit"
+                            disabled
+                          >
+                            <CSpinner color="dark" size="sm" />
+                          </CButton>
+                        ) : (
+                          <CButton color="light" className="px-4 text-center" type="submit">
                             Login
                           </CButton>
-                        </CCol>
-                        <CCol xs={6} className="text-right">
-                          <CButton color="link" className="px-0">
-                            Forgot password?
-                          </CButton>
-                        </CCol>
-                      </CRow>
-                      <CRow>
-                        {message && <p className="error-message alert alert-danger">{message}</p>}
-                      </CRow>
-                    </CForm>
-                  </CCardBody>
-                </CCard>
-                <CCard className="text-dark bg-light py-5" style={{ width: '44%' }}>
-                  <CCardBody className="text-center">
-                    <div>
-                      <h2>Student Leaving Permission</h2>
-                      <div className="clearfix">
-                        <CImage
-                          align="center"
-                          rounded
-                          src={polban}
-                          alt="Polban"
-                          width={155}
-                          height={210}
-                        />
-                      </div>
+                        )}
+                      </CCol>
+                      <CCol xs={6} className="text-right">
+                        <CButton color="link" className="px-0">
+                          Forgot password?
+                        </CButton>
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      {message && <p className="error-message alert alert-danger">{message}</p>}
+                    </CRow>
+                  </CForm>
+                </CCardBody>
+              </CCard>
+              <CCard className="text-dark bg-light py-5" style={{ width: '44%' }}>
+                <CCardBody className="text-center">
+                  <div>
+                    <h2>Student Leaving Permission</h2>
+                    <div className="clearfix">
+                      <CImage
+                        align="center"
+                        rounded
+                        src={polban}
+                        alt="Polban"
+                        width={155}
+                        height={210}
+                      />
                     </div>
-                  </CCardBody>
-                </CCard>
-              </CCardGroup>
-            </CCol>
-          )}
+                  </div>
+                </CCardBody>
+              </CCard>
+            </CCardGroup>
+          </CCol>
         </CRow>
       </CContainer>
     </div>

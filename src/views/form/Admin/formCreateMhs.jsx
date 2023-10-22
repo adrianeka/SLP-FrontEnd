@@ -136,205 +136,200 @@ const FormUpdateMhs = () => {
   }
 
   return (
-    <div className="min-vh-100 d-flex flex-row align-items-center">
+    <>
       <CContainer>
-        {loading ? (
-          <CRow className="justify-content-center">
-            <CSpinner color="info" size="lg" />
-          </CRow>
-        ) : (
-          <CCard>
-            <CCardHeader>Create data mahasiswa</CCardHeader>
-            <CCardBody>
-              <CForm className="row g-3">
-                <CCol xs={12}>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText id="nama">
-                      <CIcon icon={cilShortText} />
-                    </CInputGroupText>
-                    <CFormInput
-                      name="nama"
-                      placeholder="Nama Lengkap"
-                      floatingLabel="Nama Lengkap"
-                      aria-describedby="Nama"
-                      value={formData.nama}
-                      onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
-                    />
-                  </CInputGroup>
-                </CCol>
-                <CCol md={12}>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText id="email-mhs">
-                      <CIcon icon={cilShortText} />
-                    </CInputGroupText>
-                    <CFormInput
-                      name="email"
-                      placeholder="Email"
-                      floatingLabel="Email"
-                      aria-describedby="email-mhs"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    />
-                  </CInputGroup>
-                </CCol>
-                <CCol md={6}>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText id="nim-mhs">
-                      <CIcon icon={cilShortText} />
-                    </CInputGroupText>
-                    <CFormInput
-                      name="nim"
-                      placeholder="nim"
-                      floatingLabel="nim"
-                      aria-describedby="nim-mhs"
-                      value={formData.nim}
-                      onChange={(e) => setFormData({ ...formData, nim: e.target.value })}
-                    />
-                  </CInputGroup>
-                </CCol>
-                <CCol md={6}>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText id="password-mhs">
-                      <CIcon icon={cilLockLocked} />
-                    </CInputGroupText>
-                    <CFormInput
-                      name="password"
-                      type="password"
-                      placeholder="Password"
-                      floatingLabel="Password"
-                      aria-describedby="password-mhs"
-                      value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    />
-                  </CInputGroup>
-                </CCol>
-                <CCol md={6}>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText id="noTelpOrgTua">
-                      <CIcon icon={cilShortText} />
-                    </CInputGroupText>
-                    <CFormInput
-                      name="no_telp_orang_tua"
-                      placeholder="No Telp. Orang Tua"
-                      floatingLabel="No Telp. Orang Tua"
-                      aria-describedby="noTelpOrangTua"
-                      value={formData.no_telp_orang_tua}
-                      onChange={(e) =>
-                        setFormData({ ...formData, no_telp_orang_tua: e.target.value })
-                      }
-                    />
-                  </CInputGroup>
-                </CCol>
-                <CCol md={6}>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText id="noTelp-mhs">
-                      <CIcon icon={cilShortText} />
-                    </CInputGroupText>
-                    <CFormInput
-                      name="no_telp"
-                      placeholder="No Telp"
-                      floatingLabel="No Telp"
-                      aria-describedby="noTelp-mhs"
-                      value={formData.no_telp}
-                      onChange={(e) => setFormData({ ...formData, no_telp: e.target.value })}
-                    />
-                  </CInputGroup>
-                </CCol>
-                <CCol md={6}>
-                  <CInputGroup className="mb-3">
-                    <CCol mx={12}>
-                      <CInputGroup>
-                        <CInputGroupText id="Mahasiswa Angkatan">
-                          <CIcon icon={cilShortText} />
-                        </CInputGroupText>
-                        <CFormSelect
-                          name="angkatan_id"
-                          id="Mahasiswa Angkatan"
-                          style={{ height: '100%' }}
-                          value={formData.angkatan_id} // Add this line
-                          onChange={(e) =>
-                            setFormData({ ...formData, angkatan_id: e.target.value })
-                          }
-                        >
-                          <option selected hidden>
-                            Angkatan Mahasiswa
+        <CCard>
+          <CCardHeader>Create data mahasiswa</CCardHeader>
+          <CCardBody>
+            <CForm className="row g-3">
+              <CCol xs={12}>
+                <CInputGroup className="mb-3">
+                  <CInputGroupText id="nama">
+                    <CIcon icon={cilShortText} />
+                  </CInputGroupText>
+                  <CFormInput
+                    name="nama"
+                    placeholder="Nama Lengkap"
+                    floatingLabel="Nama Lengkap"
+                    aria-describedby="Nama"
+                    value={formData.nama}
+                    onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
+                  />
+                </CInputGroup>
+              </CCol>
+              <CCol md={12}>
+                <CInputGroup className="mb-3">
+                  <CInputGroupText id="email-mhs">
+                    <CIcon icon={cilShortText} />
+                  </CInputGroupText>
+                  <CFormInput
+                    name="email"
+                    placeholder="Email"
+                    floatingLabel="Email"
+                    aria-describedby="email-mhs"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
+                </CInputGroup>
+              </CCol>
+              <CCol md={6}>
+                <CInputGroup className="mb-3">
+                  <CInputGroupText id="nim-mhs">
+                    <CIcon icon={cilShortText} />
+                  </CInputGroupText>
+                  <CFormInput
+                    name="nim"
+                    placeholder="nim"
+                    floatingLabel="nim"
+                    aria-describedby="nim-mhs"
+                    value={formData.nim}
+                    onChange={(e) => setFormData({ ...formData, nim: e.target.value })}
+                  />
+                </CInputGroup>
+              </CCol>
+              <CCol md={6}>
+                <CInputGroup className="mb-3">
+                  <CInputGroupText id="password-mhs">
+                    <CIcon icon={cilLockLocked} />
+                  </CInputGroupText>
+                  <CFormInput
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                    floatingLabel="Password"
+                    aria-describedby="password-mhs"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  />
+                </CInputGroup>
+              </CCol>
+              <CCol md={6}>
+                <CInputGroup className="mb-3">
+                  <CInputGroupText id="noTelpOrgTua">
+                    <CIcon icon={cilShortText} />
+                  </CInputGroupText>
+                  <CFormInput
+                    name="no_telp_orang_tua"
+                    placeholder="No Telp. Orang Tua"
+                    floatingLabel="No Telp. Orang Tua"
+                    aria-describedby="noTelpOrangTua"
+                    value={formData.no_telp_orang_tua}
+                    onChange={(e) =>
+                      setFormData({ ...formData, no_telp_orang_tua: e.target.value })
+                    }
+                  />
+                </CInputGroup>
+              </CCol>
+              <CCol md={6}>
+                <CInputGroup className="mb-3">
+                  <CInputGroupText id="noTelp-mhs">
+                    <CIcon icon={cilShortText} />
+                  </CInputGroupText>
+                  <CFormInput
+                    name="no_telp"
+                    placeholder="No Telp"
+                    floatingLabel="No Telp"
+                    aria-describedby="noTelp-mhs"
+                    value={formData.no_telp}
+                    onChange={(e) => setFormData({ ...formData, no_telp: e.target.value })}
+                  />
+                </CInputGroup>
+              </CCol>
+              <CCol md={6}>
+                <CInputGroup className="mb-3">
+                  <CCol mx={12}>
+                    <CInputGroup>
+                      <CInputGroupText id="Mahasiswa Angkatan">
+                        <CIcon icon={cilShortText} />
+                      </CInputGroupText>
+                      <CFormSelect
+                        name="angkatan_id"
+                        id="Mahasiswa Angkatan"
+                        style={{ height: '100%' }}
+                        value={formData.angkatan_id} // Add this line
+                        onChange={(e) => setFormData({ ...formData, angkatan_id: e.target.value })}
+                      >
+                        <option selected hidden>
+                          Angkatan Mahasiswa
+                        </option>
+                        {angkatanData.map((angkatan) => (
+                          <option key={angkatan.id_angkatan} value={angkatan.id_angkatan}>
+                            {angkatan.tahun_angkatan}
                           </option>
-                          {angkatanData.map((angkatan) => (
-                            <option key={angkatan.id_angkatan} value={angkatan.id_angkatan}>
-                              {angkatan.tahun_angkatan}
-                            </option>
-                          ))}
-                        </CFormSelect>
-                      </CInputGroup>
-                    </CCol>
-                  </CInputGroup>
-                </CCol>
-                <CCol md={6}>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText id="Kelas">
-                      <CIcon icon={cilShortText} />
-                    </CInputGroupText>
-                    <CFormSelect
-                      name="kelas_id"
-                      id="Mahasiswa Kelas"
-                      style={{ height: '100%' }}
-                      value={formData.kelas_id} // Add this line
-                      onChange={(e) => setFormData({ ...formData, kelas_id: e.target.value })}
-                    >
-                      <option selected hidden>
-                        Kelas Mahasiswa
+                        ))}
+                      </CFormSelect>
+                    </CInputGroup>
+                  </CCol>
+                </CInputGroup>
+              </CCol>
+              <CCol md={6}>
+                <CInputGroup className="mb-3">
+                  <CInputGroupText id="Kelas">
+                    <CIcon icon={cilShortText} />
+                  </CInputGroupText>
+                  <CFormSelect
+                    name="kelas_id"
+                    id="Mahasiswa Kelas"
+                    style={{ height: '100%' }}
+                    value={formData.kelas_id} // Add this line
+                    onChange={(e) => setFormData({ ...formData, kelas_id: e.target.value })}
+                  >
+                    <option selected hidden>
+                      Kelas Mahasiswa
+                    </option>
+                    {kelasData.map((kelas) => (
+                      <option key={kelas.id_kelas} value={kelas.id_kelas}>
+                        {kelas.nama_kelas}
                       </option>
-                      {kelasData.map((kelas) => (
-                        <option key={kelas.id_kelas} value={kelas.id_kelas}>
-                          {kelas.nama_kelas}
-                        </option>
-                      ))}
-                    </CFormSelect>
-                  </CInputGroup>
-                </CCol>
-                <CCol md={6}>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText id="prodi">
-                      <CIcon icon={cilShortText} />
-                    </CInputGroupText>
-                    <CFormSelect
-                      name="prodi_id"
-                      id="Mahasiswa Prodi"
-                      style={{ height: '100%' }}
-                      value={formData.prodi_id} // Add this line
-                      onChange={(e) => setFormData({ ...formData, prodi_id: e.target.value })}
-                    >
-                      <option selected hidden>
-                        Prodi
+                    ))}
+                  </CFormSelect>
+                </CInputGroup>
+              </CCol>
+              <CCol md={6}>
+                <CInputGroup className="mb-3">
+                  <CInputGroupText id="prodi">
+                    <CIcon icon={cilShortText} />
+                  </CInputGroupText>
+                  <CFormSelect
+                    name="prodi_id"
+                    id="Mahasiswa Prodi"
+                    style={{ height: '100%' }}
+                    value={formData.prodi_id} // Add this line
+                    onChange={(e) => setFormData({ ...formData, prodi_id: e.target.value })}
+                  >
+                    <option selected hidden>
+                      Prodi
+                    </option>
+                    {prodiData.map((prodi) => (
+                      <option key={prodi.id_prodi} value={prodi.id_prodi}>
+                        {prodi.nama_prodi}
                       </option>
-                      {prodiData.map((prodi) => (
-                        <option key={prodi.id_prodi} value={prodi.id_prodi}>
-                          {prodi.nama_prodi}
-                        </option>
-                      ))}
-                    </CFormSelect>
-                  </CInputGroup>
-                </CCol>
-              </CForm>
-            </CCardBody>
-            <CCardFooter>
-              <CRow>
-                <CCol xs={11}></CCol>
-                <CCol xs={1}>
-                  {' '}
+                    ))}
+                  </CFormSelect>
+                </CInputGroup>
+              </CCol>
+            </CForm>
+          </CCardBody>
+          <CCardFooter>
+            <CRow>
+              <CCol xs={11}></CCol>
+              <CCol xs={1}>
+                {loading ? (
+                  <CButton color="primary" variant="outline" type="submit" disabled>
+                    <CSpinner color="info" size="sm" />
+                  </CButton>
+                ) : (
                   <CButton color="primary" variant="outline" type="submit" onClick={handleSubmit}>
                     Submit
                   </CButton>
-                </CCol>
-              </CRow>
-              <CRow>
-                {message && <p className="error-message alert alert-danger">{message}</p>}
-              </CRow>
-            </CCardFooter>
-          </CCard>
-        )}
+                )}
+              </CCol>
+            </CRow>
+            <CRow>{message && <p className="error-message alert alert-danger">{message}</p>}</CRow>
+          </CCardFooter>
+        </CCard>
       </CContainer>
-    </div>
+    </>
   )
 }
 

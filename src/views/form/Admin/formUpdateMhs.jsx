@@ -14,6 +14,7 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  CSpinner,
 } from '@coreui/react'
 import { DocsExample } from 'src/components'
 import CIcon from '@coreui/icons-react'
@@ -28,6 +29,8 @@ import {
 import { useParams } from 'react-router-dom'
 
 const FormUpdateMhs = () => {
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
   const { id } = useParams()
   console.log(id)
   const [formData, setFormData] = useState({
@@ -115,6 +118,7 @@ const FormUpdateMhs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
     // Handle form submission here, e.g., send the formData to an API
     const apiUrl = `http://localhost:8080/api/admins/mahasiswa/update/${id}`
 
@@ -140,6 +144,12 @@ const FormUpdateMhs = () => {
       window.location.href = '/kelola/mahasiswa'
     } catch (error) {
       console.error('Error updating Dosen:', error)
+      const resMessage =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString()
+      setLoading(false)
+      setMessage(resMessage)
     }
   }
   return (
@@ -302,12 +312,18 @@ const FormUpdateMhs = () => {
           <CRow>
             <CCol xs={11}></CCol>
             <CCol xs={1}>
-              {' '}
-              <CButton color="primary" variant="outline" type="submit" onClick={handleSubmit}>
-                Save
-              </CButton>
+              {loading ? (
+                <CButton color="primary" variant="outline" type="submit" disabled>
+                  <CSpinner color="info" size="sm" />
+                </CButton>
+              ) : (
+                <CButton color="primary" variant="outline" type="submit" onClick={handleSubmit}>
+                  Save
+                </CButton>
+              )}
             </CCol>
           </CRow>
+          <CRow>{message && <p className="error-message alert alert-danger">{message}</p>}</CRow>
         </CCardFooter>
       </CCard>
     </>
