@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { read, utils } from 'xlsx'
 import axios from 'axios'
 import {
   CButton,
   CCard,
   CCardBody,
-  CCardFooter,
   CCardHeader,
   CCol,
   CRow,
   CTable,
   CTableBody,
-  CTableCaption,
   CTableDataCell,
   CTableHead,
   CTableHeaderCell,
@@ -25,24 +22,24 @@ import {
   CModalBody,
   CModalFooter,
   CInputGroupText,
-  CFormTextarea,
-  CFormSelect,
+  CSpinner,
+  CAlert,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPen, cilTrash, cilSearch, cilFile, cilUserPlus } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
 const KelolaDataMhs = () => {
-  const [importData, setImport] = useState([])
-  const [rawData, setRaw] = useState([])
-  const [modalImport, setModalImport] = useState(false)
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
   const [modalDelete, setModalDelete] = useState(false)
   const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [selectedData, setSelectedData] = useState(null)
   const [mahasiswaData, setMahasiswaData] = useState([])
-  const [modalExport, setModalExport] = useState(false)
+  const [modalImport, setModalImport] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     // URL API yang akan diambil datanya
@@ -65,14 +62,15 @@ const KelolaDataMhs = () => {
       })
   }, [])
 
-  const handleExportModal = () => {
-    setModalExport(true)
+  const handleImportModal = () => {
+    setModalImport(true)
   }
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0])
   }
   const handleImportExcel = async () => {
     try {
+      setLoading(true)
       const formData = new FormData()
       formData.append('excel', selectedFile)
 
@@ -90,10 +88,13 @@ const KelolaDataMhs = () => {
 
       // Handle the response (success or failure)
       console.log(response.data)
-
-      if (response.data.success) {
+      if (response.data.success.length == 0) {
+        //Jika import gagal
+        setMessage('Ada kesalahan pada excel!')
+        setLoading(false)
+      } else {
         // Close the import modal on success
-        setModalExport(false)
+        setModalImport(false)
 
         // Fetch and update the data in the table
         const apiUrl = 'http://localhost:8080/api/admins/mahasiswa'
@@ -103,10 +104,21 @@ const KelolaDataMhs = () => {
 
         // Update the table data
         setMahasiswaData(updatedDataResponse.data)
+        // Set success message
+        setSuccessMessage(`Import data excel berhasil`)
+
+        // Clear the success message after a few seconds
+        setTimeout(() => setSuccessMessage(''), 5000)
       }
     } catch (error) {
       // Handle error if the request fails
-      console.error('Error uploading Excel file:', error)
+      // console.error('Error uploading Excel file:', error)
+      const resMessage =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString()
+      setLoading(false)
+      setMessage(resMessage)
     }
   }
 
@@ -138,6 +150,11 @@ const KelolaDataMhs = () => {
         // Update the state to remove the deleted data
         setMahasiswaData((prevData) => prevData.filter((mahasiswa) => mahasiswa.nim !== nim))
         setModalDelete(false) // Close the delete modal
+        // Set success message
+        setSuccessMessage(`Data ${selectedData ? selectedData.nama : ''} berhasil dihapus.`)
+
+        // Clear the success message after a few seconds
+        setTimeout(() => setSuccessMessage(''), 5000)
       })
       .catch((error) => {
         console.error('Error deleting data:', error)
@@ -160,6 +177,11 @@ const KelolaDataMhs = () => {
   return (
     <div>
       <CRow>
+        {successMessage && (
+          <CAlert color="success">
+            <b>{successMessage}</b>
+          </CAlert>
+        )}
         <CCol>
           <CCard>
             <CCardHeader>Daftar Mahasiswa</CCardHeader>
@@ -169,7 +191,12 @@ const KelolaDataMhs = () => {
                   <CCol md={8} xs={6}>
                     <CRow>
                       <CCol md={2}>
-                        <Link to="/kelola/mahasiswa/tambah">
+                        <Link
+                          to={{
+                            pathname: '/kelola/mahasiswa/tambah',
+                            state: { setSuccessMessage },
+                          }}
+                        >
                           <CButton variant="outline">
                             <CIcon icon={cilUserPlus} className="mx-2" />
                             Create
@@ -177,7 +204,7 @@ const KelolaDataMhs = () => {
                         </Link>
                       </CCol>
                       <CCol md={3}>
-                        <CButton variant="outline" color="success" onClick={handleExportModal}>
+                        <CButton variant="outline" color="success" onClick={handleImportModal}>
                           <CIcon icon={cilFile} className="mx-2" />
                           Import
                         </CButton>
@@ -259,11 +286,17 @@ const KelolaDataMhs = () => {
                 </CTableBody>
               </CTable>
             </CCardBody>
-            <CCardFooter>Ini Footer</CCardFooter>
           </CCard>
         </CCol>
       </CRow>
-      <CModal backdrop="static" visible={modalExport} onClose={() => setModalExport(false)}>
+      <CModal
+        backdrop="static"
+        visible={modalImport}
+        onClose={() => {
+          setModalImport(false)
+          setMessage('')
+        }}
+      >
         <CModalHeader closeButton>
           <CModalTitle>Import From Excel</CModalTitle>
         </CModalHeader>
@@ -271,12 +304,31 @@ const KelolaDataMhs = () => {
           <CFormInput name="file" type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalExport(false)}>
+          <CRow className="mt-2">
+            {message && (
+              <p className="alert alert-danger" style={{ padding: '5px' }}>
+                {message}
+              </p>
+            )}
+          </CRow>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setModalImport(false)
+              setMessage('')
+            }}
+          >
             Close
           </CButton>
-          <CButton color="primary" onClick={handleImportExcel}>
-            Import
-          </CButton>
+          {loading ? (
+            <CButton color="primary" disabled>
+              <CSpinner color="info" size="sm" />
+            </CButton>
+          ) : (
+            <CButton color="primary" onClick={handleImportExcel}>
+              Import
+            </CButton>
+          )}
         </CModalFooter>
       </CModal>
       <CModal backdrop="static" visible={modalDelete} onClose={() => setModalDelete(false)}>
