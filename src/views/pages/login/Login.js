@@ -41,10 +41,22 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault()
-
     setMessage('')
     setLoading(true)
+    let isFormValid = true // Menyimpan status keseluruhan validasi
 
+    if (!password) {
+      setMessage('Password harus diisi.')
+      isFormValid = false
+    }
+    if (!username) {
+      setMessage('Username harus diisi.')
+      isFormValid = false
+    }
+    if (!isFormValid) {
+      setLoading(false)
+      return
+    }
     AuthService.login(username, password).then(
       (response) => {
         const userRole = response.roles
@@ -126,7 +138,7 @@ const Login = () => {
                         </CButton>
                       </CCol>
                     </CRow>
-                    <CRow>
+                    <CRow className="mt-2">
                       {message && <p className="error-message alert alert-danger">{message}</p>}
                     </CRow>
                   </CForm>
