@@ -47,6 +47,7 @@
     "react-select": "^5.7.7",
     "redux": "4.2.1",
     "simplebar-react": "^2.4.3",
+    "sweetalert2": "^11.7.32",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

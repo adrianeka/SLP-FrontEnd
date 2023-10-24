@@ -1,0 +1,266 @@
+[33mcommit 16ff2236cd03cb531cd7bc38a68a0db435ec6a8e[m[33m ([m[1;36mHEAD -> [m[1;32mloading-message[m[33m)[m
+Author: adrianeka <adrian.eka9@gmail.com>
+Date:   Tue Oct 24 22:36:19 2023 +0700
+
+    install sweetalert2
+
+[33mcommit 51a4f5755d4f91402c49946fd53e269a9f71f4d3[m[33m ([m[1;31morigin/loading-message[m[33m)[m
+Author: adrianeka <adrian.eka9@gmail.com>
+Date:   Mon Oct 23 23:01:11 2023 +0700
+
+    Fi x validasi kelolaDataMhs, Login
+
+[33mcommit 46e153ce90136e4e02b08f42d4b09b99477e857c[m
+Author: adrianeka <adrian.eka9@gmail.com>
+Date:   Sun Oct 22 21:47:06 2023 +0700
+
+    fix loading, message, formkelolaMhs, login
+
+[33mcommit 1c51b0f0eafb48cde8f61d0e8fe416e9e5596992[m
+Author: adrianeka <adrian.eka9@gmail.com>
+Date:   Sun Oct 22 21:19:37 2023 +0700
+
+    fix loading login,loading&message formcreateMhs
+
+[33mcommit 2d7748ab79eeec30867b92baa58c5abd57c9bd9c[m[33m ([m[1;32mmain[m[33m)[m
+Merge: 31bcdb6 d9e48cf
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Wed Oct 18 08:46:41 2023 +0700
+
+    Merge branch 'main' of https://github.com/adrianeka/SLP-FrontEnd
+
+[33mcommit 31bcdb65528a353283c2412d522c763133533e14[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Wed Oct 18 08:46:36 2023 +0700
+
+    fix bug
+
+[33mcommit d9e48cfc48305449f8665ce7b9eca18252a40f1f[m
+Author: Rizki Gunawan <rizki.gunawan.tif22@polban.ac.id>
+Date:   Wed Oct 18 08:44:08 2023 +0700
+
+    fix search
+
+[33mcommit 52a86cfe5efe6c6a3e941e413716aad37f8960a5[m
+Author: Rizki Gunawan <rizki.gunawan.tif22@polban.ac.id>
+Date:   Wed Oct 18 08:27:57 2023 +0700
+
+    fix read di kelola jadwal
+
+[33mcommit 127fcd83905b81998ca842fa64b95901990e3496[m
+Merge: 1c14152 ef8b437
+Author: Rizki Gunawan <rizki.gunawan.tif22@polban.ac.id>
+Date:   Wed Oct 18 07:06:56 2023 +0700
+
+    Merge branch 'main' of https://github.com/adrianeka/SLP-FrontEnd
+
+[33mcommit 1c14152ab4325498959f6b23c2c32a4f568798c2[m
+Author: Rizki Gunawan <rizki.gunawan.tif22@polban.ac.id>
+Date:   Wed Oct 18 07:06:26 2023 +0700
+
+    kelolajadwal dan form create jadwal
+
+[33mcommit ef8b437fd0ab7b2d3d631c8a0dd9c50ce97bce4a[m
+Merge: d9f7000 c4f2413
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Wed Oct 18 06:34:17 2023 +0700
+
+    Merge branch 'perizinan_dosenWali'
+
+[33mcommit d9f7000d5cc820d8a24c77e367632f4f0441cbff[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Wed Oct 18 06:30:55 2023 +0700
+
+    FEAT : approval latter
+
+[33mcommit c4f241323dd773e64323df7a6bab13993806bd2c[m[33m ([m[1;31morigin/perizinan_dosenWali[m[33m)[m
+Merge: cf5d734 d6d781b
+Author: mahesyasn18 <school.mahesyasn18@gmail.com>
+Date:   Wed Oct 18 02:55:01 2023 +0700
+
+    fix bugs
+
+[33mcommit cf5d734e44a49e8e2ef01a08124434dea27d5768[m
+Merge: 4c886eb d62ff05
+Author: mahesyasn18 <school.mahesyasn18@gmail.com>
+Date:   Tue Oct 17 23:48:49 2023 +0700
+
+    merge from main
+
+[33mcommit d6d781b2d37097db9f2320b4c46c525aa0b9b391[m
+Merge: 39d9120 ef809da
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Tue Oct 17 23:38:41 2023 +0700
+
+    Merge branch 'main' of https://github.com/adrianeka/SLP-FrontEnd into perizinan_dosenWali
+
+[33mcommit ef809da523b06bbea1ca6b2270c822c47a2b6a02[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Tue Oct 17 23:36:13 2023 +0700
+
+    fix conflict merge
+
+[33mcommit 22164e92c51272d209c3e332a62d0a67a59a97ba[m
+Merge: 801a245 d62ff05
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Tue Oct 17 23:36:04 2023 +0700
+
+    Merge branch 'main' of https://github.com/adrianeka/SLP-FrontEnd
+
+[33mcommit 39d9120e245ed59a6878283c0737e80185285da8[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Tue Oct 17 23:20:06 2023 +0700
+
+    fix integrasi Create Matkul
+
+[33mcommit d62ff054aca132cab68874801e3b9154726d2b21[m
+Merge: 26e9165 b129e01
+Author: Tendy Wijaya <tendywijaya123@gmail.com>
+Date:   Tue Oct 17 23:10:37 2023 +0700
+
+    Merge branch 'main' of https://github.com/adrianeka/SLP-FrontEnd
+
+[33mcommit 26e916577593f4c1c718c84e99c181e1576ac5d1[m
+Author: Tendy Wijaya <tendywijaya123@gmail.com>
+Date:   Tue Oct 17 23:06:31 2023 +0700
+
+    integrasi form izin mhs
+
+[33mcommit b129e017359fb56c3cd8ee437b0c8d29f6290a14[m
+Author: adrianeka <adrian.eka9@gmail.com>
+Date:   Tue Oct 17 22:49:19 2023 +0700
+
+    intall Data Table, CRUD Dosen Wali, Implements Spinner
+
+[33mcommit 801a245dfb8320dfd2c550a6910aad4a6d9735d8[m
+Merge: fbe084b 4c886eb
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Tue Oct 17 21:54:44 2023 +0700
+
+    fix merge conflict
+
+[33mcommit 4c886eb5ec6a1cab02eaaae3d48a17472e361c4a[m
+Author: mahesyasn18 <school.mahesyasn18@gmail.com>
+Date:   Tue Oct 17 21:37:55 2023 +0700
+
+    feat: show status perizinan
+
+[33mcommit fbe084bf8e033b55d6c7744171145c1f44a7fad4[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Tue Oct 17 18:12:11 2023 +0700
+
+    fix pretitier  on Kelola Mahasiswa
+
+[33mcommit 61ad3e2a77e4965d25d05d59d7a3649dc9200ca0[m
+Merge: f6bf21c b020dcf
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Tue Oct 17 18:06:57 2023 +0700
+
+    Merge branch 'integrate_matkul'
+
+[33mcommit b020dcfed67f594803e111fb8f427a744e9a20f9[m[33m ([m[1;31morigin/integrate_matkul[m[33m)[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Tue Oct 17 18:05:02 2023 +0700
+
+    Feat : integrasi CRUD Mata Kuliah
+
+[33mcommit f6bf21c5e1fcfa87921a1b3e3762a66f540e1718[m
+Author: BobbyBob669 <pssttt1@gmail.com>
+Date:   Tue Oct 17 15:51:27 2023 +0700
+
+    update import mahasiswa by excell
+
+[33mcommit bef051657d7aab53e985a1cbe9bea76bf93853bc[m
+Author: adrianeka <adrian.eka9@gmail.com>
+Date:   Tue Oct 17 00:25:31 2023 +0700
+
+    CRUD Kelola akademik semester
+
+[33mcommit c86d39ca1d60709ec44b9f2cbe2cb12b24de5de3[m
+Merge: 7ad46c4 c9b3fcc
+Author: adrianeka <adrian.eka9@gmail.com>
+Date:   Mon Oct 16 21:09:07 2023 +0700
+
+    Merge branch 'mahes_dev' of https://github.com/adrianeka/SLP-FrontEnd
+
+[33mcommit 7ad46c4809a18729b305f5c591a8db973a5bc2cc[m
+Author: adrianeka <adrian.eka9@gmail.com>
+Date:   Mon Oct 16 21:08:16 2023 +0700
+
+    merge from mahes-dev
+
+[33mcommit c9b3fcc00d2e4d0e79e1c4c340cd1ee13a9c976e[m
+Merge: d6bd87c aab778e
+Author: mahesyasn18 <school.mahesyasn18@gmail.com>
+Date:   Mon Oct 16 19:01:38 2023 +0700
+
+    Merge branch 'main' of https://github.com/adrianeka/SLP-FrontEnd into mahes_dev
+
+[33mcommit d6bd87ca69fcbe61efb3fd95963a2c906c6e5ac2[m
+Author: mahesyasn18 <school.mahesyasn18@gmail.com>
+Date:   Mon Oct 16 19:01:19 2023 +0700
+
+    feat: multiple authentication
+
+[33mcommit aab778eb71fe6ff8aa05ab229bad56fda3ded28e[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Mon Oct 16 18:08:21 2023 +0700
+
+    fix delete js file
+
+[33mcommit fab84ba2b9c6605026f56770450c5e9181daeb5f[m
+Merge: 9e71ede 5a61546
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Mon Oct 16 18:07:07 2023 +0700
+
+    Merge branch 'kelola_akademik'
+
+[33mcommit 9e71ede53bbfc69d425c3595ecc4f957121cc621[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Mon Oct 16 18:06:29 2023 +0700
+
+    fix : js to jsx
+
+[33mcommit e4378683de7796ea4741b0b7c1453f38d931aaa3[m
+Author: BobbyBob669 <pssttt1@gmail.com>
+Date:   Mon Oct 16 17:44:48 2023 +0700
+
+    integrasi
+
+[33mcommit 5a615466b95599db6c12472504fe75b92a835b14[m[33m ([m[1;31morigin/kelola_akademik[m[33m)[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Mon Oct 16 17:41:36 2023 +0700
+
+    feat : form crate, update Jadwal dan Matkul
+
+[33mcommit fc0973e84d3d9902879dcf36bddf15b23a74d2d6[m
+Author: fikm21 <taufikm211@gmail.com>
+Date:   Mon Oct 16 02:43:47 2023 +0700
+
+    Feat : Kelola Akademik Layout table Jadwal,Matkul,Semester
+
+[33mcommit 9775d5201a6aad942cb2c851a38c94c72a2d4ed2[m
+Author: BobbyBob669 <pssttt1@gmail.com>
+Date:   Sun Oct 15 21:39:17 2023 +0700
+
+     update import excel
+
+[33mcommit 09cbf9b4a908f7bbad0b114485117459ff9d8076[m
+Author: BobbyBob669 <pssttt1@gmail.com>
+Date:   Sun Oct 15 21:33:37 2023 +0700
+
+    import excel mhs
+
+[33mcommit 228508248d57cd2dedc72ecbb8dbf90079ae0fe9[m
+Merge: d5ffdfc 1d6acce
+Author: adrianeka <78060253+adrianeka@users.noreply.github.com>
+Date:   Sun Oct 15 21:06:28 2023 +0700
+
+    Merge pull request #3 from adrianeka/mahes_dev
+    
+    Mahes dev
+
+[33mcommit 1d6acce59a9decee57b1ab63050d1a6f729e78c6[m
+Merge: 84b007b d5ffdfc
+Author: adrianeka <78060253+adrianeka@users.noreply.github.com>
+Date:   Sun Oct

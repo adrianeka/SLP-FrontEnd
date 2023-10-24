@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import Swal from 'sweetalert2'
 import {
   CButton,
   CCard,
@@ -141,10 +142,19 @@ const FormUpdateMhs = () => {
       const response = await axios.put(apiUrl, updateMahasiswa, {
         withCredentials: true,
       })
-      console.log('Mahasiswa updated successfully:', response.data)
-      // Redirect to the appropriate page after successful update
-      alert(`Data ${updateMahasiswa.nama} berhasil diubah`)
-      window.location.href = '/kelola/mahasiswa'
+      // Menampilkan Sweet Alert saat berhasil menambah data
+      Swal.fire({
+        title: 'Berhasil',
+        text: `Data ${updateMahasiswa.nama} berhasil diubah`,
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Mengarahkan user ke kelola mahasiswa
+          window.location.href = '/kelola/mahasiswa'
+          console.log('Mahasiswa updated successfully:', response.data)
+        }
+      })
     } catch (error) {
       // console.error('Error updating Dosen:', error)
       const resMessage =
@@ -160,7 +170,7 @@ const FormUpdateMhs = () => {
       <CContainer>
         <CCard>
           <CForm className="" onSubmit={handleSubmit}>
-            <CCardHeader>Create data mahasiswa</CCardHeader>
+            <CCardHeader>Form Update Mahasiswa</CCardHeader>
             <CCardBody>
               <CRow className="g-3">
                 <CCol xs={12}>
