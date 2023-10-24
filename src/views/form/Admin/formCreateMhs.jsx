@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import {
   CButton,
   CCard,
@@ -36,7 +37,6 @@ const FormCreateMhs = () => {
     kelas_id: '', // Add this field
     angkatan_id: '', // Add this field
   })
-
   const [angkatanData, setAngkatanData] = useState([])
   useEffect(() => {
     const apiUrl = 'http://localhost:8080/api/admins/angkatan' // Replace with your actual API endpoint
@@ -121,9 +121,20 @@ const FormCreateMhs = () => {
       const response = await axios.post(apiUrl, newMahasiswa, {
         withCredentials: true,
       })
-      alert('Data mahasiswa berhasil ditambahkan')
-      window.location.href = '/kelola/mahasiswa'
-      console.log('Mahasiswa created successfully:', response.data)
+      // alert('Data mahasiswa berhasil ditambahkan')
+      // Menampilkan Sweet Alert saat berhasil menambah data
+      Swal.fire({
+        title: 'Berhasil',
+        text: 'Data mahasiswa berhasil ditambahkan',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Mengarahkan user ke kelola mahasiswa
+          window.location.href = '/kelola/mahasiswa'
+          console.log('Mahasiswa created successfully:', response.data)
+        }
+      })
     } catch (error) {
       // console.error('Error creating Mahasiswa:', error)\
       if (error.response && error.response.data && error.response.data.message) {
@@ -142,7 +153,7 @@ const FormCreateMhs = () => {
       <CContainer>
         <CCard>
           <CForm className="" onSubmit={handleSubmit}>
-            <CCardHeader>Create data mahasiswa</CCardHeader>
+            <CCardHeader>Form Tambah Mahasiswa</CCardHeader>
             <CCardBody>
               <CRow className="g-3">
                 <CCol xs={12}>
@@ -192,7 +203,7 @@ const FormCreateMhs = () => {
                       required
                       onChange={(e) => setFormData({ ...formData, nim: e.target.value })}
                       pattern="[0-9]{9,9}"
-                      title="NIM harus terdiri dari minimal 9 angka"
+                      title="NIM harus terdiri dari 9 angka"
                     />
                   </CInputGroup>
                 </CCol>

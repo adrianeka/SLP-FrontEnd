@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import Swal from 'sweetalert2'
 import {
   CButton,
   CCard,
@@ -23,27 +23,16 @@ import {
   CModalBody,
   CModalFooter,
   CInputGroupText,
-  CFormTextarea,
-  CFormSelect,
-  CFormLabel,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilPen,
-  cilSend,
-  cilTrash,
-  cilSearch,
-  cilShortText,
-  cilCalendar,
-  cilClock,
-  cilUserPlus,
-  cilFile,
-} from '@coreui/icons'
+import { cilPen, cilTrash, cilSearch, cilUserPlus, cilFile } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
 const KelolaDataDosenPengampu = () => {
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
   const [modalDelete, setModalDelete] = useState(false)
-  const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [dosenData, setDosenData] = useState([])
@@ -75,12 +64,6 @@ const KelolaDataDosenPengampu = () => {
     setModalDelete(true) // Menampilkan modal
   }
 
-  const handleUpdateModal = (data) => {
-    // Handle saat tombol hapus diklik
-    setSelectedData(data)
-    setModalUpdate(true) // Menampilkan modal
-  }
-
   const handleSearchChange = (e) => {
     //Handle search saat di ketik
     setSearchText(e.target.value)
@@ -103,6 +86,13 @@ const KelolaDataDosenPengampu = () => {
 
         // Tutup modal setelah berhasil menghapus
         setModalDelete(false)
+        // Menampilkan Sweet Alert saat berhasil menghapus data
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Data ${selectedData ? selectedData.nama_dosen : ''} berhasil dihapus`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
       })
       .catch((error) => {
         // Handle error jika terjadi kesalahan saat menghapus data
@@ -119,10 +109,10 @@ const KelolaDataDosenPengampu = () => {
     )
   })
 
-  const [modalExport, setModalExport] = useState(false)
+  const [modalImport, setModalImport] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
   const handleExportModal = () => {
-    setModalExport(true)
+    setModalImport(true)
   }
 
   const handleFileChange = (e) => {
@@ -130,6 +120,7 @@ const KelolaDataDosenPengampu = () => {
   }
   const handleImportExcel = async () => {
     try {
+      setLoading(true)
       const formData = new FormData()
       formData.append('excel', selectedFile)
 
@@ -143,10 +134,13 @@ const KelolaDataDosenPengampu = () => {
 
       // Handle the response (success or failure)
       console.log(response.data)
-
-      if (response.data.success) {
+      if (response.data.success.length == 0) {
+        //Jika import gagal
+        setMessage('Ada kesalahan pada excel!')
+        setLoading(false)
+      } else {
         // Close the import modal on success
-        setModalExport(false)
+        setModalImport(false)
 
         // Fetch and update the data in the table
         const apiUrl = 'http://localhost:8080/api/admins/dosen'
@@ -156,10 +150,23 @@ const KelolaDataDosenPengampu = () => {
 
         // Update the table data
         setDosenData(updatedDataResponse.data)
+
+        // Menampilkan Sweet Alert saat berhasil import data
+        Swal.fire({
+          title: 'Berhasil',
+          text: 'Import data excel berhasil',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
       }
     } catch (error) {
       // Handle error if the request fails
-      console.error('Error uploading Excel file:', error)
+      const resMessage =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString()
+      setLoading(false)
+      setMessage(resMessage)
     }
   }
 
@@ -185,42 +192,9 @@ const KelolaDataDosenPengampu = () => {
                       <CCol xs={3}>
                         <CButton variant="outline" color="success" onClick={handleExportModal}>
                           <CIcon icon={cilFile} className="mx-2" />
-                          Import Excel
+                          Import
                         </CButton>
                       </CCol>
-
-                      <CModal
-                        backdrop="static"
-                        visible={modalExport}
-                        onClose={() => setModalExport(false)}
-                        aria-labelledby="ExportModalLabel"
-                      >
-                        <CModalHeader>
-                          <CModalTitle id="ExportModalLabel">Import to Excel</CModalTitle>
-                        </CModalHeader>
-                        <CModalBody>
-                          <CForm>
-                            <CFormInput
-                              name="file"
-                              type="file"
-                              id="formFile"
-                              label="File Excel"
-                              accept=".xlsx, .xls"
-                              onChange={handleFileChange}
-                            />
-                          </CForm>
-                          <p className="text-muted">Hanya menerima tipe file .xlsx dan .xls</p>
-                        </CModalBody>
-                        <CModalFooter>
-                          <CButton color="secondary" onClick={() => setModalExport(false)}>
-                            Close
-                          </CButton>
-                          <CButton color="success" onClick={handleImportExcel}>
-                            Import
-                          </CButton>
-                        </CModalFooter>
-                      </CModal>
-
                       <CCol xs={6}></CCol>
                     </CRow>
                   </CCol>
@@ -293,6 +267,62 @@ const KelolaDataDosenPengampu = () => {
           </CCard>
         </CCol>
       </CRow>
+      {/* Modal Import */}
+      <CModal
+        backdrop="static"
+        visible={modalImport}
+        onClose={() => {
+          setModalImport(false)
+          setMessage('')
+          setLoading(false)
+        }}
+        aria-labelledby="ExportModalLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="ExportModalLabel">Import From Excel</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CForm>
+            <CFormInput
+              name="file"
+              type="file"
+              id="formFile"
+              label="File Excel"
+              accept=".xlsx, .xls"
+              onChange={handleFileChange}
+            />
+          </CForm>
+          <p className="text-muted">Hanya menerima tipe file .xlsx dan .xls</p>
+        </CModalBody>
+        <CModalFooter>
+          <CRow className="mt-2">
+            {message && (
+              <p className="alert alert-danger" style={{ padding: '5px' }}>
+                {message}
+              </p>
+            )}
+          </CRow>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setModalImport(false)
+              setMessage('')
+              setLoading(false)
+            }}
+          >
+            Close
+          </CButton>
+          {loading ? (
+            <CButton color="primary" disabled>
+              <CSpinner color="info" size="sm" />
+            </CButton>
+          ) : (
+            <CButton color="primary" onClick={handleImportExcel}>
+              Import
+            </CButton>
+          )}
+        </CModalFooter>
+      </CModal>
       {/* Modal Delete */}
       <CModal
         backdrop="static"
@@ -311,123 +341,6 @@ const KelolaDataDosenPengampu = () => {
           <CButton color="danger" onClick={() => handleDelete(selectedData.kode_dosen)}>
             Delete
           </CButton>
-        </CModalFooter>
-      </CModal>
-      {/* Modal Update */}
-      <CModal
-        backdrop="static"
-        visible={modalUpdate}
-        onClose={() => setModalUpdate(false)}
-        aria-labelledby="StaticBackdropExampleLabel"
-      >
-        <CModalHeader>
-          <CModalTitle id="UpdateModal">Update</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <CForm className="row g-3">
-            <CCol xs={12}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="judul">
-                  <CIcon icon={cilShortText} />
-                </CInputGroupText>
-                <CFormTextarea
-                  aria-describedby="judul"
-                  value={selectedData ? selectedData.judulSurat : ''}
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="tanggal-awal">
-                  <CIcon icon={cilCalendar} />
-                </CInputGroupText>
-                <CFormInput
-                  type="date"
-                  placeholder="Tanggal Awal"
-                  floatingLabel="Tanggal Awal"
-                  aria-describedby="tanggal-awal"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="tanggal-akhir">
-                  <CIcon icon={cilCalendar} />
-                </CInputGroupText>
-                <CFormInput
-                  type="date"
-                  placeholder="Tanggal Akhir"
-                  floatingLabel="Tanggal Akhir"
-                  aria-describedby="tanggal-akhir"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="jam-awal">
-                  <CIcon icon={cilClock} />
-                </CInputGroupText>
-                <CFormInput
-                  placeholder="Jam Kuliah Awal"
-                  floatingLabel="Jam Kuliah Awal"
-                  aria-describedby="jam-awal"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol md={6}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="jam-akhir">
-                  <CIcon icon={cilClock} />
-                </CInputGroupText>
-                <CFormInput
-                  placeholder="Jam Kuliah Akhir"
-                  floatingLabel="Jam Kuliah Akhir"
-                  aria-describedby="jam-akhir"
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol xs={12}>
-              <CInputGroup className="mb-3">
-                <CInputGroupText id="alasan">
-                  <CIcon icon={cilShortText} />
-                </CInputGroupText>
-                <CFormTextarea
-                  placeholder="Keterangan"
-                  floatingLabel="Keterangan"
-                  aria-describedby="keterangan"
-                  value={selectedData ? selectedData.alasan : ''}
-                />
-              </CInputGroup>
-            </CCol>
-            <CCol xs={12}>
-              <CFormSelect
-                id="jenisKetidakhadiran"
-                label="Jenis Ketidakhadiran"
-                value={selectedData ? selectedData.jenis : ''}
-              >
-                <option selected hidden>
-                  Pilih..
-                </option>
-                <option value="Sakit">Sakit</option>
-                <option value="Izin">Izin</option>
-              </CFormSelect>
-            </CCol>
-            <CCol xs={12}>
-              <CFormInput
-                id="bukti"
-                type="file"
-                a
-                aria-describedby="file"
-                label="Upload Bukti Surat Perizinan"
-              />
-            </CCol>
-          </CForm>
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalUpdate(false)}>
-            Close
-          </CButton>
-          <CButton color="danger">Delete</CButton>
         </CModalFooter>
       </CModal>
     </div>

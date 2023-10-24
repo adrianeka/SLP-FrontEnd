@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import {
   CButton,
   CCard,
@@ -39,7 +40,6 @@ const KelolaDataMhs = () => {
   const [mahasiswaData, setMahasiswaData] = useState([])
   const [modalImport, setModalImport] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
-  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     // URL API yang akan diambil datanya
@@ -61,13 +61,15 @@ const KelolaDataMhs = () => {
         console.error('Error fetching data:', error)
       })
   }, [])
-
+  //Handle import modal
   const handleImportModal = () => {
     setModalImport(true)
   }
+  //Handle Perubahan File pada modal import
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0])
   }
+  //Handle button import excel
   const handleImportExcel = async () => {
     try {
       setLoading(true)
@@ -93,7 +95,7 @@ const KelolaDataMhs = () => {
         setMessage('Ada kesalahan pada excel!')
         setLoading(false)
       } else {
-        // Close the import modal on success
+        // Menutup modal import
         setModalImport(false)
 
         // Fetch and update the data in the table
@@ -102,13 +104,15 @@ const KelolaDataMhs = () => {
           withCredentials: true,
         })
 
-        // Update the table data
+        // Update data pada tabel
         setMahasiswaData(updatedDataResponse.data)
-        // Set success message
-        setSuccessMessage(`Import data excel berhasil`)
-
-        // Clear the success message after a few seconds
-        setTimeout(() => setSuccessMessage(''), 5000)
+        // Menampilkan Sweet Alert saat berhasil menambah data
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Import data excel berhasil`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
       }
     } catch (error) {
       // Handle error if the request fails
@@ -150,11 +154,14 @@ const KelolaDataMhs = () => {
         // Update the state to remove the deleted data
         setMahasiswaData((prevData) => prevData.filter((mahasiswa) => mahasiswa.nim !== nim))
         setModalDelete(false) // Close the delete modal
-        // Set success message
-        setSuccessMessage(`Data ${selectedData ? selectedData.nama : ''} berhasil dihapus.`)
 
-        // Clear the success message after a few seconds
-        setTimeout(() => setSuccessMessage(''), 5000)
+        // Menampilkan Sweet Alert saat berhasil menghapus data
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Data ${selectedData ? selectedData.nama : ''} berhasil dihapus.`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
       })
       .catch((error) => {
         console.error('Error deleting data:', error)
@@ -177,11 +184,6 @@ const KelolaDataMhs = () => {
   return (
     <div>
       <CRow>
-        {successMessage && (
-          <CAlert color="success">
-            <b>{successMessage}</b>
-          </CAlert>
-        )}
         <CCol>
           <CCard>
             <CCardHeader>Daftar Mahasiswa</CCardHeader>
@@ -191,12 +193,7 @@ const KelolaDataMhs = () => {
                   <CCol md={8} xs={6}>
                     <CRow>
                       <CCol md={2}>
-                        <Link
-                          to={{
-                            pathname: '/kelola/mahasiswa/tambah',
-                            state: { setSuccessMessage },
-                          }}
-                        >
+                        <Link to={'/kelola/mahasiswa/tambah'}>
                           <CButton variant="outline">
                             <CIcon icon={cilUserPlus} className="mx-2" />
                             Create
@@ -230,7 +227,7 @@ const KelolaDataMhs = () => {
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
-                    <CTableHeaderCell>kelas</CTableHeaderCell>
+                    <CTableHeaderCell>Kelas</CTableHeaderCell>
                     <CTableHeaderCell>Nim</CTableHeaderCell>
                     <CTableHeaderCell>Prodi</CTableHeaderCell>
                     <CTableHeaderCell>Angkatan</CTableHeaderCell>
@@ -295,13 +292,21 @@ const KelolaDataMhs = () => {
         onClose={() => {
           setModalImport(false)
           setMessage('')
+          setLoading(false)
         }}
       >
         <CModalHeader closeButton>
           <CModalTitle>Import From Excel</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <CFormInput name="file" type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+          <CFormInput
+            name="file"
+            type="file"
+            accept=".xlsx, .xls"
+            onChange={handleFileChange}
+            label="File Excel"
+          />
+          <p className="text-muted">Hanya menerima tipe file .xlsx dan .xls</p>
         </CModalBody>
         <CModalFooter>
           <CRow className="mt-2">
@@ -316,6 +321,7 @@ const KelolaDataMhs = () => {
             onClick={() => {
               setModalImport(false)
               setMessage('')
+              setLoading(false)
             }}
           >
             Close
@@ -346,18 +352,6 @@ const KelolaDataMhs = () => {
           >
             Delete
           </CButton>
-        </CModalFooter>
-      </CModal>
-      <CModal backdrop="static" visible={modalUpdate} onClose={() => setModalUpdate(false)}>
-        <CModalHeader closeButton>
-          <CModalTitle>Update</CModalTitle>
-        </CModalHeader>
-        <CModalBody>{/* Isi formulir pembaruan di sini */}</CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalUpdate(false)}>
-            Close
-          </CButton>
-          <CButton color="primary">Update</CButton>
         </CModalFooter>
       </CModal>
     </div>
