@@ -220,7 +220,6 @@ const KelolaDataMatkul = () => {
                 </CTableBody>
               </CTable>
             </CCardBody>
-            {/* <CCardFooter>Ini Footer</CCardFooter> */}
           </CCard>
         </CCol>
       </CRow>

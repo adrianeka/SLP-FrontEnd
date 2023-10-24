@@ -5,13 +5,11 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardFooter,
   CCardHeader,
   CCol,
   CRow,
   CTable,
   CTableBody,
-  CTableCaption,
   CTableDataCell,
   CTableHead,
   CTableHeaderCell,
@@ -156,6 +154,8 @@ const KelolaDataMhs = () => {
     )
   })
 
+  const tahunSaatIni = new Date().getFullYear()
+
   return (
     <div>
       <CRow>
@@ -220,7 +220,9 @@ const KelolaDataMhs = () => {
                     filteredData.map((user) => (
                       <CTableRow key={user.id}>
                         <CTableDataCell>{user.nama}</CTableDataCell>
-                        <CTableDataCell>{user.kela.nama_kelas}</CTableDataCell>
+                        <CTableDataCell>
+                          {tahunSaatIni - user.angkatan.tahun_angkatan + 1 + user.kela.nama_kelas}
+                        </CTableDataCell>
                         <CTableDataCell>{user.nim}</CTableDataCell>
                         <CTableDataCell>{user.prodi.nama_prodi}</CTableDataCell>
                         <CTableDataCell>{user.angkatan.tahun_angkatan}</CTableDataCell>
@@ -256,7 +258,6 @@ const KelolaDataMhs = () => {
                 </CTableBody>
               </CTable>
             </CCardBody>
-            <CCardFooter>Ini Footer</CCardFooter>
           </CCard>
         </CCol>
       </CRow>
