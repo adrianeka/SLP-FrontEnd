@@ -43,22 +43,17 @@ const KelolaDataMhs = () => {
   const [selectedFile, setSelectedFile] = useState(null)
 
   useEffect(() => {
-    // URL API yang akan diambil datanya
     const apiUrl = 'http://localhost:8080/api/admins/mahasiswa'
 
-    // Menggunakan Axios untuk mengambil data dari API
     axios
       .get(apiUrl, {
         withCredentials: true,
       })
       .then((response) => {
-        // Mengatur data dosen ke dalam state dosenData
-
         console.log(response.data)
         setMahasiswaData(response.data)
       })
       .catch((error) => {
-        // Handle error jika terjadi kesalahan saat mengambil data dari API
         console.error('Error fetching data:', error)
       })
   }, [])
@@ -73,8 +68,6 @@ const KelolaDataMhs = () => {
     try {
       const formData = new FormData()
       formData.append('excel', selectedFile)
-
-      // Make a POST request to your backend API for Excel file upload
       const response = await axios.post(
         'http://localhost:8080/api/admins/import/mahasiswa',
         formData,
@@ -85,25 +78,16 @@ const KelolaDataMhs = () => {
           },
         },
       )
-
-      // Handle the response (success or failure)
-      console.log(response.data)
-
       if (response.data.success) {
-        // Close the import modal on success
         setModalExport(false)
-
-        // Fetch and update the data in the table
         const apiUrl = 'http://localhost:8080/api/admins/mahasiswa'
         const updatedDataResponse = await axios.get(apiUrl, {
           withCredentials: true,
         })
 
-        // Update the table data
         setMahasiswaData(updatedDataResponse.data)
       }
     } catch (error) {
-      // Handle error if the request fails
       console.error('Error uploading Excel file:', error)
     }
   }

@@ -51,10 +51,7 @@ const TableRekapSakit = () => {
   const [modalExport, setModalExport] = useState(false)
   const [perizinanData, setPerizinanData] = useState([])
   const myValue = localStorage.getItem('dosenwali')
-  // Parse the JSON data
   const dosenwaliObject = JSON.parse(myValue)
-
-  // Access the "id" property
   const id_dosen = dosenwaliObject.id
 
   useEffect(() => {
@@ -155,6 +152,7 @@ const TableRekapSakit = () => {
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow className="text-center">
+                    <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
                     <CTableHeaderCell>Jenis Surat</CTableHeaderCell>
                     <CTableHeaderCell>Alasan</CTableHeaderCell>
                     <CTableHeaderCell>Bukti Surat</CTableHeaderCell>
@@ -167,13 +165,14 @@ const TableRekapSakit = () => {
                 <CTableBody>
                   {filteredData.length === 0 ? (
                     <tr>
-                      <td colSpan="7" className="text-center">
+                      <td colSpan="8" className="text-center">
                         No Data
                       </td>
                     </tr>
                   ) : (
                     filteredData.map((user) => (
                       <CTableRow key={user.id} className="text-center">
+                        <CTableDataCell>{user.mahasiswa.nama}</CTableDataCell>
                         <CTableDataCell>{user.jenis}</CTableDataCell>
                         <CTableDataCell>{user.keterangan}</CTableDataCell>
                         <CTableDataCell>

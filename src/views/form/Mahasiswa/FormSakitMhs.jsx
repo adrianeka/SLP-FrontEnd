@@ -109,6 +109,37 @@ const FormSakitMhs = () => {
     }
   }
 
+  const handleSubmitDraft = async (e) => {
+    e.preventDefault()
+    const apiUrl = 'http://localhost:8080/api/mahasiswa/perizinan'
+
+    const newPerizinan = new FormData()
+    newPerizinan.append('file', selectedFile)
+    newPerizinan.append('keterangan', formData.keterangan)
+    newPerizinan.append('tanggal_awal', formData.tanggal_awal)
+    newPerizinan.append('tanggal_akhir', formData.tanggal_akhir)
+    newPerizinan.append('jenis', 'Sakit')
+    newPerizinan.append('nim', userRole)
+    newPerizinan.append('status', 'Menunggu Verifikasi')
+    newPerizinan.append(
+      'matakuliah',
+      formData.matakuliah.map((option) => option.value),
+    )
+    newPerizinan.append('id_semester', semesterData[0].id_semester)
+    try {
+      const response = await axios.post(apiUrl, newPerizinan, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      window.location.href = '/riwayat'
+      console.log('Perizinan created successfully:', response.data)
+    } catch (error) {
+      console.error('Error creating Perizinan:', error)
+    }
+  }
+
   return (
     <>
       <CCard>
@@ -204,7 +235,13 @@ const FormSakitMhs = () => {
         </CCardBody>
         <CCardFooter>
           <CRow>
-            <CCol xs={11}></CCol>
+            <CCol xs={9}></CCol>
+            <CCol xs={2}>
+              {' '}
+              <CButton color="warning" variant="outline" type="submit" onClick={handleSubmitDraft}>
+                Save Draft
+              </CButton>
+            </CCol>
             <CCol xs={1}>
               {' '}
               <CButton color="primary" variant="outline" type="submit" onClick={handleSubmit}>

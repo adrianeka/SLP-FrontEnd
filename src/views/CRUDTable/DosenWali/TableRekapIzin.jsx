@@ -50,10 +50,13 @@ const TableRekapIzin = () => {
   const [searchText, setSearchText] = useState('') // State untuk nilai pencarian
   const [modalExport, setModalExport] = useState(false)
   const [perizinanData, setPerizinanData] = useState([])
+  const myValue = localStorage.getItem('dosenwali')
+  const dosenwaliObject = JSON.parse(myValue)
+  const id_dosen = dosenwaliObject.id
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/dosenWali/perizinan/izin'
+    const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/izin/${id_dosen}`
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -151,6 +154,7 @@ const TableRekapIzin = () => {
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow className="text-center">
+                    <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
                     <CTableHeaderCell>Jenis Surat</CTableHeaderCell>
                     <CTableHeaderCell>Alasan</CTableHeaderCell>
                     <CTableHeaderCell>Bukti Surat</CTableHeaderCell>
@@ -163,13 +167,14 @@ const TableRekapIzin = () => {
                 <CTableBody>
                   {filteredData.length === 0 ? (
                     <tr>
-                      <td colSpan="7" className="text-center">
+                      <td colSpan="8" className="text-center">
                         No Data
                       </td>
                     </tr>
                   ) : (
                     filteredData.map((user) => (
                       <CTableRow key={user.id} className="text-center">
+                        <CTableDataCell>{user.mahasiswa.nama}</CTableDataCell>
                         <CTableDataCell>{user.jenis}</CTableDataCell>
                         <CTableDataCell>{user.keterangan}</CTableDataCell>
                         <CTableDataCell>
