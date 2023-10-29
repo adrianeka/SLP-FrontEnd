@@ -31,23 +31,9 @@ import { cilPen, cilTrash, cilUserPlus, cilShortText, cilSearch } from '@coreui/
 import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 
-const usersData = [
-  { id: 0, tingkat: '2023', kelas: 'A', prodi: 'D3', wali: 'Dosen' },
-  { id: 1, tingkat: '2023', kelas: 'B', prodi: 'D3', wali: 'Dosen' },
-  { id: 2, tingkat: '2023', kelas: 'C', prodi: 'D3', wali: 'Dosen' },
-  { id: 3, tingkat: '2023', kelas: 'A', prodi: 'D4', wali: 'Dosen' },
-  { id: 4, tingkat: '2023', kelas: 'B', prodi: 'D4', wali: 'Dosen' },
-  { id: 5, tingkat: '2022', kelas: 'A', prodi: 'D3', wali: 'Dosen' },
-  { id: 6, tingkat: '2022', kelas: 'B', prodi: 'D3', wali: 'Dosen' },
-  { id: 7, tingkat: '2022', kelas: 'A', prodi: 'D4', wali: 'Dosen' },
-  { id: 8, tingkat: '2022', kelas: 'B', prodi: 'D4', wali: 'Dosen' },
-  { id: 9, tingkat: '2021', kelas: 'A', prodi: 'D3', wali: 'Dosen' },
-  { id: 10, tingkat: '2021', kelas: 'B', prodi: 'D3', wali: 'Dosen' },
-  { id: 11, tingkat: '2021', kelas: 'A', prodi: 'D4', wali: 'Dosen' },
-  { id: 12, tingkat: '2021', kelas: 'B', prodi: 'D4', wali: 'Dosen' },
-]
-
 const KelolaDataDosenWali = () => {
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
   const [modalDelete, setModalDelete] = useState(false) //Handle Klik Modal Delete
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [searchText, setSearchText] = useState('') //State untuk seatch
@@ -100,6 +86,7 @@ const KelolaDataDosenWali = () => {
   }
 
   const handleDelete = (id) => {
+    setLoading(true)
     // URL API untuk menghapus data semester dengan id tertentu
     const apiUrl = `http://localhost:8080/api/admins/dosen_wali/delete/${id}`
 
@@ -129,6 +116,12 @@ const KelolaDataDosenWali = () => {
       .catch((error) => {
         // Handle error jika terjadi kesalahan saat menghapus data
         console.error('Error deleting data:', error)
+        const resMessage =
+          (error.response && error.response.data && error.response.data.message) ||
+          error.message ||
+          error.toString()
+        setLoading(false)
+        setMessage(resMessage)
       })
   }
 
@@ -242,7 +235,11 @@ const KelolaDataDosenWali = () => {
       <CModal
         backdrop="static"
         visible={modalDelete}
-        onClose={() => setModalDelete(false)}
+        onClose={() => {
+          setModalDelete(false)
+          setMessage('')
+          setLoading(false)
+        }}
         aria-labelledby="StaticBackdropExampleLabel"
       >
         <CModalHeader>
@@ -262,7 +259,21 @@ const KelolaDataDosenWali = () => {
           ?
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalDelete(false)}>
+          <CRow className="mt-2">
+            {message && (
+              <p className="alert alert-danger" style={{ padding: '5px' }}>
+                {message}
+              </p>
+            )}
+          </CRow>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setModalDelete(false)
+              setMessage('')
+              setLoading(false)
+            }}
+          >
             Close
           </CButton>
           <CButton color="danger" onClick={() => handleDelete(selectedData.id_dosenwali)}>

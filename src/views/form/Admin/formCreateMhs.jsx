@@ -239,6 +239,8 @@ const FormCreateMhs = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, no_telp_orang_tua: e.target.value })
                       }
+                      pattern="[08][0-9]{8,11}"
+                      title="Nomor Telepon harus diawali dengan '08' dan memiliki jumlah 10-13"
                     />
                   </CInputGroup>
                 </CCol>
@@ -255,6 +257,8 @@ const FormCreateMhs = () => {
                       value={formData.no_telp}
                       required
                       onChange={(e) => setFormData({ ...formData, no_telp: e.target.value })}
+                      pattern="[08][0-9]{8,11}"
+                      title="Nomor Telepon harus diawali dengan '08' dan memiliki jumlah 10-13"
                     />
                   </CInputGroup>
                 </CCol>
@@ -341,7 +345,7 @@ const FormCreateMhs = () => {
             <CCardFooter>
               <CRow>
                 <CCol xs={10}></CCol>
-                <CCol>
+                <CCol xs={1}>
                   <Link to={'/kelola/mahasiswa'}>
                     <CButton color="secondary">Cancel</CButton>
                   </Link>

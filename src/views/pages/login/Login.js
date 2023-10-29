@@ -84,11 +84,23 @@ const Login = () => {
     <div className="bg-dark min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
-          <CCol md={8}>
+          <CCol lg={8}>
             <CCardGroup>
-              <CCard className="p-4">
+              <CCard className="p-md-4">
+                <div className="d-block d-md-none text-center text-dark bg-light w-100 py-3">
+                  <h2>Student Leaving Permission</h2>
+                  <CImage
+                    className="mx-3"
+                    align="center"
+                    rounded
+                    src={polban}
+                    alt="Polban"
+                    width={110}
+                    height={155}
+                  />
+                </div>
                 <CCardBody>
-                  <CForm onSubmit={handleLogin} ref={form}>
+                  <CForm onSubmit={handleLogin} ref={form} className="p-3">
                     <h1>Login</h1>
                     <p className="text-medium-emphasis">Sign In to your account</p>
                     <CInputGroup className="mb-3">
@@ -144,7 +156,7 @@ const Login = () => {
                   </CForm>
                 </CCardBody>
               </CCard>
-              <CCard className="text-dark bg-light py-5" style={{ width: '44%' }}>
+              <CCard className="text-dark bg-light py-5 d-none d-md-block">
                 <CCardBody className="text-center">
                   <div>
                     <h2>Student Leaving Permission</h2>

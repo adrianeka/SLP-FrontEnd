@@ -28,6 +28,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilPen, cilTrash, cilSearch, cilUserPlus, cilFile } from '@coreui/icons'
 import { Link } from 'react-router-dom'
+import DataTable from 'react-data-table-component'
 
 const KelolaDataDosenPengampu = () => {
   const [message, setMessage] = useState('')
@@ -97,6 +98,12 @@ const KelolaDataDosenPengampu = () => {
       .catch((error) => {
         // Handle error jika terjadi kesalahan saat menghapus data
         console.error('Error deleting data:', error)
+        const resMessage =
+          (error.response && error.response.data && error.response.data.message) ||
+          error.message ||
+          error.toString()
+        setLoading(false)
+        setMessage(resMessage)
       })
   }
 
@@ -119,6 +126,10 @@ const KelolaDataDosenPengampu = () => {
     setSelectedFile(e.target.files[0])
   }
   const handleImportExcel = async () => {
+    if (!selectedFile) {
+      setMessage('Pilih file Excel terlebih dahulu')
+      return
+    }
     try {
       setLoading(true)
       const formData = new FormData()
@@ -169,7 +180,48 @@ const KelolaDataDosenPengampu = () => {
       setMessage(resMessage)
     }
   }
-
+  // Kolom untuk Data Table
+  const columns = [
+    {
+      name: 'Kode Dosen',
+      selector: (row) => row.kode_dosen,
+      sortable: true,
+    },
+    {
+      name: 'Nama Dosen',
+      selector: (row) => row.nama_dosen,
+      sortable: true,
+    },
+    {
+      name: 'Email',
+      selector: (row) => row.email,
+      sortable: true,
+    },
+    {
+      name: 'Aksi',
+      cell: (row) => (
+        <CTableDataCell>
+          <CCol>
+            <Link to={`/kelola/dosen/update/${row.kode_dosen}`}>
+              <CButton color="primary" variant="outline" className="ms-2" title="Ubah Data Dosen">
+                <CIcon icon={cilPen} />
+              </CButton>
+            </Link>
+            <CButton
+              color="danger"
+              variant="outline"
+              className="ms-2"
+              title="Hapus Data Dosen"
+              onClick={() => handleDeleteModal(row)}
+            >
+              <CIcon icon={cilTrash} />
+            </CButton>
+          </CCol>
+        </CTableDataCell>
+      ),
+    },
+  ]
+  console.log(filteredData)
   return (
     <div>
       <CRow>
@@ -212,7 +264,27 @@ const KelolaDataDosenPengampu = () => {
                   </CCol>
                 </CRow>
               </CForm>
-              <CTable striped bordered responsive>
+              <DataTable
+                columns={columns}
+                data={filteredData}
+                responsive
+                noDataComponent={'No Data'}
+                pagination
+                customStyles={{
+                  cells: {
+                    style: {
+                      justifyContent: 'center',
+                    },
+                  },
+                  headCells: {
+                    style: {
+                      fontWeight: 'bold',
+                      justifyContent: 'center',
+                    },
+                  },
+                }}
+              />
+              {/* <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Kode Dosen</CTableHeaderCell>
@@ -261,7 +333,7 @@ const KelolaDataDosenPengampu = () => {
                     ))
                   )}
                 </CTableBody>
-              </CTable>
+              </CTable> */}
             </CCardBody>
             {/* <CCardFooter>Ini Footer</CCardFooter> */}
           </CCard>
@@ -327,7 +399,11 @@ const KelolaDataDosenPengampu = () => {
       <CModal
         backdrop="static"
         visible={modalDelete}
-        onClose={() => setModalDelete(false)}
+        onClose={() => {
+          setModalDelete(false)
+          setMessage('')
+          setLoading(false)
+        }}
         aria-labelledby="StaticBackdropExampleLabel"
       >
         <CModalHeader>
@@ -335,7 +411,21 @@ const KelolaDataDosenPengampu = () => {
         </CModalHeader>
         <CModalBody>Yakin ingin hapus {selectedData ? selectedData.nama_dosen : ''} ?</CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalDelete(false)}>
+          <CRow className="mt-2">
+            {message && (
+              <p className="alert alert-danger" style={{ padding: '5px' }}>
+                {message}
+              </p>
+            )}
+          </CRow>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setModalDelete(false)
+              setMessage('')
+              setLoading(false)
+            }}
+          >
             Close
           </CButton>
           <CButton color="danger" onClick={() => handleDelete(selectedData.kode_dosen)}>

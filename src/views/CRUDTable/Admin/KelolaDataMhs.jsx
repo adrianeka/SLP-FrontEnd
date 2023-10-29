@@ -25,16 +25,17 @@ import {
   CInputGroupText,
   CSpinner,
   CAlert,
+  CButtonGroup,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPen, cilTrash, cilSearch, cilFile, cilUserPlus } from '@coreui/icons'
 import { Link } from 'react-router-dom'
+import DataTable from 'react-data-table-component'
 
 const KelolaDataMhs = () => {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [modalDelete, setModalDelete] = useState(false)
-  const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [selectedData, setSelectedData] = useState(null)
   const [mahasiswaData, setMahasiswaData] = useState([])
@@ -71,6 +72,10 @@ const KelolaDataMhs = () => {
   }
   //Handle button import excel
   const handleImportExcel = async () => {
+    if (!selectedFile) {
+      setMessage('Pilih file Excel terlebih dahulu')
+      return
+    }
     try {
       setLoading(true)
       const formData = new FormData()
@@ -131,11 +136,6 @@ const KelolaDataMhs = () => {
     setModalDelete(true)
   }
 
-  const handleUpdateModal = (data) => {
-    setSelectedData(data)
-    setModalUpdate(true)
-  }
-
   const handleSearchChange = (e) => {
     setSearchText(e.target.value)
   }
@@ -165,6 +165,12 @@ const KelolaDataMhs = () => {
       })
       .catch((error) => {
         console.error('Error deleting data:', error)
+        const resMessage =
+          (error.response && error.response.data && error.response.data.message) ||
+          error.message ||
+          error.toString()
+        setLoading(false)
+        setMessage(resMessage)
       })
   }
 
@@ -181,6 +187,64 @@ const KelolaDataMhs = () => {
   })
 
   const currentYear = new Date().getFullYear()
+
+  // Kolom untuk Data Table
+  const columns = [
+    {
+      name: 'NIM',
+      selector: (row) => row.nim,
+      sortable: true,
+    },
+    {
+      name: 'Nama Mahasiswa',
+      selector: (row) => row.nama,
+      sortable: true,
+    },
+    {
+      name: 'Kelas',
+      selector: (row) => currentYear - row.angkatan.tahun_angkatan + 1 + row.kela.nama_kelas,
+      sortable: true,
+    },
+    {
+      name: 'Prodi',
+      selector: (row) => row.prodi.nama_prodi,
+      sortable: true,
+    },
+    {
+      name: 'Angkatan',
+      selector: (row) => row.angkatan.tahun_angkatan,
+      sortable: true,
+    },
+    {
+      name: 'Aksi',
+      cell: (row) => (
+        <CTableDataCell>
+          <CCol>
+            <Link to={`/kelola/mahasiswa/update/${row.nim}`}>
+              <CButton
+                color="primary"
+                variant="outline"
+                className="ms-2"
+                title="Ubah Data Mahasiswa"
+              >
+                <CIcon icon={cilPen} />
+              </CButton>
+            </Link>
+            <CButton
+              color="danger"
+              variant="outline"
+              className="ms-2"
+              title="Hapus Data Mahasiswa"
+              onClick={() => handleDeleteModal(row)}
+            >
+              <CIcon icon={cilTrash} />
+            </CButton>
+          </CCol>
+        </CTableDataCell>
+      ),
+    },
+  ]
+  console.log(filteredData)
   return (
     <div>
       <CRow>
@@ -192,21 +256,26 @@ const KelolaDataMhs = () => {
                 <CRow>
                   <CCol md={8} xs={6}>
                     <CRow>
-                      <CCol md={2}>
-                        <Link to={'/kelola/mahasiswa/tambah'}>
-                          <CButton variant="outline">
-                            <CIcon icon={cilUserPlus} className="mx-2" />
-                            Create
+                      <CCol xs={4}>
+                        <CButtonGroup>
+                          <Link to={'/kelola/mahasiswa/tambah'}>
+                            <CButton variant="outline">
+                              <CIcon icon={cilUserPlus} className="mx-1 d-none d-md-inline" />
+                              Create
+                            </CButton>
+                          </Link>
+                          <CButton
+                            variant="outline"
+                            color="success"
+                            onClick={handleImportModal}
+                            className="mx-2"
+                          >
+                            <CIcon icon={cilFile} className="mx-1 d-none d-md-inline" />
+                            Import
                           </CButton>
-                        </Link>
+                        </CButtonGroup>
                       </CCol>
-                      <CCol md={3}>
-                        <CButton variant="outline" color="success" onClick={handleImportModal}>
-                          <CIcon icon={cilFile} className="mx-2" />
-                          Import
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6}></CCol>
+                      <CCol xs={8}></CCol>
                     </CRow>
                   </CCol>
                   <CCol md={4} xs={6}>
@@ -216,14 +285,34 @@ const KelolaDataMhs = () => {
                         value={searchText}
                         onChange={handleSearchChange}
                       />
-                      <CInputGroupText id="search-icon">
+                      <CInputGroupText id="search-icon" className="d-none d-md-block">
                         <CIcon icon={cilSearch} />
                       </CInputGroupText>
                     </CInputGroup>
                   </CCol>
                 </CRow>
               </CForm>
-              <CTable striped bordered responsive>
+              <DataTable
+                columns={columns}
+                data={filteredData}
+                responsive
+                noDataComponent={'No Data'}
+                pagination
+                customStyles={{
+                  cells: {
+                    style: {
+                      justifyContent: 'center',
+                    },
+                  },
+                  headCells: {
+                    style: {
+                      fontWeight: 'bold',
+                      justifyContent: 'center',
+                    },
+                  },
+                }}
+              />
+              {/* <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
@@ -281,11 +370,12 @@ const KelolaDataMhs = () => {
                     ))
                   )}
                 </CTableBody>
-              </CTable>
+              </CTable> */}
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
+      {/* Modal Import */}
       <CModal
         backdrop="static"
         visible={modalImport}
@@ -336,14 +426,30 @@ const KelolaDataMhs = () => {
             </CButton>
           )}
         </CModalFooter>
+        {/* Modal Delete */}
       </CModal>
-      <CModal backdrop="static" visible={modalDelete} onClose={() => setModalDelete(false)}>
+      <CModal
+        backdrop="static"
+        visible={modalDelete}
+        onClick={() => {
+          setModalDelete(false)
+          setMessage('')
+          setLoading(false)
+        }}
+      >
         <CModalHeader closeButton>
           <CModalTitle>Delete</CModalTitle>
         </CModalHeader>
         <CModalBody>Yakin ingin hapus {selectedData ? selectedData.nama : ''} ?</CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalDelete(false)}>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setModalDelete(false)
+              setMessage('')
+              setLoading(false)
+            }}
+          >
             Close
           </CButton>
           <CButton
