@@ -56,22 +56,6 @@ const _nav = [
     name: 'Riwayat Surat Permohonan',
     to: '/riwayat/surat-permohonan',
   },
-  {
-    component: CNavTitle,
-    name: 'App',
-  },
-  {
-    component: CNavItem,
-    name: 'Setting',
-    icon: <CIcon icon={cilAppsSettings} customClassName="nav-icon" />,
-    to: '/setting',
-  },
-  {
-    component: CNavItem,
-    name: 'About',
-    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
-    to: '/about',
-  },
 ]
 
 export default _nav

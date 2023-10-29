@@ -131,7 +131,7 @@ const RiwayatSurat = () => {
                     variant="outline"
                     color="primary"
                     onClick={() => {
-                      handleStatusChange('Rejected')
+                      handleStatusChange('Ditolak')
                     }}
                   >
                     Rejected
@@ -222,7 +222,6 @@ const RiwayatSurat = () => {
                 </CTableBody>
               </CTable>
             </CCardBody>
-            <CCardFooter>Ini Footer</CCardFooter>
           </CCard>
         </CCol>
       </CRow>

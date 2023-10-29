@@ -131,7 +131,7 @@ const RiwayatSurat = () => {
                     variant="outline"
                     color="primary"
                     onClick={() => {
-                      handleStatusChange('Rejected')
+                      handleStatusChange('Ditolak')
                     }}
                   >
                     Rejected
@@ -167,64 +167,71 @@ const RiwayatSurat = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {filteredData.map((user) => (
-                    <CTableRow key={user.id} className="text-center">
-                      <CTableDataCell>{user.jenis}</CTableDataCell>
-                      <CTableDataCell>{user.keterangan}</CTableDataCell>
-                      <CTableDataCell>
-                        <CCol xs={3}>
-                          <CButton variant="outline" color="success" onClick={handleExportModal}>
-                            Lihat
-                          </CButton>
-                        </CCol>
-
-                        <CModal
-                          size="xl"
-                          backdrop="static"
-                          visible={modalExport}
-                          onClose={() => setModalExport(false)}
-                          aria-labelledby="ExportModalLabel"
-                        >
-                          <CModalHeader>
-                            <CModalTitle id="ExportModalLabel">Bukti Surat</CModalTitle>
-                          </CModalHeader>
-                          <CModalBody>
-                            <iframe
-                              src={`http://localhost:8080/api/dosenWali/perizinan/surat/${user.surat}`}
-                              width="100%"
-                              height="600px"
-                            ></iframe>
-                          </CModalBody>
-                          <CModalFooter>
-                            <CButton color="secondary" onClick={() => setModalExport(false)}>
-                              Close
+                  {filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="text-center">
+                        No Data
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((user) => (
+                      <CTableRow key={user.id} className="text-center">
+                        <CTableDataCell>{user.jenis}</CTableDataCell>
+                        <CTableDataCell>{user.keterangan}</CTableDataCell>
+                        <CTableDataCell>
+                          <CCol xs={3}>
+                            <CButton variant="outline" color="success" onClick={handleExportModal}>
+                              Lihat
                             </CButton>
-                          </CModalFooter>
-                        </CModal>
-                      </CTableDataCell>
-                      <CTableDataCell>{user.tanggal_awal}</CTableDataCell>
-                      <CTableDataCell>{user.tanggal_akhir}</CTableDataCell>
-                      <CTableDataCell>
-                        <CBadge
-                          color={
-                            user.status === 'Menunggu Verifikasi'
-                              ? 'warning'
-                              : user.status === 'Diverifikasi'
-                              ? 'success'
-                              : user.status === 'Ditolak'
-                              ? 'danger'
-                              : 'danger'
-                          }
-                        >
-                          {user.status}
-                        </CBadge>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
+                          </CCol>
+
+                          <CModal
+                            size="xl"
+                            backdrop="static"
+                            visible={modalExport}
+                            onClose={() => setModalExport(false)}
+                            aria-labelledby="ExportModalLabel"
+                          >
+                            <CModalHeader>
+                              <CModalTitle id="ExportModalLabel">Bukti Surat</CModalTitle>
+                            </CModalHeader>
+                            <CModalBody>
+                              <iframe
+                                src={`http://localhost:8080/api/dosenWali/perizinan/surat/${user.surat}`}
+                                width="100%"
+                                height="600px"
+                              ></iframe>
+                            </CModalBody>
+                            <CModalFooter>
+                              <CButton color="secondary" onClick={() => setModalExport(false)}>
+                                Close
+                              </CButton>
+                            </CModalFooter>
+                          </CModal>
+                        </CTableDataCell>
+                        <CTableDataCell>{user.tanggal_awal}</CTableDataCell>
+                        <CTableDataCell>{user.tanggal_akhir}</CTableDataCell>
+                        <CTableDataCell>
+                          <CBadge
+                            color={
+                              user.status === 'Menunggu Verifikasi'
+                                ? 'warning'
+                                : user.status === 'Diverifikasi'
+                                ? 'success'
+                                : user.status === 'Ditolak'
+                                ? 'danger'
+                                : 'danger'
+                            }
+                          >
+                            {user.status}
+                          </CBadge>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>
-            <CCardFooter>Ini Footer</CCardFooter>
           </CCard>
         </CCol>
       </CRow>
