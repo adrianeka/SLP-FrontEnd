@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -36,42 +36,37 @@ import {
   cilCalendar,
   cilClock,
 } from '@coreui/icons'
+import axios from 'axios'
 
-const usersData = [
-  {
-    id: 0,
-    judulSurat: 'Judul',
-    tanggal: '12 September 2022',
-    jenis: 'Sakit',
-    alasan: '221511000',
-    surat: 'dadasd.jpg',
-    status: 'On Going',
-  },
-  {
-    id: 1,
-    judulSurat: 'Judul',
-    tanggal: '13 September 2022',
-    jenis: 'Izin',
-    alasan: '221511001',
-    surat: 'dadasd.jpg',
-    status: 'Rejected',
-  },
-  {
-    id: 2,
-    judulSurat: 'Judul',
-    tanggal: '14 September 2022',
-    jenis: 'Sakit',
-    alasan: '221511002',
-    surat: 'dadasd.jpg',
-    status: 'Accepted',
-  },
-]
+const usersData = []
 
 const TableSuratMahasiswa = () => {
   const [modalDelete, setModalDelete] = useState(false)
   const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
+  const [perizinanData, setPerizinanData] = useState([])
+
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/mahasiswa/perizinan/list/draft'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setPerizinanData(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
 
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
@@ -90,7 +85,7 @@ const TableSuratMahasiswa = () => {
     setSearchText(e.target.value)
   }
 
-  const filteredData = usersData.filter((user) => {
+  const filteredData = perizinanData.filter((user) => {
     //Var untuk menampung data baru
     return (
       searchText === '' || // Filter berdasarkan pencarian
@@ -117,7 +112,7 @@ const TableSuratMahasiswa = () => {
                     <CInputGroup className="search-input">
                       <CFormInput
                         placeholder="Search"
-                        value={searchText} // Mengikat nilai pencarian ke state searchText
+                        value={searchText}
                         onChange={handleSearchChange}
                       />
                       <CInputGroupText id="tanggal-awal">
@@ -130,56 +125,55 @@ const TableSuratMahasiswa = () => {
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow className="text-center">
-                    <CTableHeaderCell>Nama Surat</CTableHeaderCell>
-                    <CTableHeaderCell>Tanggal</CTableHeaderCell>
                     <CTableHeaderCell>Jenis Surat</CTableHeaderCell>
                     <CTableHeaderCell>Alasan</CTableHeaderCell>
                     <CTableHeaderCell>Bukti Surat</CTableHeaderCell>
-                    <CTableHeaderCell>Aksi</CTableHeaderCell>
+                    <CTableHeaderCell>Tanggal Awal</CTableHeaderCell>
+                    <CTableHeaderCell>Tanggal Akhir</CTableHeaderCell>
+                    <CTableHeaderCell>Action</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {filteredData.map((user) => (
-                    <CTableRow key={user.id} className="text-center">
-                      <CTableDataCell>{user.judulSurat}</CTableDataCell>
-                      <CTableDataCell>{user.tanggal}</CTableDataCell>
-                      <CTableDataCell>{user.jenis}</CTableDataCell>
-                      <CTableDataCell>{user.alasan}</CTableDataCell>
-                      <CTableDataCell>{user.surat}</CTableDataCell>
-                      <CTableDataCell>
-                        <CButton
-                          color="primary"
-                          variant="outline"
-                          className="ms-2"
-                          title="Ubah Surat Perizinan"
-                          onClick={() => handleUpdateModal(user)}
-                        >
-                          <CIcon icon={cilPen} />
-                        </CButton>
-                        <CButton
-                          color="danger"
-                          variant="outline"
-                          className="ms-2"
-                          title="Hapus Surat Perizinan"
-                          onClick={() => handleDeleteModal(user)}
-                        >
-                          <CIcon icon={cilTrash} />
-                        </CButton>
-                        <CButton
-                          color="primary"
-                          variant="outline"
-                          className="ms-2"
-                          title="Kirim Surat Perizinan"
-                        >
-                          <CIcon icon={cilSend} />
-                        </CButton>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
+                  {filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="text-center">
+                        No Data
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((user) => (
+                      <CTableRow key={user.id} className="text-center">
+                        <CTableDataCell>{user.jenis}</CTableDataCell>
+                        <CTableDataCell>{user.keterangan}</CTableDataCell>
+                        <CTableDataCell>{user.jenis}</CTableDataCell>
+                        <CTableDataCell>{user.tanggal_awal}</CTableDataCell>
+                        <CTableDataCell>{user.tanggal_akhir}</CTableDataCell>
+                        <CTableDataCell>
+                          <CButton
+                            color="primary"
+                            variant="outline"
+                            className="ms-2"
+                            title="Ubah Surat Perizinan"
+                            onClick={() => handleUpdateModal(user)}
+                          >
+                            <CIcon icon={cilPen} />
+                          </CButton>
+                          <CButton
+                            color="danger"
+                            variant="outline"
+                            className="ms-2"
+                            title="Hapus Surat Perizinan"
+                            onClick={() => handleDeleteModal(user)}
+                          >
+                            <CIcon icon={cilTrash} />
+                          </CButton>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>
-            <CCardFooter>Ini Footer</CCardFooter>
           </CCard>
         </CCol>
       </CRow>

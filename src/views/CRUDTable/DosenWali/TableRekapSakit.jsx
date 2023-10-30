@@ -50,10 +50,13 @@ const TableRekapSakit = () => {
   const [searchText, setSearchText] = useState('') // State untuk nilai pencarian
   const [modalExport, setModalExport] = useState(false)
   const [perizinanData, setPerizinanData] = useState([])
+  const myValue = localStorage.getItem('dosenwali')
+  const dosenwaliObject = JSON.parse(myValue)
+  const id_dosen = dosenwaliObject.id
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/dosenWali/perizinan/sakit'
+    const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/sakit/${id_dosen}`
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -90,8 +93,6 @@ const TableRekapSakit = () => {
   }
 
   const handleVerif = async (id, keterangan) => {
-    console.log(id)
-    console.log(keterangan)
     // Handle form submission here, e.g., send the formData to an API
     const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/update/${id}`
 
@@ -129,7 +130,7 @@ const TableRekapSakit = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Data Permohonan Izin Mahasiswa</CCardHeader>
+            <CCardHeader>Daftar Data Permohonan Sakit Mahasiswa</CCardHeader>
             <CCardBody>
               <CForm className="mb-3">
                 <CRow>
@@ -151,6 +152,7 @@ const TableRekapSakit = () => {
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow className="text-center">
+                    <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
                     <CTableHeaderCell>Jenis Surat</CTableHeaderCell>
                     <CTableHeaderCell>Alasan</CTableHeaderCell>
                     <CTableHeaderCell>Bukti Surat</CTableHeaderCell>
@@ -161,85 +163,93 @@ const TableRekapSakit = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {filteredData.map((user) => (
-                    <CTableRow key={user.id} className="text-center">
-                      <CTableDataCell>{user.jenis}</CTableDataCell>
-                      <CTableDataCell>{user.keterangan}</CTableDataCell>
-                      <CTableDataCell>
-                        <CCol xs={3}>
-                          <CButton variant="outline" color="success" onClick={handleExportModal}>
-                            Lihat
-                          </CButton>
-                        </CCol>
-
-                        <CModal
-                          size="xl"
-                          backdrop="static"
-                          visible={modalExport}
-                          onClose={() => setModalExport(false)}
-                          aria-labelledby="ExportModalLabel"
-                        >
-                          <CModalHeader>
-                            <CModalTitle id="ExportModalLabel">Bukti Surat</CModalTitle>
-                          </CModalHeader>
-                          <CModalBody>
-                            <iframe
-                              src={`http://localhost:8080/api/mahasiswa/perizinan/surat/${user.surat}`}
-                              width="100%"
-                              height="600px"
-                            ></iframe>
-                          </CModalBody>
-                          <CModalFooter>
-                            <CButton color="secondary" onClick={() => setModalExport(false)}>
-                              Close
+                  {filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No Data
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((user) => (
+                      <CTableRow key={user.id} className="text-center">
+                        <CTableDataCell>{user.mahasiswa.nama}</CTableDataCell>
+                        <CTableDataCell>{user.jenis}</CTableDataCell>
+                        <CTableDataCell>{user.keterangan}</CTableDataCell>
+                        <CTableDataCell>
+                          <CCol xs={3}>
+                            <CButton variant="outline" color="success" onClick={handleExportModal}>
+                              Lihat
                             </CButton>
-                          </CModalFooter>
-                        </CModal>
-                      </CTableDataCell>
-                      <CTableDataCell>{user.tanggal_awal}</CTableDataCell>
-                      <CTableDataCell>{user.tanggal_akhir}</CTableDataCell>
-                      <CTableDataCell>
-                        <CBadge
-                          color={
-                            user.status === 'Menunggu Verifikasi'
-                              ? 'warning'
-                              : user.status === 'Diverifikasi'
-                              ? 'success'
-                              : user.status === 'Ditolak'
-                              ? 'danger'
-                              : 'danger'
-                          }
-                        >
-                          {user.status}
-                        </CBadge>
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <CCol>
-                          <CButton
-                            color="success"
-                            variant="outline"
-                            className="ms-2"
-                            onClick={() => handleVerif(user.id_perizinan, 'Diverifikasi')}
-                          >
-                            Disetujui
-                          </CButton>
+                          </CCol>
 
-                          <CButton
-                            color="danger"
-                            variant="outline"
-                            className="ms-2"
-                            onClick={() => handleVerif(user.id_perizinan, 'Ditolak')}
+                          <CModal
+                            size="xl"
+                            backdrop="static"
+                            visible={modalExport}
+                            onClose={() => setModalExport(false)}
+                            aria-labelledby="ExportModalLabel"
                           >
-                            Ditolak
-                          </CButton>
-                        </CCol>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
+                            <CModalHeader>
+                              <CModalTitle id="ExportModalLabel">Bukti Surat</CModalTitle>
+                            </CModalHeader>
+                            <CModalBody>
+                              <iframe
+                                src={`http://localhost:8080/api/mahasiswa/perizinan/surat/${user.surat}`}
+                                width="100%"
+                                height="600px"
+                              ></iframe>
+                            </CModalBody>
+                            <CModalFooter>
+                              <CButton color="secondary" onClick={() => setModalExport(false)}>
+                                Close
+                              </CButton>
+                            </CModalFooter>
+                          </CModal>
+                        </CTableDataCell>
+                        <CTableDataCell>{user.tanggal_awal}</CTableDataCell>
+                        <CTableDataCell>{user.tanggal_akhir}</CTableDataCell>
+                        <CTableDataCell>
+                          <CBadge
+                            color={
+                              user.status === 'Menunggu Verifikasi'
+                                ? 'warning'
+                                : user.status === 'Diverifikasi'
+                                ? 'success'
+                                : user.status === 'Ditolak'
+                                ? 'danger'
+                                : 'danger'
+                            }
+                          >
+                            {user.status}
+                          </CBadge>
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          <CCol>
+                            <CButton
+                              color="success"
+                              variant="outline"
+                              className="ms-2"
+                              onClick={() => handleVerif(user.id_perizinan, 'Diverifikasi')}
+                            >
+                              Disetujui
+                            </CButton>
+
+                            <CButton
+                              color="danger"
+                              variant="outline"
+                              className="ms-2"
+                              onClick={() => handleVerif(user.id_perizinan, 'Ditolak')}
+                            >
+                              Ditolak
+                            </CButton>
+                          </CCol>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>
-            <CCardFooter>Ini Footer</CCardFooter>
           </CCard>
         </CCol>
       </CRow>

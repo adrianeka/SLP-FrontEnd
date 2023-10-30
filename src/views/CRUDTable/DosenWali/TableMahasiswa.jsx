@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -27,17 +27,29 @@ import {
   CDropdownMenu,
   CDropdownItem,
 } from '@coreui/react'
-
-const usersData = [
-  { id: 0, nama: 'Adrian', nim: '221511000', sakit: '3', izin: '0' },
-  { id: 1, nama: 'Reno', nim: '221511000', sakit: '4', izin: '8' },
-  { id: 2, nama: 'Mahesya', nim: '221511000', sakit: '0', izin: '2' },
-  { id: 3, nama: 'Taufik', nim: '221511000', sakit: '1', izin: '2' },
-  { id: 4, nama: 'Rizki', nim: '221511000', sakit: '2', izin: '1' },
-  { id: 5, nama: 'Tendy', nim: '221511000', sakit: '1', izin: '0' },
-]
+import axios from 'axios'
 
 const MahasiswaTable = () => {
+  const [usersData, setMahasiswaData] = useState([])
+  const myValue = localStorage.getItem('dosenwali')
+  const dosenwaliObject = JSON.parse(myValue)
+  const id_dosen = dosenwaliObject.id
+
+  useEffect(() => {
+    const apiUrl = `http://localhost:8080/api/dosenWali/mahasiswa/${id_dosen}`
+
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log(response.data)
+        setMahasiswaData(response.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error)
+      })
+  }, [])
   return (
     <div>
       <CRow>
