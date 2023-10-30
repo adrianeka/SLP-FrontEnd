@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import {
   CButton,
@@ -8,22 +9,32 @@ import {
   CCardFooter,
   CCardHeader,
   CCol,
-  CContainer,
   CForm,
   CFormInput,
   CFormSelect,
+  CContainer,
   CInputGroup,
   CInputGroupText,
   CRow,
   CSpinner,
 } from '@coreui/react'
+import { DocsExample } from 'src/components'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilShortText } from '@coreui/icons'
-import { Link } from 'react-router-dom'
+import {
+  cilCalendar,
+  cilCircle,
+  cilClock,
+  cilLockLocked,
+  cilShortText,
+  cilUser,
+} from '@coreui/icons'
+import { useParams } from 'react-router-dom'
 
-const FormCreateMhs = () => {
+const FormUpdateMhs = () => {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+  const { id } = useParams()
+  console.log(id)
   const [formData, setFormData] = useState({
     nama_dosen: '',
     kode_dosen: '',
@@ -37,6 +48,7 @@ const FormCreateMhs = () => {
     kelas_id: '', // Add this field
     angkatan_id: '', // Add this field
   })
+
   const [angkatanData, setAngkatanData] = useState([])
   useEffect(() => {
     const apiUrl = 'http://localhost:8080/api/admins/angkatan' // Replace with your actual API endpoint
@@ -78,38 +90,46 @@ const FormCreateMhs = () => {
         console.error('Error fetching Kelas data:', error)
       })
   }, [])
+  useEffect(() => {
+    // Mengambil data Dosen dari API berdasarkan ID saat komponen dimuat
+    const fetchData = async () => {
+      try {
+        const apiUrl = `http://localhost:8080/api/admins/mahasiswa/${id}`
+        const response = await axios.get(apiUrl, {
+          withCredentials: true,
+        })
+        const MahasiswaData = response.data // Data Dosen yang diambil dari API
+        console.log(response.data)
+        setFormData({
+          nama: MahasiswaData.nama,
+          nim: MahasiswaData.nim,
+          email: MahasiswaData.username,
+          password: MahasiswaData.password,
+          no_telp_orang_tua: MahasiswaData.no_telp_orang_tua,
+          no_telp: MahasiswaData.no_telp,
+          prodi_id: MahasiswaData.prodi_id,
+          kelas_id: MahasiswaData.kelas_id,
+          angkatan_id: MahasiswaData.angkatan_id,
+        })
+      } catch (error) {
+        console.error('Error fetching Mahasiswa data:', error)
+      }
+    }
+
+    fetchData()
+  }, [id])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
+    // Handle form submission here, e.g., send the formData to an API
+    const apiUrl = `http://localhost:8080/api/admins/mahasiswa/update/${id}`
 
-    const apiUrl = 'http://localhost:8080/api/admins/mahasiswa/create'
-
-    let isFormValid = true // Menyimpan status keseluruhan validasi
-
-    // Validasi setiap field terpisah
-
-    if (!formData.angkatan_id) {
-      setMessage('Angkatan harus dipilih.')
-      isFormValid = false
-    }
-    if (!formData.kelas_id) {
-      setMessage('Kelas harus dipilih.')
-      isFormValid = false
-    }
-    if (!formData.prodi_id) {
-      setMessage('Prodi harus dipilih.')
-      isFormValid = false
-    }
-    if (!isFormValid) {
-      setLoading(false)
-      return
-    }
-
-    const newMahasiswa = {
+    // Update Dosen object from the form data
+    const updateMahasiswa = {
       nim: formData.nim,
       nama: formData.nama,
       username: formData.email,
-      password: formData.password,
       no_telp: formData.no_telp,
       no_telp_orang_tua: formData.no_telp_orang_tua,
       prodi_id: formData.prodi_id,
@@ -117,43 +137,40 @@ const FormCreateMhs = () => {
       role_id: 2,
       angkatan_id: formData.angkatan_id,
     }
+
     try {
-      const response = await axios.post(apiUrl, newMahasiswa, {
+      const response = await axios.put(apiUrl, updateMahasiswa, {
         withCredentials: true,
       })
-      // alert('Data mahasiswa berhasil ditambahkan')
       // Menampilkan Sweet Alert saat berhasil menambah data
       Swal.fire({
         title: 'Berhasil',
-        text: 'Data mahasiswa berhasil ditambahkan',
+        text: `Data ${updateMahasiswa.nama} berhasil diubah`,
         icon: 'success',
         confirmButtonText: 'OK',
       }).then((result) => {
         if (result.isConfirmed) {
           // Mengarahkan user ke kelola mahasiswa
           window.location.href = '/kelola/mahasiswa'
-          console.log('Mahasiswa created successfully:', response.data)
+          console.log('Mahasiswa updated successfully:', response.data)
         }
       })
     } catch (error) {
-      // console.error('Error creating Mahasiswa:', error)\
-      if (error.response && error.response.data && error.response.data.message) {
-        const resMessage =
-          (error.response && error.response.data && error.response.data.message) ||
-          error.message ||
-          error.toString()
-        setMessage(resMessage)
-      }
+      // console.error('Error updating Dosen:', error)
+      const resMessage =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString()
       setLoading(false)
+      setMessage(resMessage)
     }
   }
-
   return (
     <>
       <CContainer>
         <CCard>
           <CForm className="" onSubmit={handleSubmit}>
-            <CCardHeader>Form Tambah Mahasiswa</CCardHeader>
+            <CCardHeader>Form Update Mahasiswa</CCardHeader>
             <CCardBody>
               <CRow className="g-3">
                 <CCol xs={12}>
@@ -203,7 +220,7 @@ const FormCreateMhs = () => {
                       required
                       onChange={(e) => setFormData({ ...formData, nim: e.target.value })}
                       pattern="[0-9]{9,9}"
-                      title="NIM harus terdiri dari 9 angka"
+                      title="NIM harus terdiri dari minimal 9 angka"
                     />
                   </CInputGroup>
                 </CCol>
@@ -353,7 +370,7 @@ const FormCreateMhs = () => {
                     </CButton>
                   ) : (
                     <CButton color="primary" variant="outline" type="submit">
-                      Submit
+                      Save
                     </CButton>
                   )}
                 </CCol>
@@ -369,4 +386,4 @@ const FormCreateMhs = () => {
   )
 }
 
-export default FormCreateMhs
+export default FormUpdateMhs

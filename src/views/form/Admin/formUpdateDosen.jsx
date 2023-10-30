@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import Swal from 'sweetalert2'
+import { useParams } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -15,51 +17,75 @@ import {
   CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilShortText } from '@coreui/icons'
 import { Link } from 'react-router-dom'
+import { cilShortText } from '@coreui/icons'
 
-import axios from 'axios'
-const FormTambahDosen = () => {
+const FormUpdateDosen = () => {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+  const { id } = useParams()
+  console.log(id) // Mengambil ID dari URL menggunakan useParams
   const [formData, setFormData] = useState({
     nama_dosen: '',
     kode_dosen: '',
     email: '',
   })
 
+  useEffect(() => {
+    // Mengambil data Dosen dari API berdasarkan ID saat komponen dimuat
+    const fetchData = async () => {
+      try {
+        const apiUrl = `http://localhost:8080/api/admins/dosen/${id}`
+        const response = await axios.get(apiUrl, {
+          withCredentials: true,
+        })
+        const dosenData = response.data // Data Dosen yang diambil dari API
+        console.log(response.data)
+        setFormData({
+          nama_dosen: dosenData.nama_dosen,
+          kode_dosen: dosenData.kode_dosen,
+          email: dosenData.email,
+        })
+      } catch (error) {
+        console.error('Error fetching Dosen data:', error)
+      }
+    }
+
+    fetchData()
+  }, [id])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
     // Handle form submission here, e.g., send the formData to an API
-    const apiUrl = 'http://localhost:8080/api/admins/dosen/create'
+    const apiUrl = `http://localhost:8080/api/admins/dosen/update/${id}`
 
-    // Create a new Dosen object from the form data
-    const newDosen = {
+    // Update Dosen object from the form data
+    const updatedDosen = {
       kode_dosen: formData.kode_dosen,
       nama_dosen: formData.nama_dosen,
       email: formData.email,
+      username: formData.username,
     }
 
     try {
-      const response = await axios.post(apiUrl, newDosen, {
+      const response = await axios.put(apiUrl, updatedDosen, {
         withCredentials: true,
       })
+      console.log('Dosen updated successfully:', response.data)
       // Menampilkan Sweet Alert saat berhasil menambah data
       Swal.fire({
         title: 'Berhasil',
-        text: `Data dosen berhasil ditambahkan.`,
+        text: `Data ${updatedDosen.nama_dosen} berhasil diubah.`,
         icon: 'success',
         confirmButtonText: 'OK',
       }).then((result) => {
         if (result.isConfirmed) {
           // Mengarahkan user ke kelola dosen pengampu
           window.location.href = '/kelola/dosen/pengampu'
-          console.log('Dosen created successfully:', response.data)
+          console.log('Dosen updated successfully:', response.data)
         }
       })
     } catch (error) {
-      // console.error('Error creating Dosen:', error)
       if (error.response && error.response.data && error.response.data.message) {
         const resMessage =
           (error.response && error.response.data && error.response.data.message) ||
@@ -74,7 +100,7 @@ const FormTambahDosen = () => {
     <>
       <CCard>
         <CForm onSubmit={handleSubmit}>
-          <CCardHeader>Form Tambah Dosen</CCardHeader>
+          <CCardHeader>Form Update Dosen</CCardHeader>
           <CCardBody>
             <CRow>
               <CCol xs={12}>
@@ -147,7 +173,7 @@ const FormTambahDosen = () => {
                   <CButton color="primary" variant="outline" type="submit">
                     Submit
                   </CButton>
-                )}{' '}
+                )}
               </CCol>
             </CRow>
             <CRow className="mt-2">
@@ -160,4 +186,4 @@ const FormTambahDosen = () => {
   )
 }
 
-export default FormTambahDosen
+export default FormUpdateDosen

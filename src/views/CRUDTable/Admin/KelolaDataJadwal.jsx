@@ -41,53 +41,33 @@ import {
 } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
-const usersData = [
-  {
-    id: 0,
-    nama_matkul: 'Basis Data',
-    hari: 'Selasa',
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '2B',
-    Prodi: 'D3',
-  },
-  {
-    id: 1,
-    nama_matkul: 'Aljabar Linier',
-    hari: 'Selasa',
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '2B',
-    Prodi: 'D3',
-  },
-  {
-    id: 2,
-    nama_matkul: 'Dasar Dasar Pemrograman',
-    hari: 'Rabu',
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '1B',
-    Prodi: 'D3',
-  },
-  {
-    id: 3,
-    nama_matkul: 'Pemrograman Beriorientasi Objek',
-    hari: 'Kamis',
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '2B',
-    Prodi: 'D3',
-  },
-  {
-    id: 4,
-    nama_matkul: 'Pengantar Rekayasa Perangkat Lunak',
-    hari: "Jum'at",
-    Semester: 'Ganjil 2023/2024',
-    Kelas: '2B',
-    Prodi: 'D3',
-  },
-]
-
 const KelolaDataJadwal = () => {
   const [modalDelete, setModalDelete] = useState(false)
+  const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
+  const [jadwalData, setJadwalData] = useState([])
+
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/admins/jadwal'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+
+        console.log(response.data)
+        setJadwalData(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
 
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
@@ -95,19 +75,58 @@ const KelolaDataJadwal = () => {
     setModalDelete(true) // Menampilkan modal
   }
 
+  const handleCreateModal = (e) => {
+    //Handle saat tombol create di klik
+    // setModalCreate(true) //Menampilkan Modal
+  }
+
+  const handleUpdateModal = (data) => {
+    // Handle saat tombol update diklik
+    // setIsCreateMode(false)
+    setSelectedData(data)
+    setModalUpdate(true) // Menampilkan modal
+  }
+
   const handleSearchChange = (e) => {
     //Handle search saat di ketik
     setSearchText(e.target.value)
   }
-  const filteredData = usersData.filter((data) => {
+
+  const handleDelete = (id) => {
+    // URL API untuk menghapus data dosen dengan id tertentu
+    const apiUrl = `http://localhost:8080/api/admins/jadwal/${id}`
+
+    // Menggunakan Axios untuk mengirim permintaan DELETE
+    axios
+      .delete(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Handle ketika data berhasil dihapus
+        console.log('Data berhasil dihapus:', response.data)
+
+        setJadwalData((prevData) => prevData.filter((jadwal) => jadwal.id_jadwal !== id))
+
+        // Tutup modal setelah berhasil menghapus
+        setModalDelete(false)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat menghapus data
+        console.error('Error deleting data:', error)
+      })
+  }
+
+  const filteredData = jadwalData.filter((data) => {
     //Search filter data
     return (
       searchText === '' ||
-      data.nama_matkul.toLowerCase().includes(searchText.toLowerCase()) ||
+      `${data.detailMatkul.mataKuliah.nama_matakuliah} (${data.detailMatkul.tipe})`
+        .toLowerCase()
+        .includes(searchText.toLowerCase()) ||
       data.hari.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.Semester.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.Kelas.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.Prodi.toLowerCase().includes(searchText.toLowerCase())
+      data.semester.nama_semester.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.kela.nama_kelas.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.detailMatkul.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase())
     )
   })
 
@@ -168,11 +187,13 @@ const KelolaDataJadwal = () => {
                   ) : (
                     filteredData.map((jadwal) => (
                       <CTableRow key={jadwal.id}>
-                        <CTableDataCell>{jadwal.nama_matkul}</CTableDataCell>
+                        <CTableDataCell>
+                          {`${jadwal.detailMatkul.mataKuliah.nama_matakuliah} (${jadwal.detailMatkul.tipe})`}
+                        </CTableDataCell>
                         <CTableDataCell>{jadwal.hari}</CTableDataCell>
-                        <CTableDataCell>{jadwal.Semester}</CTableDataCell>
-                        <CTableDataCell>{jadwal.Kelas}</CTableDataCell>
-                        <CTableDataCell>{jadwal.Prodi}</CTableDataCell>
+                        <CTableDataCell>{jadwal.semester.nama_semester}</CTableDataCell>
+                        <CTableDataCell>{jadwal.kela.nama_kelas}</CTableDataCell>
+                        <CTableDataCell>{jadwal.detailMatkul.prodi.nama_prodi}</CTableDataCell>
                         <CTableDataCell>
                           <CCol>
                             <Link to={`/kelola/akademik/jadwal/update/${jadwal.id}`}>
@@ -220,7 +241,9 @@ const KelolaDataJadwal = () => {
           <CButton color="secondary" onClick={() => setModalDelete(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton color="danger" onClick={() => handleDelete(selectedData.id_jadwal)}>
+            Delete
+          </CButton>
         </CModalFooter>
       </CModal>
     </div>

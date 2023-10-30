@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import Swal from 'sweetalert2'
 import {
   CButton,
   CCard,
@@ -23,22 +23,9 @@ import {
   CModalBody,
   CModalFooter,
   CInputGroupText,
-  CFormTextarea,
-  CFormSelect,
-  CFormLabel,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilPen,
-  cilSend,
-  cilTrash,
-  cilSearch,
-  cilShortText,
-  cilCalendar,
-  cilClock,
-  cilUserPlus,
-  cilFile,
-} from '@coreui/icons'
+import { cilPen, cilTrash, cilSearch, cilUserPlus } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 
 const KelolaDataSemester = () => {
@@ -104,6 +91,13 @@ const KelolaDataSemester = () => {
 
         // Tutup modal setelah berhasil menghapus
         setModalDelete(false)
+        // Menampilkan Sweet Alert saat berhasil menghapus data
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Data ${selectedData ? selectedData.id_semester : ''} berhasil dihapus`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
       })
       .catch((error) => {
         // Handle error jika terjadi kesalahan saat menghapus data
@@ -117,53 +111,17 @@ const KelolaDataSemester = () => {
   }
 
   const filteredData = semesterData.filter((data) => {
+    const namaSemester = (data.nama_semester || '').toString().toLowerCase()
+    const idSemester = (data.id_semester || '').toString().toLowerCase()
+    const statusSemester = (data.status_semester || '').toString().toLowerCase()
+
     return (
       searchText === '' ||
-      (data.nama_semester && data.nama_semester.toLowerCase().includes(searchText.toLowerCase())) ||
-      (data.id_semester && data.id_semester.toLowerCase().includes(searchText.toLowerCase())) ||
-      (data.status_semester &&
-        data.status_semester.toLowerCase().includes(searchText.toLowerCase()))
+      namaSemester.includes(searchText.toLowerCase()) ||
+      idSemester.includes(searchText.toLowerCase()) ||
+      statusSemester.includes(searchText.toLowerCase())
     )
   })
-  // Data Table Columns
-  // const columns = [
-  //   {
-  //     name: 'Semester',
-  //     selector: (row) => row.nama_semester,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: 'Tahun Ajar',
-  //     selector: (row) => row.id_semester,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: 'Status',
-  //     selector: (row) => row.status_semester,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: 'Actions',
-  //     cell: (row) => (
-  //       <div>
-  //         <Link to={`/kelola/akademik/semester/update/${row.id_semester}`}>
-  //           <CButton color="primary" variant="outline" className="ms-2" title="Ubah Data Semester">
-  //             <CIcon icon={cilPen} />
-  //           </CButton>
-  //         </Link>
-  //         <CButton
-  //           color="danger"
-  //           variant="outline"
-  //           className="ms-2"
-  //           title="Hapus Data Semester"
-  //           onClick={() => handleDeleteModal(row)}
-  //         >
-  //           <CIcon icon={cilTrash} />
-  //         </CButton>
-  //       </div>
-  //     ),
-  //   },
-  // ]
   return (
     <div>
       <CRow>
@@ -200,7 +158,6 @@ const KelolaDataSemester = () => {
                   </CCol>
                 </CRow>
               </CForm>
-              {/* <DataTable columns={columns} data={filteredData} /> */}
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow className="text-center">

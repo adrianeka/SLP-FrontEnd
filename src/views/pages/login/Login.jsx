@@ -40,10 +40,22 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault()
-
     setMessage('')
     setLoading(true)
+    let isFormValid = true // Menyimpan status keseluruhan validasi
 
+    if (!password) {
+      setMessage('Password harus diisi.')
+      isFormValid = false
+    }
+    if (!username) {
+      setMessage('Username harus diisi.')
+      isFormValid = false
+    }
+    if (!isFormValid) {
+      setLoading(false)
+      return
+    }
     AuthService.login(username, password).then(
       (response) => {
         const userRole = response.roles
@@ -104,9 +116,20 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="light" className="px-4" type="submit">
-                          Login
-                        </CButton>
+                        {loading ? (
+                          <CButton
+                            color="light"
+                            className="px-4 text-center"
+                            type="submit"
+                            disabled
+                          >
+                            <CSpinner color="dark" size="sm" />
+                          </CButton>
+                        ) : (
+                          <CButton color="light" className="px-4 text-center" type="submit">
+                            Login
+                          </CButton>
+                        )}
                       </CCol>
                       <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0">
@@ -114,8 +137,7 @@ const Login = () => {
                         </CButton>
                       </CCol>
                     </CRow>
-                    <CRow>
-                      {loading && <CSpinner color="info" />}
+                    <CRow className="mt-2">
                       {message && <p className="error-message alert alert-danger">{message}</p>}
                     </CRow>
                   </CForm>

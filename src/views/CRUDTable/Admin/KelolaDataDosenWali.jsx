@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import Swal from 'sweetalert2'
 import {
   CButton,
   CCard,
@@ -118,6 +118,13 @@ const KelolaDataDosenWali = () => {
 
         // Tutup modal setelah berhasil menghapus
         setModalDelete(false)
+        // Menampilkan Sweet Alert saat berhasil menghapus data
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Data Dosen Wali berhasil dihapus.`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
       })
       .catch((error) => {
         // Handle error jika terjadi kesalahan saat menghapus data
@@ -134,9 +141,9 @@ const KelolaDataDosenWali = () => {
     return (
       searchText === '' ||
       data.angkatan.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.kela.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.kelas.toLowerCase().includes(searchText.toLowerCase()) ||
       data.prodi.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.wali.toLowerCase().includes(searchText.toLowerCase())
+      data.dosen.toLowerCase().includes(searchText.toLowerCase())
     )
   })
   // console.log(selectedData)

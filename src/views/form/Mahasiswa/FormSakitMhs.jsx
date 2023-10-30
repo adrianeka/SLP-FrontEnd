@@ -71,7 +71,7 @@ const FormSakitMhs = () => {
     keterangan: '',
     tanggal_awal: '',
     tanggal_akhir: '',
-    matakuliah: '',
+    matakuliah: [],
   })
 
   const handleFileChange = (e) => {
@@ -111,7 +111,7 @@ const FormSakitMhs = () => {
 
   const handleSubmitDraft = async (e) => {
     e.preventDefault()
-    const apiUrl = 'http://localhost:8080/api/mahasiswa/perizinan'
+    const apiUrl = 'http://localhost:8080/api/mahasiswa/perizinan/draft'
 
     const newPerizinan = new FormData()
     newPerizinan.append('file', selectedFile)
@@ -120,11 +120,18 @@ const FormSakitMhs = () => {
     newPerizinan.append('tanggal_akhir', formData.tanggal_akhir)
     newPerizinan.append('jenis', 'Sakit')
     newPerizinan.append('nim', userRole)
-    newPerizinan.append('status', 'Menunggu Verifikasi')
-    newPerizinan.append(
-      'matakuliah',
-      formData.matakuliah.map((option) => option.value),
-    )
+    newPerizinan.append('status', 'Draft')
+
+    // Check if formData.matakuliah is an array before mapping it
+    if (Array.isArray(formData.matakuliah)) {
+      newPerizinan.append(
+        'matakuliah',
+        formData.matakuliah.map((option) => option.value),
+      )
+    } else {
+      newPerizinan.append('matakuliah', [])
+    }
+
     newPerizinan.append('id_semester', semesterData[0].id_semester)
     try {
       const response = await axios.post(apiUrl, newPerizinan, {
