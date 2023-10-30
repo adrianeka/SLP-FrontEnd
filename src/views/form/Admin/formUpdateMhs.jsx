@@ -103,7 +103,7 @@ const FormUpdateMhs = () => {
         setFormData({
           nama: MahasiswaData.nama,
           nim: MahasiswaData.nim,
-          email: MahasiswaData.username,
+          email: MahasiswaData.email,
           password: MahasiswaData.password,
           no_telp_orang_tua: MahasiswaData.no_telp_orang_tua,
           no_telp: MahasiswaData.no_telp,
@@ -129,7 +129,7 @@ const FormUpdateMhs = () => {
     const updateMahasiswa = {
       nim: formData.nim,
       nama: formData.nama,
-      username: formData.email,
+      email: formData.email,
       no_telp: formData.no_telp,
       no_telp_orang_tua: formData.no_telp_orang_tua,
       prodi_id: formData.prodi_id,
@@ -165,6 +165,7 @@ const FormUpdateMhs = () => {
       setMessage(resMessage)
     }
   }
+  console.log(formData)
   return (
     <>
       <CContainer>
@@ -256,6 +257,8 @@ const FormUpdateMhs = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, no_telp_orang_tua: e.target.value })
                       }
+                      pattern="[08][0-9]{8,11}"
+                      title="Nomor Telepon harus diawali dengan '08' dan memiliki jumlah 10-13"
                     />
                   </CInputGroup>
                 </CCol>
@@ -272,6 +275,8 @@ const FormUpdateMhs = () => {
                       value={formData.no_telp}
                       required
                       onChange={(e) => setFormData({ ...formData, no_telp: e.target.value })}
+                      pattern="[08][0-9]{8,11}"
+                      title="Nomor Telepon harus diawali dengan '08' dan memiliki jumlah 10-13"
                     />
                   </CInputGroup>
                 </CCol>
