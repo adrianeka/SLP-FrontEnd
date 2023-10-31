@@ -37,6 +37,7 @@ import {
   cilClock,
 } from '@coreui/icons'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const usersData = []
 
@@ -149,15 +150,16 @@ const TableSuratMahasiswa = () => {
                         <CTableDataCell>{user.tanggal_awal}</CTableDataCell>
                         <CTableDataCell>{user.tanggal_akhir}</CTableDataCell>
                         <CTableDataCell>
-                          <CButton
-                            color="primary"
-                            variant="outline"
-                            className="ms-2"
-                            title="Ubah Surat Perizinan"
-                            onClick={() => handleUpdateModal(user)}
-                          >
-                            <CIcon icon={cilPen} />
-                          </CButton>
+                          <Link to={`/drafts/update/${user.id_perizinan}`}>
+                            <CButton
+                              color="primary"
+                              variant="outline"
+                              className="ms-2"
+                              title="Ubah Data Mahasiswa"
+                            >
+                              <CIcon icon={cilPen} />
+                            </CButton>
+                          </Link>
                           <CButton
                             color="danger"
                             variant="outline"

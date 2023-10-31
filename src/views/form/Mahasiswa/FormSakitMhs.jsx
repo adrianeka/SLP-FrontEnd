@@ -140,7 +140,7 @@ const FormSakitMhs = () => {
           'Content-Type': 'multipart/form-data',
         },
       })
-      window.location.href = '/riwayat'
+      window.location.href = '/drafts'
       console.log('Perizinan created successfully:', response.data)
     } catch (error) {
       console.error('Error creating Perizinan:', error)

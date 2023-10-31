@@ -85,6 +85,16 @@ const _nav = [
         name: 'Mata Kuliah',
         to: '/kelola/akademik/matkul',
       },
+      {
+        component: CNavItem,
+        name: 'Jadwal Kelas',
+        to: '/kelola/akademik/jadwalkelas',
+      },
+      {
+        component: CNavItem,
+        name: 'Data Mengajar',
+        to: '/kelola/akademik/mengajar',
+      },
     ],
   },
 ]
