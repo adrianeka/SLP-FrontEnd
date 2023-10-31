@@ -37,10 +37,13 @@ const RiwayatSurat = () => {
   const [selectedStatus, setSelectedStatus] = useState('All')
   const [searchText, setSearchText] = useState('') // State untuk nilai pencarian
   const [perizinanData, setPerizinanData] = useState([])
+  const myValue = localStorage.getItem('dosenwali')
+  const dosenwaliObject = JSON.parse(myValue)
+  const id_dosen = dosenwaliObject.id
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/dosenWali/perizinan'
+    const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/${id_dosen}`
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -158,6 +161,7 @@ const RiwayatSurat = () => {
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow className="text-center">
+                    <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
                     <CTableHeaderCell>Jenis Surat</CTableHeaderCell>
                     <CTableHeaderCell>Alasan</CTableHeaderCell>
                     <CTableHeaderCell>Bukti Surat</CTableHeaderCell>
@@ -169,18 +173,24 @@ const RiwayatSurat = () => {
                 <CTableBody>
                   {filteredData.length === 0 ? (
                     <tr>
-                      <td colSpan="6" className="text-center">
+                      <td colSpan="7" className="text-center">
                         No Data
                       </td>
                     </tr>
                   ) : (
                     filteredData.map((user) => (
                       <CTableRow key={user.id} className="text-center">
+                        <CTableDataCell>{user.mahasiswa.nama}</CTableDataCell>
                         <CTableDataCell>{user.jenis}</CTableDataCell>
                         <CTableDataCell>{user.keterangan}</CTableDataCell>
                         <CTableDataCell>
                           <CCol xs={3}>
-                            <CButton variant="outline" color="success" onClick={handleExportModal}>
+                            <CButton
+                              variant="outline"
+                              color="success"
+                              onClick={handleExportModal}
+                              className="text-center"
+                            >
                               Lihat
                             </CButton>
                           </CCol>

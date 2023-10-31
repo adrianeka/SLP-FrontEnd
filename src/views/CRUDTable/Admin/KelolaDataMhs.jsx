@@ -43,22 +43,17 @@ const KelolaDataMhs = () => {
   const [selectedFile, setSelectedFile] = useState(null)
 
   useEffect(() => {
-    // URL API yang akan diambil datanya
     const apiUrl = 'http://localhost:8080/api/admins/mahasiswa'
 
-    // Menggunakan Axios untuk mengambil data dari API
     axios
       .get(apiUrl, {
         withCredentials: true,
       })
       .then((response) => {
-        // Mengatur data dosen ke dalam state dosenData
-
         console.log(response.data)
         setMahasiswaData(response.data)
       })
       .catch((error) => {
-        // Handle error jika terjadi kesalahan saat mengambil data dari API
         console.error('Error fetching data:', error)
       })
   }, [])
@@ -80,8 +75,6 @@ const KelolaDataMhs = () => {
       setLoading(true)
       const formData = new FormData()
       formData.append('excel', selectedFile)
-
-      // Make a POST request to your backend API for Excel file upload
       const response = await axios.post(
         'http://localhost:8080/api/admins/import/mahasiswa',
         formData,
@@ -109,7 +102,6 @@ const KelolaDataMhs = () => {
           withCredentials: true,
         })
 
-        // Update data pada tabel
         setMahasiswaData(updatedDataResponse.data)
         // Menampilkan Sweet Alert saat berhasil menambah data
         Swal.fire({
@@ -338,10 +330,14 @@ const KelolaDataMhs = () => {
                         <CTableDataCell>{user.nama}</CTableDataCell>
                         <CTableDataCell>
 <<<<<<< HEAD
+<<<<<<< HEAD
                           {currentYear - user.angkatan.tahun_angkatan + 1 + user.kela.nama_kelas}
 =======
                           {tahunSaatIni - user.angkatan.tahun_angkatan + 1 + user.kela.nama_kelas}
 >>>>>>> d83b3ee7c2f016d46f3d8562a5f759038477f8e5
+=======
+                          {currentYear - user.angkatan.tahun_angkatan + 1 + user.kela.nama_kelas}
+>>>>>>> 17df365dd8ba29ee756fe2a8e4e1a622b0db1037
                         </CTableDataCell>
                         <CTableDataCell>{user.nim}</CTableDataCell>
                         <CTableDataCell>{user.prodi.nama_prodi}</CTableDataCell>
