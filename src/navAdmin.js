@@ -72,11 +72,6 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Jadwal Matakuliah',
-        to: '/kelola/akademik/jadwal',
-      },
-      {
-        component: CNavItem,
         name: 'Semester',
         to: '/kelola/akademik/semester',
       },

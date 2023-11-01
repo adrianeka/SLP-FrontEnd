@@ -30,7 +30,7 @@ const AppSidebarDosenWali = () => {
       }}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
-        <CIcon className="sidebar-brand-full" to="/dashboard"/>
+        <CIcon className="sidebar-brand-full" to="/dashboard" />
         <CImage
           className="mx-1"
           align="center"

@@ -84,22 +84,6 @@ const navMhs = [
     name: 'Riwayat Surat',
     to: '/riwayat',
   },
-  {
-    component: CNavTitle,
-    name: 'App',
-  },
-  {
-    component: CNavItem,
-    name: 'Setting',
-    icon: <CIcon icon={cilAppsSettings} customClassName="nav-icon" />,
-    to: '/#',
-  },
-  {
-    component: CNavItem,
-    name: 'About',
-    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
-    to: '/#',
-  },
 ]
 
 export default navMhs
