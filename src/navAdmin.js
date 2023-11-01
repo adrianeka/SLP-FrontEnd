@@ -70,11 +70,11 @@ const _nav = [
     component: CNavGroup,
     name: 'Kelola Akademik',
     items: [
-      {
-        component: CNavItem,
-        name: 'Jadwal Matakuliah',
-        to: '/kelola/akademik/jadwal',
-      },
+      // {
+      //   component: CNavItem,
+      //   name: 'Jadwal Matakuliah',
+      //   to: '/kelola/akademik/jadwal',
+      // },
       {
         component: CNavItem,
         name: 'Semester',
