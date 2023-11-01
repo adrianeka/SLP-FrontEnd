@@ -50,7 +50,7 @@ const KelolaDataJadwalKelas = () => {
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/admins/jadwal'
+    const apiUrl = 'http://localhost:8080/api/admins/jadwal/matkul'
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -169,12 +169,11 @@ const KelolaDataJadwalKelas = () => {
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow>
-                    <CTableHeaderCell>id angkatan</CTableHeaderCell>
-                    <CTableHeaderCell>detail matkul</CTableHeaderCell>
-                    <CTableHeaderCell>semester</CTableHeaderCell>
-                    <CTableHeaderCell>prodi</CTableHeaderCell>
-                    <CTableHeaderCell>kelas</CTableHeaderCell>
-                    <CTableHeaderCell>Aksi</CTableHeaderCell>
+                    <CTableHeaderCell>Mata Kuliah</CTableHeaderCell>
+                    <CTableHeaderCell>Kelas</CTableHeaderCell>
+                    <CTableHeaderCell>Prodi</CTableHeaderCell>
+                    <CTableHeaderCell>Angkatan</CTableHeaderCell>
+                    <CTableHeaderCell>Semester</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -190,11 +189,13 @@ const KelolaDataJadwalKelas = () => {
                         <CTableDataCell>
                           {`${jadwal.detailMatkul.mataKuliah.nama_matakuliah} (${jadwal.detailMatkul.tipe})`}
                         </CTableDataCell>
-                        <CTableDataCell>{jadwal.hari}</CTableDataCell>
-                        <CTableDataCell>{jadwal.semester.nama_semester}</CTableDataCell>
+
                         <CTableDataCell>{jadwal.kela.nama_kelas}</CTableDataCell>
-                        <CTableDataCell>{jadwal.detailMatkul.prodi.nama_prodi}</CTableDataCell>
-                        <CTableDataCell>
+                        <CTableDataCell>{jadwal.prodi.nama_prodi}</CTableDataCell>
+                        <CTableDataCell>{jadwal.angkatan.tahun_angkatan}</CTableDataCell>
+                        <CTableDataCell>{jadwal.semester.nama_semester}</CTableDataCell>
+                        <CTableDataCell></CTableDataCell>
+                        {/* <CTableDataCell>
                           <CCol>
                             <Link to={`/kelola/akademik/jadwal/update/${jadwal.id}`}>
                               <CButton
@@ -216,7 +217,7 @@ const KelolaDataJadwalKelas = () => {
                               <CIcon icon={cilTrash} />
                             </CButton>
                           </CCol>
-                        </CTableDataCell>
+                        </CTableDataCell> */}
                       </CTableRow>
                     ))
                   )}
