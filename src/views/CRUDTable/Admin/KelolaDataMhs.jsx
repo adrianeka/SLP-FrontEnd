@@ -237,6 +237,8 @@ const KelolaDataMhs = () => {
     },
   ]
   console.log(filteredData)
+  const tahunSaatIni = new Date().getFullYear()
+
   return (
     <div>
       <CRow>
@@ -327,7 +329,15 @@ const KelolaDataMhs = () => {
                       <CTableRow key={user.id}>
                         <CTableDataCell>{user.nama}</CTableDataCell>
                         <CTableDataCell>
+<<<<<<< HEAD
+<<<<<<< HEAD
                           {currentYear - user.angkatan.tahun_angkatan + 1 + user.kela.nama_kelas}
+=======
+                          {tahunSaatIni - user.angkatan.tahun_angkatan + 1 + user.kela.nama_kelas}
+>>>>>>> d83b3ee7c2f016d46f3d8562a5f759038477f8e5
+=======
+                          {currentYear - user.angkatan.tahun_angkatan + 1 + user.kela.nama_kelas}
+>>>>>>> 17df365dd8ba29ee756fe2a8e4e1a622b0db1037
                         </CTableDataCell>
                         <CTableDataCell>{user.nim}</CTableDataCell>
                         <CTableDataCell>{user.prodi.nama_prodi}</CTableDataCell>

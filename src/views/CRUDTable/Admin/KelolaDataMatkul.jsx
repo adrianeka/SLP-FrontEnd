@@ -84,6 +84,7 @@ const KelolaDataMatkul = () => {
       searchText === '' ||
       data.mataKuliah.id_matakuliah.toLowerCase().includes(searchText.toLowerCase()) ||
       data.mataKuliah.nama_matakuliah.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.mataKuliah.semester_matakuliah.toLowerCase().includes(searchText.toLowerCase()) ||
       data.tipe.toLowerCase().includes(searchText.toLowerCase()) ||
       sks.toLowerCase().includes(searchText.toLowerCase()) || // Use sks instead of data.sks
       data.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase())
@@ -170,6 +171,7 @@ const KelolaDataMatkul = () => {
                     <CTableHeaderCell>Tipe</CTableHeaderCell>
                     <CTableHeaderCell>SKS</CTableHeaderCell>
                     <CTableHeaderCell>Prodi</CTableHeaderCell>
+                    <CTableHeaderCell>Semeseter</CTableHeaderCell>
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -188,6 +190,7 @@ const KelolaDataMatkul = () => {
                         <CTableDataCell>{matkul.tipe}</CTableDataCell>
                         <CTableDataCell>{matkul.sks}</CTableDataCell>
                         <CTableDataCell>{matkul.prodi.nama_prodi}</CTableDataCell>
+                        <CTableDataCell>{matkul.mataKuliah.semester_matakuliah}</CTableDataCell>
                         <CTableDataCell>
                           <CCol>
                             <Link
@@ -202,7 +205,7 @@ const KelolaDataMatkul = () => {
                                 <CIcon icon={cilPen} />
                               </CButton>
                             </Link>
-                            <CButton
+                            {/* <CButton
                               color="danger"
                               variant="outline"
                               className="ms-2"
@@ -210,7 +213,7 @@ const KelolaDataMatkul = () => {
                               onClick={() => handleDeleteModal(matkul)}
                             >
                               <CIcon icon={cilTrash} />
-                            </CButton>
+                            </CButton> */}
                           </CCol>
                         </CTableDataCell>
                       </CTableRow>
