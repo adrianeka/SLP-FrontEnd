@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   CAvatar,
   CButton,
@@ -21,41 +21,7 @@ import {
 import { CChartLine } from '@coreui/react-chartjs'
 import { getStyle, hexToRgba } from '@coreui/utils'
 import CIcon from '@coreui/icons-react'
-import AuthService from 'src/services/authService'
-import {
-  cibCcAmex,
-  cibCcApplePay,
-  cibCcMastercard,
-  cibCcPaypal,
-  cibCcStripe,
-  cibCcVisa,
-  cibGoogle,
-  cibFacebook,
-  cibLinkedin,
-  cifBr,
-  cifEs,
-  cifFr,
-  cifIn,
-  cifPl,
-  cifUs,
-  cibTwitter,
-  cilCloudDownload,
-  cilPeople,
-  cilUser,
-  cilUserFemale,
-} from '@coreui/icons'
-
-import avatar1 from 'src/assets/images/avatars/1.jpg'
-import avatar2 from 'src/assets/images/avatars/2.jpg'
-import avatar3 from 'src/assets/images/avatars/3.jpg'
-import avatar4 from 'src/assets/images/avatars/4.jpg'
-import avatar5 from 'src/assets/images/avatars/5.jpg'
-import avatar6 from 'src/assets/images/avatars/6.jpg'
-
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
-import rekapDashboard from './item/rekapDashboard'
-import Cookies from 'js-cookie'
+import { cilCloudDownload } from '@coreui/icons'
 
 const Dashboard = () => {
   useEffect(() => {
@@ -66,6 +32,40 @@ const Dashboard = () => {
     }
   })
 
+  const [semesterData, setSemesterData] = useState([])
+  useEffect(() => {
+    const apiUrl = 'http://localhost:8080//api/mahasiswa/semester/active' // Replace with your actual API endpoint
+    axios
+      .get(apiUrl, { withCredentials: true })
+      .then((response) => {
+        setSemesterData(response.data)
+        console.log(response.data) // Assuming your response data is an array of objects with value and label properties
+      })
+      .catch((error) => {
+        console.error('Error fetching Semester data:', error)
+      })
+  }, [])
+
+  const [dataDashboard, setDataDashboard] = useState([])
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/test/adminDashboard'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log(response.data)
+        setDataDashboard(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
+  console.log('Semester', semesterData.nama_semester)
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
   return (
@@ -86,6 +86,7 @@ const Dashboard = () => {
               >
                 <CCardBody>
                   <div className="text-white">Izin</div>
+                  <div className="text-white">{dataDashboard.jumlahIzin}</div>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -102,6 +103,7 @@ const Dashboard = () => {
               >
                 <CCardBody>
                   <div className="text-dark">Sakit</div>
+                  <div>{dataDashboard.jumlahSakit}</div>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -118,6 +120,7 @@ const Dashboard = () => {
               >
                 <CCardBody>
                   <div className="text-white">Tahun Akademik</div>
+                  <div className="text-white">{}</div>
                 </CCardBody>
               </CCard>
             </CCol>

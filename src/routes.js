@@ -1,6 +1,6 @@
 import React from 'react'
 //Admin
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const Dashboard = React.lazy(() => import('./views/dashboard/DashboardAdmin'))
 const TableKaprodi = React.lazy(() => import('./views/CRUDTable/TableKaprodi'))
 const KelolaDataMhs = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataMhs'))
 const KelolaDataJadwal = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataJadwal'))
