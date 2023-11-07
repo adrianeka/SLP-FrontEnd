@@ -30,7 +30,8 @@ const AppHeaderDropdown = () => {
     const user =
       JSON.parse(localStorage.getItem('admin')) ??
       JSON.parse(localStorage.getItem('mahasiswa')) ??
-      JSON.parse(localStorage.getItem('dosenwali'))
+      JSON.parse(localStorage.getItem('dosenwali')) ??
+      JSON.parse(localStorage.getItem('kaprodi'))
 
     if (!user) {
       window.location.href = '/login'
