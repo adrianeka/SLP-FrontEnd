@@ -7,6 +7,7 @@ import {
   AppHeader,
   AppSidebarMhs,
   AppSidebarAdmin,
+  AppSidebarKaprodi,
 } from '../components/index'
 
 const DefaultLayout = () => {
@@ -14,7 +15,8 @@ const DefaultLayout = () => {
     const user =
       JSON.parse(localStorage.getItem('admin')) ??
       JSON.parse(localStorage.getItem('mahasiswa')) ??
-      JSON.parse(localStorage.getItem('dosenwali'))
+      JSON.parse(localStorage.getItem('dosenwali')) ??
+      JSON.parse(localStorage.getItem('kaprodi'))
 
     if (!user) {
       window.location.href = '/login'
@@ -30,6 +32,7 @@ const DefaultLayout = () => {
       {userRole === 'admin' ? <AppSidebarAdmin /> : null}
       {userRole === 'mahasiswa' ? <AppSidebarMhs /> : null}
       {userRole === 'dosen_wali' ? <AppSidebarDosenWali /> : null}
+      {userRole === 'kaprodi' ? <AppSidebarKaprodi /> : null}
       <div className="wrapper d-flex flex-column min-vh-100 bg-light">
         <AppHeader />
         <div className="body flex-grow-1 px-3">

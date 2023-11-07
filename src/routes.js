@@ -45,7 +45,11 @@ const TableRekapSakit = React.lazy(() => import('./views/CRUDTable/DosenWali/Tab
 const RiwayatSuratPermohonan = React.lazy(() =>
   import('./views/CRUDTable/DosenWali/RiwayatSuratPermohonan'),
 )
+
+//kaprodi
+const DashboardKaprodi = React.lazy(() => import('./views/dashboard/DashboardKaprodi'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
+const FormTambahKaprodi = React.lazy(() => import('./views/form/Admin/formCreateKaprodi'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/login', name: 'Login', element: Login },
@@ -78,6 +82,7 @@ const routes = [
     element: FormUpdateDosenWali,
   },
   { path: '/kelola/kaprodi', name: 'Tabel Kaprodi', element: TableKaprodi },
+  { path: '/kelola/kaprodi/tambah', name: 'Form Create Kaprodi', element: FormTambahKaprodi },
   // Kelola akademik
   { path: '/kelola/akademik/jadwal', name: 'Tabel Jadwal Mata Kuliah', element: KelolaDataJadwal },
   { path: '/kelola/akademik/semester', name: 'Tabel Semester', element: KelolaDataSemester },
@@ -137,6 +142,8 @@ const routes = [
     name: 'Form Update Data Mengajar',
     element: FormUpdateDataMengajar,
   },
+
+  { path: '/dashboard/kaprodi', name: 'Dashboard Kaprodi', element: DashboardKaprodi },
 
   // Dashboard Mahasiswa
   { path: '/dashboardMhs', name: 'Dashboard Mahasiswa', element: DashboardMahasiswa },

@@ -21,6 +21,8 @@ const login = (username, password) => {
         localStorage.setItem('mahasiswa', JSON.stringify(response.data))
       } else if (response.data.roles === 'dosen_wali') {
         localStorage.setItem('dosenwali', JSON.stringify(response.data))
+      } else if (response.data.roles === 'kaprodi') {
+        localStorage.setItem('kaprodi', JSON.stringify(response.data))
       }
 
       return response.data
@@ -30,11 +32,8 @@ const login = (username, password) => {
 const signout = () => {
   localStorage.removeItem('admin') ??
     localStorage.removeItem('mahasiswa') ??
-    localStorage.removeItem('dosenwali')
-
-  document.cookie = 'admin=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-  document.cookie = 'mahasiswa=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-  document.cookie = 'dosenwali=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+    localStorage.removeItem('dosenwali') ??
+    localStorage.removeItem('kaprodi')
 
   return axios.post(API_URL + 'signout').then((response) => {
     return response.data

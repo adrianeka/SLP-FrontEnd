@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -22,19 +22,58 @@ import {
   CModalHeader,
   CModalBody,
   CModalFooter,
+  CButtonGroup,
 } from '@coreui/react'
-
-const usersData = [
-  { id: 0, nama: 'Adrian', Kelas: '2B', nim: '221511000', prodi: 'D3 - Teknik Informatika' },
-  { id: 1, nama: 'Reno', Kelas: '2B', nim: '221511000', prodi: 'D3 - Teknik Informatika' },
-  { id: 2, nama: 'Mahesya', Kelas: '2B', nim: '221511000', prodi: 'D3 - Teknik Informatika' },
-  { id: 3, nama: 'Taufik', Kelas: '2B', nim: '221511000', prodi: 'D3 - Teknik Informatika' },
-  { id: 4, nama: 'Rizki', Kelas: '2B', nim: '221511000', prodi: 'D3 - Teknik Informatika' },
-  { id: 5, nama: 'Tendy', Kelas: '2B', nim: '221511000', prodi: 'D3 - Teknik Informatika' },
-]
+import { Link } from 'react-router-dom'
+import CIcon from '@coreui/icons-react'
+import { cilUserPlus } from '@coreui/icons'
+import axios from 'axios'
 
 const TableKaprodi = () => {
   const [visible, setVisible] = useState(false)
+  const [searchText, setSearchText] = useState('')
+  const [kaprodiData, setKaprodiData] = useState([])
+
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/admins/kaprodi'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // Mengatur data dosen ke dalam state dosenData
+        const kaprodiData = response.data.map((item) => {
+          return {
+            id_kaprodi: item.id_dosenwali,
+            username: item.username,
+            password: item.password,
+            dosen_id: item.dosen_id,
+            prodi_id: item.prodi_id,
+            prodi: item.prodi ? item.prodi.nama_prodi : '', // Mengambil nama_prodi dari objek prodi jika ada
+            dosen: item.dosen ? item.dosen.nama_dosen : '', // Mengambil nama_dosen dari objek dosen jika ada
+          }
+        })
+
+        console.log(kaprodiData)
+
+        setKaprodiData(kaprodiData)
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error)
+      })
+  }, [])
+
+  const filteredData = kaprodiData.filter((data) => {
+    //Search filter data
+    return (
+      searchText === '' ||
+      data.prodi.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.dosen.toLowerCase().includes(searchText.toLowerCase())
+    )
+  })
 
   return (
     <div>
@@ -43,28 +82,27 @@ const TableKaprodi = () => {
           <CCard>
             <CCardHeader>Daftar Kaprodi</CCardHeader>
             <CCardBody>
-              <CForm className="mb-3">
-                <CInputGroup>
-                  <CFormInput placeholder="Search" />
-                  <CButton color="secondary">Cari</CButton>
-                </CInputGroup>
-              </CForm>
+              <CButtonGroup>
+                <Link to={'/kelola/kaprodi/tambah'}>
+                  <CButton variant="outline">
+                    <CIcon icon={cilUserPlus} className="mx-1 d-none d-md-inline" />
+                    Create
+                  </CButton>
+                </Link>
+              </CButtonGroup>
+              <CForm className="mb-3"></CForm>
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow>
-                    <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
-                    <CTableHeaderCell>Kelas</CTableHeaderCell>
-                    <CTableHeaderCell>Nim</CTableHeaderCell>
+                    <CTableHeaderCell>Nama Kaprodi</CTableHeaderCell>
                     <CTableHeaderCell>Prodi</CTableHeaderCell>
                     <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {usersData.map((user) => (
+                  {kaprodiData.map((user) => (
                     <CTableRow key={user.id}>
-                      <CTableDataCell>{user.nama}</CTableDataCell>
-                      <CTableDataCell>{user.Kelas}</CTableDataCell>
-                      <CTableDataCell>{user.nim}</CTableDataCell>
+                      <CTableDataCell>{user.dosen}</CTableDataCell>
                       <CTableDataCell>{user.prodi}</CTableDataCell>
                       <CTableDataCell>
                         <CButton color="primary" variant="outline" className="ms-2">
@@ -84,7 +122,6 @@ const TableKaprodi = () => {
                 </CTableBody>
               </CTable>
             </CCardBody>
-            <CCardFooter>Ini Footer</CCardFooter>
           </CCard>
         </CCol>
       </CRow>
