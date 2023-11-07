@@ -186,7 +186,6 @@ const DashboardMahasiswa = () => {
   return (
     <div style={{ height: '100vh', overflow: 'auto' }}>
       <CCard className="mb-4">
-        Ini mahasiswa
         <CCardBody>
           <CRow>
             <CCol sm="4">
@@ -233,7 +232,7 @@ const DashboardMahasiswa = () => {
                 }}
               >
                 <CCardBody>
-                  <div className="text-white">Rekap Ketidakhadiran</div>
+                  <div className="text-white">Tahun Ajaran</div>
                 </CCardBody>
               </CCard>
             </CCol>

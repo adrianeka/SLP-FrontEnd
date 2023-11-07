@@ -43,14 +43,13 @@ import { Link } from 'react-router-dom'
 
 const KelolaDataMengajar = () => {
   const [modalDelete, setModalDelete] = useState(false)
-  const [modalUpdate, setModalUpdate] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
-  const [jadwalData, setJadwalData] = useState([])
+  const [mengajarData, setMengajarData] = useState([])
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/admins/jadwal'
+    const apiUrl = 'http://localhost:8080/api/admins/mengajar'
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -61,7 +60,7 @@ const KelolaDataMengajar = () => {
         // Mengatur data dosen ke dalam state dosenData
 
         console.log(response.data)
-        setJadwalData(response.data)
+        setMengajarData(response.data)
       })
       .catch((error) => {
         // Handle error jika terjadi kesalahan saat mengambil data dari API
@@ -73,18 +72,6 @@ const KelolaDataMengajar = () => {
     // Handle saat tombol hapus diklik
     setSelectedData(data) //Mengambil data id saat ingin menghapus
     setModalDelete(true) // Menampilkan modal
-  }
-
-  const handleCreateModal = (e) => {
-    //Handle saat tombol create di klik
-    // setModalCreate(true) //Menampilkan Modal
-  }
-
-  const handleUpdateModal = (data) => {
-    // Handle saat tombol update diklik
-    // setIsCreateMode(false)
-    setSelectedData(data)
-    setModalUpdate(true) // Menampilkan modal
   }
 
   const handleSearchChange = (e) => {
@@ -105,7 +92,7 @@ const KelolaDataMengajar = () => {
         // Handle ketika data berhasil dihapus
         console.log('Data berhasil dihapus:', response.data)
 
-        setJadwalData((prevData) => prevData.filter((jadwal) => jadwal.id_jadwal !== id))
+        setMengajarData((prevData) => prevData.filter((mengajar) => mengajar.matakul_id !== id))
 
         // Tutup modal setelah berhasil menghapus
         setModalDelete(false)
@@ -116,17 +103,19 @@ const KelolaDataMengajar = () => {
       })
   }
 
-  const filteredData = jadwalData.filter((data) => {
+  const filteredData = mengajarData.filter((data) => {
     //Search filter data
     return (
       searchText === '' ||
-      `${data.detailMatkul.mataKuliah.nama_matakuliah} (${data.detailMatkul.tipe})`
+      data.detailMatkul.mataKuliah.nama_matakuliah
         .toLowerCase()
         .includes(searchText.toLowerCase()) ||
-      data.hari.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.detailMatkul.matkul_id.toLowerCase().includes(searchText.toLowerCase()) ||
       data.semester.nama_semester.toLowerCase().includes(searchText.toLowerCase()) ||
       data.kela.nama_kelas.toLowerCase().includes(searchText.toLowerCase()) ||
-      data.detailMatkul.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase())
+      data.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.angkatan.tahun_angkatan.toLowerCase().includes(searchText.toLowerCase()) ||
+      data.dosen.kode_dosen.toLowerCase().includes(searchText.toLowerCase())
     )
   })
 
@@ -169,33 +158,38 @@ const KelolaDataMengajar = () => {
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow>
-                    <CTableHeaderCell>id angkatan</CTableHeaderCell>
-                    <CTableHeaderCell>detail matkul</CTableHeaderCell>
+                    <CTableHeaderCell>Kode Mata kuliah</CTableHeaderCell>
+                    <CTableHeaderCell>Nama Mata kuliah</CTableHeaderCell>
                     <CTableHeaderCell>semester</CTableHeaderCell>
                     <CTableHeaderCell>prodi</CTableHeaderCell>
                     <CTableHeaderCell>kelas</CTableHeaderCell>
-                    <CTableHeaderCell>Aksi</CTableHeaderCell>
+                    <CTableHeaderCell>Angkatan</CTableHeaderCell>
+                    <CTableHeaderCell>Dosen Pengampu</CTableHeaderCell>
+                    {/* <CTableHeaderCell>Aksi</CTableHeaderCell> */}
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
                   {filteredData.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="text-center">
+                      <td colSpan="7" className="text-center">
                         No Data
                       </td>
                     </tr>
                   ) : (
                     filteredData.map((jadwal) => (
                       <CTableRow key={jadwal.id}>
+                        <CTableDataCell>{jadwal.detailMatkul.matkul_id}</CTableDataCell>
                         <CTableDataCell>
-                          {`${jadwal.detailMatkul.mataKuliah.nama_matakuliah} (${jadwal.detailMatkul.tipe})`}
+                          {jadwal.detailMatkul.mataKuliah.nama_matakuliah}
                         </CTableDataCell>
-                        <CTableDataCell>{jadwal.hari}</CTableDataCell>
                         <CTableDataCell>{jadwal.semester.nama_semester}</CTableDataCell>
+
+                        <CTableDataCell>{jadwal.prodi.nama_prodi}</CTableDataCell>
                         <CTableDataCell>{jadwal.kela.nama_kelas}</CTableDataCell>
-                        <CTableDataCell>{jadwal.detailMatkul.prodi.nama_prodi}</CTableDataCell>
+                        <CTableDataCell>{jadwal.angkatan.tahun_angkatan}</CTableDataCell>
+                        <CTableDataCell>{jadwal.dosen.nama_dosen}</CTableDataCell>
                         <CTableDataCell>
-                          <CCol>
+                          {/* <CCol>
                             <Link to={`/kelola/akademik/jadwal/update/${jadwal.id}`}>
                               <CButton
                                 color="primary"
@@ -215,7 +209,7 @@ const KelolaDataMengajar = () => {
                             >
                               <CIcon icon={cilTrash} />
                             </CButton>
-                          </CCol>
+                          </CCol> */}
                         </CTableDataCell>
                       </CTableRow>
                     ))

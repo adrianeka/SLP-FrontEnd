@@ -65,6 +65,8 @@ const Login = () => {
           navigate('/dashboardMhs')
         } else if (userRole === 'dosen_wali') {
           navigate('/dashboardDosenWali')
+        } else if (userRole === 'kaprodi') {
+          navigate('/dashboard/kaprodi')
         }
         window.location.reload()
       },

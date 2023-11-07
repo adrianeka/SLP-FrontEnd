@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import Select from 'react-select'
 import {
   CButton,
   CCard,
@@ -31,10 +32,51 @@ const FormCreateMatkul = () => {
   const [formData, setFormData] = useState({
     id_mataKuliah: '',
     nama_mataKuliah: '',
-    sks: '',
+    sks: 0,
     tipe: '',
     id_prodi: '',
+    semester_matakuliah: '',
   })
+
+  const [DataSemester, setDataSemester] = useState([])
+  const Semester = [
+    {
+      id_semester: 1,
+      nama_semester: '1',
+    },
+    {
+      id_semester: 2,
+      nama_semester: '2',
+    },
+    {
+      id_semester: 3,
+      nama_semester: '3',
+    },
+    {
+      id_semester: 4,
+      nama_semester: '4',
+    },
+    {
+      id_semester: 5,
+      nama_semester: '5',
+    },
+    {
+      id_semester: 6,
+      nama_semester: '6',
+    },
+    {
+      id_semester: 7,
+      nama_semester: '7',
+    },
+    {
+      id_semester: 8,
+      nama_semester: '8',
+    },
+  ]
+
+  useEffect(() => {
+    setDataSemester(Semester)
+  }, [])
 
   const [prodiData, setProdiData] = useState([])
   useEffect(() => {
@@ -57,20 +99,13 @@ const FormCreateMatkul = () => {
     const apiUrl_Matkul = 'http://localhost:8080/api/admins/matkul/create'
 
     try {
-      const newDetailMatkul = {
-        matkul_id: formData.id_mataKuliah,
-        sks: formData.sks,
-        tipe: `${formData.tipe === '01' ? 'Teori' : 'Praktek'}`,
-        prodi_id: formData.id_prodi,
-      }
-
       const newMatkul = {
         id_matakuliah: formData.id_mataKuliah,
         nama_matakuliah: formData.nama_mataKuliah,
+        semester_matakuliah: formData.semester_matakuliah,
       }
 
       console.log(newMatkul)
-      console.log(newDetailMatkul)
 
       // Lakukan permintaan kedua
       const responseMatkul = await axios.post(apiUrl_Matkul, newMatkul, {
@@ -78,11 +113,49 @@ const FormCreateMatkul = () => {
       })
       console.log('Mata Kuliah created successfully:', responseMatkul.data)
 
-      // Lakukan permintaan pertama
-      const responseDetailMatkul = await axios.post(apiUrl_detailMatkul, newDetailMatkul, {
-        withCredentials: true,
-      })
-      console.log('Detail Mata Kuliah created successfully:', responseDetailMatkul.data)
+      if (formData.sks_teori) {
+        const newDetailMatkulTeori = {
+          matkul_id: formData.id_mataKuliah,
+          sks: formData.sks_teori,
+          tipe: 'Teori',
+          prodi_id: formData.id_prodi,
+        }
+
+        // Lakukan permintaan POST untuk Teori
+        const responseDetailMatkulTeori = await axios.post(
+          apiUrl_detailMatkul,
+          newDetailMatkulTeori,
+          {
+            withCredentials: true,
+          },
+        )
+        console.log(
+          'Detail Mata Kuliah Teori created successfully:',
+          responseDetailMatkulTeori.data,
+        )
+      }
+
+      if (formData.sks_praktek) {
+        const newDetailMatkulPraktek = {
+          matkul_id: formData.id_mataKuliah,
+          sks: formData.sks_praktek,
+          tipe: 'Praktek',
+          prodi_id: formData.id_prodi,
+        }
+
+        // Lakukan permintaan POST untuk Praktek
+        const responseDetailMatkulPraktek = await axios.post(
+          apiUrl_detailMatkul,
+          newDetailMatkulPraktek,
+          {
+            withCredentials: true,
+          },
+        )
+        console.log(
+          'Detail Mata Kuliah Praktek created successfully:',
+          responseDetailMatkulPraktek.data,
+        )
+      }
 
       window.location.href = '/kelola/akademik/matkul'
     } catch (error) {
@@ -128,34 +201,33 @@ const FormCreateMatkul = () => {
             </CCol>
             <CCol md={6}>
               <CInputGroup className="mb-3">
-                <CInputGroupText id="sks_matkul">
+                <CInputGroupText id="sks_teori">
                   <CIcon icon={cilShortText} />
                 </CInputGroupText>
                 <CFormInput
-                  name="sks"
-                  placeholder="SKS"
-                  floatingLabel="SKS"
-                  aria-describedby="sks_matkul"
-                  value={formData.sks}
-                  onChange={(e) => setFormData({ ...formData, sks: e.target.value })}
+                  name="sks_teori"
+                  placeholder="SKS Teori"
+                  floatingLabel="SKS Teori"
+                  aria-describedby="sks_teori"
+                  value={formData.sks_teori}
+                  onChange={(e) => setFormData({ ...formData, sks_teori: e.target.value })}
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={6}></CCol>
+
             <CCol md={6}>
               <CInputGroup className="mb-3">
-                <CInputGroupText id="tipe">
+                <CInputGroupText id="sks_praktek">
                   <CIcon icon={cilShortText} />
                 </CInputGroupText>
-                <CFormSelect
-                  id="tipe"
-                  placeholder="Tipe Mata Kuliah"
-                  onChange={(e) => setFormData({ ...formData, tipe: e.target.value })}
-                >
-                  <option hidden>Tipe MataKuliah</option>
-                  <option value="01">Teori</option>
-                  <option value="02">Praktek</option>
-                </CFormSelect>
+                <CFormInput
+                  name="sks_praktek"
+                  placeholder="SKS Praktek"
+                  floatingLabel="SKS Praktek"
+                  aria-describedby="sks_praktek"
+                  value={formData.sks_praktek}
+                  onChange={(e) => setFormData({ ...formData, sks_praktek: e.target.value })}
+                />
               </CInputGroup>
             </CCol>
 
@@ -178,6 +250,28 @@ const FormCreateMatkul = () => {
                     </option>
                   ))}
                 </CFormSelect>
+              </CInputGroup>
+            </CCol>
+
+            <CCol md={6}>
+              <CInputGroup className="mb-3">
+                <CInputGroupText id="semester">
+                  <CIcon icon={cilShortText} />
+                </CInputGroupText>
+                <CCol>
+                  <Select
+                    onChange={(selectedOption) => {
+                      setFormData({ ...formData, semester_matakuliah: selectedOption.value })
+                    }}
+                    id="hari"
+                    placeholder="Semester"
+                    required
+                    options={Semester.map((data) => ({
+                      value: data.id_semester,
+                      label: data.nama_semester,
+                    }))}
+                  />
+                </CCol>
               </CInputGroup>
             </CCol>
           </CForm>

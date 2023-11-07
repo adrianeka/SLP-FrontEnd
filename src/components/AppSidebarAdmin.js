@@ -27,7 +27,6 @@ const AppSidebarAdmin = () => {
       onVisibleChange={(visible) => {
         dispatch({ type: 'set', sidebarShow: visible })
       }}
-      className="bg-success"
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
         <CImage

@@ -10,7 +10,8 @@ const AppContent = () => {
     const user =
       JSON.parse(localStorage.getItem('admin')) ??
       JSON.parse(localStorage.getItem('mahasiswa')) ??
-      JSON.parse(localStorage.getItem('dosenwali'))
+      JSON.parse(localStorage.getItem('dosenwali')) ??
+      JSON.parse(localStorage.getItem('kaprodi'))
 
     if (!user) {
       window.location.href = '/login'
@@ -45,6 +46,9 @@ const AppContent = () => {
           ) : null}
           {userRole === 'dosen_wali' ? (
             <Route path="/" element={<Navigate to="/dashboardDosenWali" replace />} />
+          ) : null}
+          {userRole === 'kaprodi' ? (
+            <Route path="/" element={<Navigate to="/dashboard/kaprodi" replace />} />
           ) : null}
         </Routes>
       </Suspense>
