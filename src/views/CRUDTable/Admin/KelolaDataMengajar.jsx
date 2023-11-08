@@ -178,7 +178,9 @@ const KelolaDataMengajar = () => {
                   ) : (
                     filteredData.map((jadwal) => (
                       <CTableRow key={jadwal.id}>
-                        <CTableDataCell>{jadwal.detailMatkul.matkul_id}</CTableDataCell>
+                        <CTableDataCell>
+                          {jadwal.detailMatkul ? jadwal.detailMatkul.matkul_id : '-'}
+                        </CTableDataCell>
                         <CTableDataCell>
                           {jadwal.detailMatkul.mataKuliah.nama_matakuliah}
                         </CTableDataCell>
