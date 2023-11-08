@@ -22,6 +22,9 @@ const FormIzinMhs = () => {
   const [selectedFile, setSelectedFile] = useState(null)
   const [userRole, setUserRole] = useState('')
   const [matkulData, setMatkulData] = useState([])
+  const myValue = localStorage.getItem('mahasiswa')
+  const dosenwaliObject = JSON.parse(myValue)
+  const id_mahasiswa = dosenwaliObject.id
 
   useEffect(() => {
     const user =
@@ -42,7 +45,20 @@ const FormIzinMhs = () => {
     axios
       .get(apiUrl, { withCredentials: true })
       .then((response) => {
-        setSemesterData(response.data)
+        setSemesterData(response.data[0])
+      })
+      .catch((error) => {
+        console.error('Error fetching semester data:', error)
+      })
+  }, [])
+
+  const [mahasiswaData, setMahasiswaData] = useState([])
+  useEffect(() => {
+    const apiUrl = `http://localhost:8080/api/mahasiswa/${id_mahasiswa}` // Replace with your actual API endpoint
+    axios
+      .get(apiUrl, { withCredentials: true })
+      .then((response) => {
+        setMahasiswaData(response.data)
       })
       .catch((error) => {
         console.error('Error fetching semester data:', error)
@@ -50,22 +66,26 @@ const FormIzinMhs = () => {
   }, [])
 
   useEffect(() => {
-    const apiUrl = 'http://localhost:8080/api/mahasiswa/detail_matkul'
+    const apiUrl = `http://localhost:8080/api/mahasiswa/list/matkul/mahasiswa/${semesterData.id_semester}/${mahasiswaData.prodi_id}/${mahasiswaData.kelas_id}/${mahasiswaData.angkatan_id}`
 
     axios
       .get(apiUrl, { withCredentials: true })
       .then((response) => {
         const formattedData = response.data.map((matkul) => ({
-          value: matkul.id_detailMatkul,
-          label: `${matkul.mataKuliah.nama_matakuliah} (${matkul.tipe})`,
+          value: matkul.detailMatkul.id_detailMatkul,
+          label: `${matkul.detailMatkul.mataKuliah.nama_matakuliah} (${matkul.detailMatkul.tipe})`,
         }))
-
         setMatkulData(formattedData)
       })
       .catch((error) => {
         console.error('Error fetching Matkul data:', error)
       })
-  }, [])
+  }, [
+    semesterData.id_semester,
+    mahasiswaData.prodi_id,
+    mahasiswaData.kelas_id,
+    mahasiswaData.angkatan_id,
+  ])
 
   const [formData, setFormData] = useState({
     keterangan: '',
@@ -94,7 +114,7 @@ const FormIzinMhs = () => {
       'matakuliah',
       formData.matakuliah.map((option) => option.value),
     )
-    newPerizinan.append('id_semester', semesterData[0].id_semester)
+    newPerizinan.append('id_semester', semesterData.id_semester)
     try {
       const response = await axios.post(apiUrl, newPerizinan, {
         withCredentials: true,
@@ -132,7 +152,7 @@ const FormIzinMhs = () => {
       newPerizinan.append('matakuliah', [])
     }
 
-    newPerizinan.append('id_semester', semesterData[0].id_semester)
+    newPerizinan.append('id_semester', semesterData.id_semester)
     try {
       const response = await axios.post(apiUrl, newPerizinan, {
         withCredentials: true,

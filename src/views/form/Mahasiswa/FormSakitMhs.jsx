@@ -151,7 +151,7 @@ const FormSakitMhs = () => {
       newPerizinan.append('matakuliah', [])
     }
 
-    newPerizinan.append('id_semester', semesterData[0].id_semester)
+    newPerizinan.append('id_semester', semesterData.id_semester)
     try {
       const response = await axios.post(apiUrl, newPerizinan, {
         withCredentials: true,
