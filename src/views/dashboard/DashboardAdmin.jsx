@@ -67,6 +67,9 @@ const Dashboard = () => {
   }, [])
   console.log('Semester', semesterData.nama_semester)
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+  const tahunAkademik = dataDashboard.tahun_akademik
+    ? dataDashboard.tahun_akademik.split(' ')[1]
+    : ''
 
   return (
     <>
@@ -120,7 +123,7 @@ const Dashboard = () => {
               >
                 <CCardBody>
                   <div className="text-white">Tahun Akademik</div>
-                  <div className="text-white">{}</div>
+                  <div className="text-white">{dataDashboard.tahun_akademik}</div>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -131,59 +134,48 @@ const Dashboard = () => {
         <CCardBody className="mt-4">
           <CRow>
             <CCol sm={5}>
-              <h4 id="traffic" className="card-title mb-0">
-                Traffic
+              <h4 id="tahunAkademik" className="card-title mb-0">
+                Jumlah Perizinan
               </h4>
-              <div className="small text-medium-emphasis">January - July 2021</div>
-            </CCol>
-            <CCol sm={7} className="d-none d-md-block">
-              <CButton color="primary" className="float-end">
-                <CIcon icon={cilCloudDownload} />
-              </CButton>
-              <CButtonGroup className="float-end me-3">
-                {['Day', 'Month', 'Year'].map((value) => (
-                  <CButton
-                    color="outline-secondary"
-                    key={value}
-                    className="mx-0"
-                    active={value === 'Month'}
-                  >
-                    {value}
-                  </CButton>
-                ))}
-              </CButtonGroup>
+              <div className="small text-medium-emphasis">{tahunAkademik}</div>
             </CCol>
           </CRow>
           <CChartLine
             style={{ height: '300px', marginTop: '40px' }}
             data={{
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+              labels: [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December',
+              ],
               datasets: [
                 {
-                  label: 'My First dataset',
+                  label: 'Sakit',
                   backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
                   borderColor: getStyle('--cui-info'),
                   pointHoverBackgroundColor: getStyle('--cui-info'),
                   borderWidth: 2,
-                  data: [],
+                  data: [50, 60, 45, 70, 80, 90, 75, 65, 70, 60, 55, 40], // Isi dengan data jumlah sakit per bulan
                   fill: true,
+                  barPercentage: 0.1, // Menyesuaikan lebar bar untuk label "Sakit"
                 },
                 {
-                  label: 'My Second dataset',
+                  label: 'Izin',
                   backgroundColor: 'transparent',
                   borderColor: getStyle('--cui-success'),
                   pointHoverBackgroundColor: getStyle('--cui-success'),
                   borderWidth: 2,
-                  data: [],
-                },
-                {
-                  label: 'My Third dataset',
-                  backgroundColor: 'transparent',
-                  borderColor: getStyle('--cui-danger'),
-                  pointHoverBackgroundColor: getStyle('--cui-danger'),
-                  borderWidth: 1,
-                  borderDash: [8, 5],
-                  data: [65, 65, 65, 65, 65, 65, 65],
+                  data: [20, 30, 25, 35, 40, 45, 30, 25, 30, 25, 20, 15], // Isi dengan data jumlah izin per bulan
+                  barPercentage: 0.4, // Menyesuaikan lebar bar untuk label "Izin"
                 },
               ],
             }}
@@ -191,7 +183,7 @@ const Dashboard = () => {
               maintainAspectRatio: false,
               plugins: {
                 legend: {
-                  display: false,
+                  display: true,
                 },
               },
               scales: {
@@ -204,8 +196,8 @@ const Dashboard = () => {
                   ticks: {
                     beginAtZero: true,
                     maxTicksLimit: 5,
-                    stepSize: Math.ceil(250 / 5),
-                    max: 250,
+                    stepSize: Math.ceil(100, 150, 200), // Sesuaikan dengan data Anda
+                    max: 200, // Sesuaikan dengan data Anda
                   },
                 },
               },
