@@ -35,6 +35,8 @@ const AppHeaderDropdown = () => {
 
     if (!user) {
       window.location.href = '/login'
+    } else if (user.roles == 'mahasiswa') {
+      setUsername(user.id)
     } else {
       setUsername(user.username)
     }
