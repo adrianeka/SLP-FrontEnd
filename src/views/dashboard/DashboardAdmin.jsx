@@ -32,20 +32,6 @@ const Dashboard = () => {
     }
   })
 
-  const [semesterData, setSemesterData] = useState([])
-  useEffect(() => {
-    const apiUrl = 'http://localhost:8080//api/mahasiswa/semester/active' // Replace with your actual API endpoint
-    axios
-      .get(apiUrl, { withCredentials: true })
-      .then((response) => {
-        setSemesterData(response.data)
-        console.log(response.data) // Assuming your response data is an array of objects with value and label properties
-      })
-      .catch((error) => {
-        console.error('Error fetching Semester data:', error)
-      })
-  }, [])
-
   const [dataDashboard, setDataDashboard] = useState([])
   useEffect(() => {
     // URL API yang akan diambil datanya
@@ -57,7 +43,7 @@ const Dashboard = () => {
         withCredentials: true,
       })
       .then((response) => {
-        console.log(response.data)
+        // console.log('data ', response.data)
         setDataDashboard(response.data)
       })
       .catch((error) => {
@@ -65,7 +51,26 @@ const Dashboard = () => {
         console.error('Error fetching data:', error)
       })
   }, [])
-  console.log('Semester', semesterData.nama_semester)
+
+  const [dataGraph, setDataGraph] = useState([])
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/test/adminDashboard/graph'
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // console.log('ini tuh apa', response.data)
+        setDataGraph(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
   const tahunAkademik = dataDashboard.tahun_akademik
     ? dataDashboard.tahun_akademik.split(' ')[1]
@@ -164,7 +169,8 @@ const Dashboard = () => {
                   borderColor: getStyle('--cui-info'),
                   pointHoverBackgroundColor: getStyle('--cui-info'),
                   borderWidth: 2,
-                  data: [50, 60, 45, 70, 80, 90, 75, 65, 70, 60, 55, 40], // Isi dengan data jumlah sakit per bulan
+                  // data: [50, 60, 45, 70, 80, 90, 75, 65, 70, 60, 55, 40], // Isi dengan data jumlah sakit per bulan
+                  data: dataGraph.jumlah_izin_perbulan,
                   fill: true,
                   barPercentage: 0.1, // Menyesuaikan lebar bar untuk label "Sakit"
                 },
@@ -174,7 +180,9 @@ const Dashboard = () => {
                   borderColor: getStyle('--cui-success'),
                   pointHoverBackgroundColor: getStyle('--cui-success'),
                   borderWidth: 2,
-                  data: [20, 30, 25, 35, 40, 45, 30, 25, 30, 25, 20, 15], // Isi dengan data jumlah izin per bulan
+                  // data: [20, 30, 25, 35, 40, 45, 30, 25, 30, 25, 20, 15], // Isi dengan data jumlah izin per bulan
+                  // data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0], // Isi dengan data jumlah izin per bulan
+                  data: dataGraph.jumlah_izin_perbulan,
                   barPercentage: 0.4, // Menyesuaikan lebar bar untuk label "Izin"
                 },
               ],
