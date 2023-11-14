@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import axios from 'axios'
 import {
   CAvatar,
   CButton,
@@ -104,6 +104,36 @@ const Dashboard = () => {
   const totalMahasiswa = getTotalMahasiswa()
   const dataSakitIzin = getRandomTotalSakitIzin()
   const totalSakitIzinSum = dataSakitIzin.reduce((acc, value) => acc + value, 0)
+  const [userRole, setUserRole] = useState('')
+  const [dataDashboard, setDataDashboard] = useState([])
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('dosenwali'))
+    if (!user) {
+      window.location.href = '/login'
+    } else {
+      setUserRole(user.id)
+    }
+  }, [])
+
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = `http://localhost:8080/api/test/dosenWaliDashboard/count/${userRole}`
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log(response.data)
+        setDataDashboard(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [userRole])
 
   const progressExample = [
     {
@@ -135,7 +165,7 @@ const Dashboard = () => {
                   height: '200px',
                 }}
               >
-                <CCardBody>Total Permohonan</CCardBody>
+                <CCardBody>Total Permohonan: {dataDashboard.totalPermohonan} </CCardBody>
               </CCard>
             </CCol>
             <CCol sm="4">
@@ -147,7 +177,7 @@ const Dashboard = () => {
                   height: '200px',
                 }}
               >
-                <CCardBody>Sakit: {totalSakit}</CCardBody>
+                <CCardBody>Sakit: {dataDashboard.jumlahSakit}</CCardBody>
               </CCard>
             </CCol>
             <CCol sm="4">
@@ -159,7 +189,7 @@ const Dashboard = () => {
                   height: '200px',
                 }}
               >
-                <CCardBody>Izin: {totalIzin}</CCardBody>
+                <CCardBody>Izin: {dataDashboard.jumlahIzin}</CCardBody>
               </CCard>
             </CCol>
           </CRow>
@@ -172,7 +202,7 @@ const Dashboard = () => {
               <h4 id="traffic" className="card-title mb-0">
                 Traffic
               </h4>
-              <div className="small text-medium-emphasis">January - July 2021</div>
+              <div className="small text-medium-emphasis">January - Desember 2023</div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
               <CButton color="primary" className="float-end">
@@ -195,15 +225,37 @@ const Dashboard = () => {
           <CChartLine
             style={{ height: '300px', marginTop: '40px' }}
             data={{
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+              labels: [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'Desember',
+              ],
               datasets: [
                 {
-                  label: 'Total Sakit + Izin',
+                  label: 'Total Sakit',
                   backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
                   borderColor: getStyle('--cui-info'),
                   pointHoverBackgroundColor: getStyle('--cui-info'),
                   borderWidth: 2,
-                  data: dataSakitIzin,
+                  data: dataDashboard.jumlah_sakit_perbulan,
+                  fill: true,
+                },
+                {
+                  label: 'Total Izin',
+                  backgroundColor: hexToRgba(getStyle('--cui-warning'), 10),
+                  borderColor: getStyle('--cui-warning'),
+                  pointHoverBackgroundColor: getStyle('--cui-warning'),
+                  borderWidth: 2,
+                  data: dataDashboard.jumlah_izin_perbulan,
                   fill: true,
                 },
               ],
