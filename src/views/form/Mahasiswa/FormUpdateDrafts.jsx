@@ -202,7 +202,7 @@ const FormSakitMhs = () => {
   return (
     <>
       <CCard>
-        <CCardHeader>Form Pengajuan Surat Perizinan Sakit Mahasiswa</CCardHeader>
+        <CCardHeader>Form Update Surat Perizinan Mahasiswa</CCardHeader>
         <CCardBody>
           <CForm className="row g-3">
             <CCol xs={12}>
@@ -278,32 +278,38 @@ const FormSakitMhs = () => {
                 </CInputGroup>
               </CRow>
             </CCol>
-            {isFormVisible ? (
-              // Render the file input if the form is visible
-              <CCol xs={12}>
-                <CFormInput
-                  id="bukti"
-                  type="file"
-                  name="file"
-                  aria-describedby="file"
-                  onChange={(e) => setSelectedFile(e.target.files[0])}
-                />
-              </CCol>
-            ) : (
-              // Render a card with a download link if the form is not visible
-              <CCol xs={12}>
-                <CCard>
-                  <CCardBody>
-                    <a href={formData.file} rel="noopener noreferrer">
-                      Download File
-                    </a>
-                  </CCardBody>
-                </CCard>
-              </CCol>
-            )}
-
             <CCol xs={12}>
-              <button onClick={toggleFormVisibility}>
+              <div className="file-input-section">
+                {isFormVisible ? (
+                  <div className="mb-3">
+                    <label htmlFor="bukti" className="form-label">
+                      Choose a file
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      id="bukti"
+                      name="file"
+                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                    />
+                  </div>
+                ) : (
+                  <div className="file-download-section">
+                    <CCard>
+                      <CCardBody>
+                        <a
+                          href={formData.file}
+                          rel="noopener noreferrer"
+                          className="btn btn-primary"
+                        >
+                          Download File
+                        </a>
+                      </CCardBody>
+                    </CCard>
+                  </div>
+                )}
+              </div>
+              <button onClick={toggleFormVisibility} className="btn btn-secondary mt-2">
                 {isFormVisible ? 'Cancel' : 'Change File'}
               </button>
             </CCol>
