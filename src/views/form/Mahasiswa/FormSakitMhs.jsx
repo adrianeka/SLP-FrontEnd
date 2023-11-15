@@ -109,10 +109,12 @@ const FormSakitMhs = () => {
     axios
       .get(apiUrl, { withCredentials: true })
       .then((response) => {
+        console.log(response.data)
         const formattedData = response.data.map((matkul) => ({
-          value: matkul.detailMatkul.id_detailMatkul,
+          value: matkul.angkatanMatkul_id,
           label: `${matkul.detailMatkul.mataKuliah.nama_matakuliah} (${matkul.detailMatkul.tipe})`,
         }))
+
         setMatkulData(formattedData)
       })
       .catch((error) => {
@@ -137,6 +139,8 @@ const FormSakitMhs = () => {
     newPerizinan.append('jenis', 'Sakit')
     newPerizinan.append('nim', userRole)
     newPerizinan.append('status', 'Draft')
+
+    console.log(newPerizinan)
 
     // Check if formData.matakuliah is an array before mapping it
     if (Array.isArray(formData.matakuliah)) {

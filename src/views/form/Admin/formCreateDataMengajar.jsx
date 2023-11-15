@@ -20,23 +20,28 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilCalendar, cilCircle, cilClock, cilShortText } from '@coreui/icons'
 import { Link } from 'react-router-dom'
+import Select from 'react-select'
 
 const FormCreateDataMengajar = () => {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    id_dosen: '',
+    dosenData: [],
     id_detailMatkul: '',
   })
 
-  const [dosenData, setDosenData] = useState([])
+  const [dataDosen, setDosenData] = useState([])
   useEffect(() => {
     const apiUrl = 'http://localhost:8080/api/admins/dosen' // Replace with your actual API endpoint
     axios
       .get(apiUrl, { withCredentials: true })
       .then((response) => {
-        setDosenData(response.data)
-        console.log(response.data) // Assuming your response data is an array of objects with value and label properties
+        const formattedData = response.data.map((dosen) => ({
+          value: dosen.kode_dosen,
+          label: `${dosen.nama_dosen} (${dosen.kode_dosen})`,
+        }))
+        setDosenData(formattedData)
+        console.log(formattedData)
       })
       .catch((error) => {
         console.error('Error fetching Kelas data:', error)
@@ -67,7 +72,7 @@ const FormCreateDataMengajar = () => {
 
     // Validasi setiap field terpisah
 
-    if (!formData.id_dosen) {
+    if (!formData.dosenData) {
       setMessage('Dosen harus dipilih.')
       isFormValid = false
     }
@@ -82,8 +87,9 @@ const FormCreateDataMengajar = () => {
 
     const newMengajar = {
       id_detail_matkul: formData.id_detailMatkul,
-      id_dosen: formData.id_dosen,
+      id_dosen: formData.dosenData ? formData.dosenData.map((option) => option.value) : [],
     }
+    console.log(newMengajar)
     try {
       const response = await axios.post(apiUrl, newMengajar, {
         withCredentials: true,
@@ -114,7 +120,7 @@ const FormCreateDataMengajar = () => {
       setLoading(false)
     }
   }
-  console.log(formData)
+  //console.log(formData)
   return (
     <>
       <CCard>
@@ -130,13 +136,14 @@ const FormCreateDataMengajar = () => {
                   <CFormSelect
                     name="id_detailMatkul"
                     id="DetailMatkul"
+                    placeholder="Nama Mata Kuliah"
                     style={{ height: '100%' }}
                     value={formData.id_detailMatkul} // Add this line
                     required
                     onChange={(e) => setFormData({ ...formData, id_detailMatkul: e.target.value })}
                   >
                     <option selected hidden>
-                      Mata Kuliah
+                      Nama Mata Kuliah
                     </option>
                     {detailMatkulData.map((detailMatkuls) => (
                       <option
@@ -154,23 +161,20 @@ const FormCreateDataMengajar = () => {
                   <CInputGroupText id="dosen">
                     <CIcon icon={cilShortText} />
                   </CInputGroupText>
-                  <CFormSelect
-                    name="id_dosen"
-                    id="Dosen"
-                    style={{ height: '100%' }}
-                    value={formData.id_dosen} // Add this line
-                    required
-                    onChange={(e) => setFormData({ ...formData, id_dosen: e.target.value })}
-                  >
-                    <option selected hidden>
-                      Dosen
-                    </option>
-                    {dosenData.map((dosen) => (
-                      <option key={dosen.kode_dosen} value={dosen.kode_dosen}>
-                        {dosen.nama_dosen + ' (' + dosen.kode_dosen + ')'}
-                      </option>
-                    ))}
-                  </CFormSelect>
+                  <CCol>
+                    <Select
+                      isMulti
+                      options={dataDosen}
+                      placeholder="Dosen Pengampu"
+                      name="dosenPengampu"
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                      value={formData.dosenData}
+                      onChange={(selectedOptions) =>
+                        setFormData({ ...formData, dosenData: selectedOptions })
+                      }
+                    />
+                  </CCol>
                 </CInputGroup>
               </CCol>
             </CForm>

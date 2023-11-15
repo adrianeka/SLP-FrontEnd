@@ -72,7 +72,7 @@ const FormIzinMhs = () => {
       .get(apiUrl, { withCredentials: true })
       .then((response) => {
         const formattedData = response.data.map((matkul) => ({
-          value: matkul.detailMatkul.id_detailMatkul,
+          value: matkul.angkatanMatkul_id,
           label: `${matkul.detailMatkul.mataKuliah.nama_matakuliah} (${matkul.detailMatkul.tipe})`,
         }))
         setMatkulData(formattedData)
