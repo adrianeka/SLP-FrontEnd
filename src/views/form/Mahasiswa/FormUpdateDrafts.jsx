@@ -23,10 +23,16 @@ const FormSakitMhs = () => {
   const [selectedFile, setSelectedFile] = useState(null)
   const [userRole, setUserRole] = useState('')
   const [matkulData, setMatkulData] = useState([])
+  const [prevFormData, setPrevFormData] = useState({
+    matakuliah: [],
+  })
+
+  const [prevSelectedFile, setPrevSelectedFile] = useState(null)
   const myValue = localStorage.getItem('mahasiswa')
   const dosenwaliObject = JSON.parse(myValue)
   const id_mahasiswa = dosenwaliObject.id
   const { id } = useParams()
+
   const [isFormVisible, setIsFormVisible] = useState(false)
 
   const toggleFormVisibility = (e) => {
@@ -83,7 +89,8 @@ const FormSakitMhs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const apiUrl = 'http://localhost:8080/api/mahasiswa/perizinan'
+
+    const apiUrl = `http://localhost:8080/api/mahasiswa/perizinan/${id}`
 
     const newPerizinan = new FormData()
     newPerizinan.append('file', selectedFile)
@@ -93,19 +100,26 @@ const FormSakitMhs = () => {
     newPerizinan.append('jenis', 'Sakit')
     newPerizinan.append('nim', userRole)
     newPerizinan.append('status', 'Menunggu Verifikasi')
-    newPerizinan.append(
-      'matakuliah',
-      formData.matakuliah.map((option) => option.value),
-    )
+
+    // Check if formData.matakuliah is an array before mapping it
+    if (Array.isArray(formData.matakuliah)) {
+      newPerizinan.append(
+        'matakuliah',
+        formData.matakuliah.map((option) => option.value),
+      )
+    } else {
+      newPerizinan.append('matakuliah', [])
+    }
+
     newPerizinan.append('id_semester', semesterData.id_semester)
     try {
-      const response = await axios.post(apiUrl, newPerizinan, {
+      const response = await axios.put(apiUrl, newPerizinan, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      window.location.href = '/riwayat'
+      window.location.href = '/drafts'
       console.log('Perizinan created successfully:', response.data)
     } catch (error) {
       console.error('Error creating Perizinan:', error)
@@ -117,10 +131,12 @@ const FormSakitMhs = () => {
     axios
       .get(apiUrl, { withCredentials: true })
       .then((response) => {
+        console.log(response.data)
         const formattedData = response.data.map((matkul) => ({
-          value: matkul.detailMatkul.id_detailMatkul,
+          value: matkul.angkatanMatkul_id,
           label: `${matkul.detailMatkul.mataKuliah.nama_matakuliah} (${matkul.detailMatkul.tipe})`,
         }))
+
         setMatkulData(formattedData)
       })
       .catch((error) => {
@@ -135,7 +151,8 @@ const FormSakitMhs = () => {
 
   const handleSubmitDraft = async (e) => {
     e.preventDefault()
-    const apiUrl = 'http://localhost:8080/api/mahasiswa/perizinan/draft'
+
+    const apiUrl = `http://localhost:8080/api/mahasiswa/perizinan/${id}`
 
     const newPerizinan = new FormData()
     newPerizinan.append('file', selectedFile)
@@ -158,7 +175,7 @@ const FormSakitMhs = () => {
 
     newPerizinan.append('id_semester', semesterData.id_semester)
     try {
-      const response = await axios.post(apiUrl, newPerizinan, {
+      const response = await axios.put(apiUrl, newPerizinan, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -179,15 +196,27 @@ const FormSakitMhs = () => {
         const response = await axios.get(apiUrl, {
           withCredentials: true,
         })
-        const PerizinanData = response.data // Data Dosen yang diambil dari API
-        console.log(response.data)
+        const PerizinanData = response.data
+
+        // Use Promise.all to make multiple API calls concurrently
+        const matkulPromises = PerizinanData.detailPerizinans.map(async (item) => {
+          const apiUrls = `http://localhost:8080/api/mahasiswa/detailMatkul/${item.id_detail_matkul}`
+          const response = await axios.get(apiUrls, {
+            withCredentials: true,
+          })
+          return response.data
+        })
+
+        const matkulData = await Promise.all(matkulPromises)
+        console.log(matkulData)
+
         setFormData({
           keterangan: PerizinanData.keterangan,
           tanggal_awal: PerizinanData.tanggal_awal,
           tanggal_akhir: PerizinanData.tanggal_akhir,
-          matakuliah: PerizinanData.detailPerizinans.map((item) => ({
-            value: item.detailMatkul.id_detailMatkul,
-            label: `${item.detailMatkul.mataKuliah.nama_matakuliah} (${item.detailMatkul.tipe})`,
+          matakuliah: matkulData.map((item) => ({
+            value: item[0].angkatanMatkul_id, // Assuming angkatanMatkul_id is at the first index
+            label: `${item[0].detailMatkul.mataKuliah.nama_matakuliah} (${item[0].detailMatkul.tipe})`,
           })),
           file: 'http://localhost:8080/api/mahasiswa/perizinan/surat/' + PerizinanData.surat,
         })
@@ -198,6 +227,7 @@ const FormSakitMhs = () => {
 
     fetchData()
   }, [id])
+  console.log(formData)
 
   return (
     <>
