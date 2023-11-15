@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   CAvatar,
   CButton,
@@ -62,126 +62,48 @@ const DashboardMahasiswa = () => {
   })
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
-  const progressExample = [
-    { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
-    { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
-    { title: 'Pageviews', value: '78.706 Views', percent: 60, color: 'warning' },
-    { title: 'New Users', value: '22.123 Users', percent: 80, color: 'danger' },
-    { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: 'primary' },
-  ]
+  const [dataDashboard, setDataDashboard] = useState([])
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/test/mahasiswaDashboard'
 
-  const progressGroupExample1 = [
-    { title: 'Monday', value1: 34, value2: 78 },
-    { title: 'Tuesday', value1: 56, value2: 94 },
-    { title: 'Wednesday', value1: 12, value2: 67 },
-    { title: 'Thursday', value1: 43, value2: 91 },
-    { title: 'Friday', value1: 22, value2: 73 },
-    { title: 'Saturday', value1: 53, value2: 82 },
-    { title: 'Sunday', value1: 9, value2: 69 },
-  ]
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log('data ', response.data)
+        setDataDashboard(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
 
-  const progressGroupExample2 = [
-    { title: 'Male', icon: cilUser, value: 53 },
-    { title: 'Female', icon: cilUserFemale, value: 43 },
-  ]
+  const [dataGraph, setDataGraph] = useState([])
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = 'http://localhost:8080/api/test/adminDashboard/graph'
 
-  const progressGroupExample3 = [
-    { title: 'Organic Search', icon: cibGoogle, percent: 56, value: '191,235' },
-    { title: 'Facebook', icon: cibFacebook, percent: 15, value: '51,223' },
-    { title: 'Twitter', icon: cibTwitter, percent: 11, value: '37,564' },
-    { title: 'LinkedIn', icon: cibLinkedin, percent: 8, value: '27,319' },
-  ]
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // console.log('ini tuh apa', response.data)
+        setDataGraph(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
 
-  const tableExample = [
-    {
-      avatar: { src: avatar1, status: 'success' },
-      user: {
-        name: 'Yiorgos Avraamu',
-        new: true,
-        registered: 'Jan 1, 2021',
-      },
-      country: { name: 'USA', flag: cifUs },
-      usage: {
-        value: 50,
-        period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'success',
-      },
-      payment: { name: 'Mastercard', icon: cibCcMastercard },
-      activity: '10 sec ago',
-    },
-    {
-      avatar: { src: avatar2, status: 'danger' },
-      user: {
-        name: 'Avram Tarasios',
-        new: false,
-        registered: 'Jan 1, 2021',
-      },
-      country: { name: 'Brazil', flag: cifBr },
-      usage: {
-        value: 22,
-        period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'info',
-      },
-      payment: { name: 'Visa', icon: cibCcVisa },
-      activity: '5 minutes ago',
-    },
-    {
-      avatar: { src: avatar3, status: 'warning' },
-      user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2021' },
-      country: { name: 'India', flag: cifIn },
-      usage: {
-        value: 74,
-        period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'warning',
-      },
-      payment: { name: 'Stripe', icon: cibCcStripe },
-      activity: '1 hour ago',
-    },
-    {
-      avatar: { src: avatar4, status: 'secondary' },
-      user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2021' },
-      country: { name: 'France', flag: cifFr },
-      usage: {
-        value: 98,
-        period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'danger',
-      },
-      payment: { name: 'PayPal', icon: cibCcPaypal },
-      activity: 'Last month',
-    },
-    {
-      avatar: { src: avatar5, status: 'success' },
-      user: {
-        name: 'Agapetus Tadeáš',
-        new: true,
-        registered: 'Jan 1, 2021',
-      },
-      country: { name: 'Spain', flag: cifEs },
-      usage: {
-        value: 22,
-        period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'primary',
-      },
-      payment: { name: 'Google Wallet', icon: cibCcApplePay },
-      activity: 'Last week',
-    },
-    {
-      avatar: { src: avatar6, status: 'danger' },
-      user: {
-        name: 'Friderik Dávid',
-        new: true,
-        registered: 'Jan 1, 2021',
-      },
-      country: { name: 'Poland', flag: cifPl },
-      usage: {
-        value: 43,
-        period: 'Jun 11, 2021 - Jul 10, 2021',
-        color: 'success',
-      },
-      payment: { name: 'Amex', icon: cibCcAmex },
-      activity: 'Last week',
-    },
-  ]
+  const totalPerizinan = dataDashboard.jumlahIzin + dataDashboard.jumlahSakit
+  const tahunAkademik = dataDashboard.tahun_akademik
 
   return (
     <div style={{ height: '100vh', overflow: 'auto' }}>
@@ -201,6 +123,7 @@ const DashboardMahasiswa = () => {
               >
                 <CCardBody>
                   <div className="text-white">Izin</div>
+                  <div className="text-white">{dataDashboard.jumlahIzin}</div>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -217,6 +140,7 @@ const DashboardMahasiswa = () => {
               >
                 <CCardBody>
                   <div className="text-dark">Sakit</div>
+                  <div className="text-dark">{dataDashboard.jumlahSakit}</div>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -232,11 +156,101 @@ const DashboardMahasiswa = () => {
                 }}
               >
                 <CCardBody>
-                  <div className="text-white">Tahun Ajaran</div>
+                  <div className="text-white">Jumlah Perizinan</div>
+                  <div className="text-white">{totalPerizinan}</div>
                 </CCardBody>
               </CCard>
             </CCol>
           </CRow>
+        </CCardBody>
+      </CCard>
+      <CCard className="my-4">
+        <CCardBody className="mt-4">
+          <CRow>
+            <CCol sm={5}>
+              <h4 id="tahunAkademik" className="card-title mb-0">
+                Jumlah Perizinan
+              </h4>
+              <div className="small text-medium-emphasis">{tahunAkademik}</div>
+            </CCol>
+          </CRow>
+          <CChartLine
+            style={{ height: '300px', marginTop: '40px' }}
+            data={{
+              labels: [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December',
+              ],
+              datasets: [
+                {
+                  label: 'Sakit',
+                  backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
+                  borderColor: getStyle('--cui-info'),
+                  pointHoverBackgroundColor: getStyle('--cui-info'),
+                  borderWidth: 2,
+                  // data: [50, 60, 45, 70, 80, 90, 75, 65, 70, 60, 55, 40], // Isi dengan data jumlah sakit per bulan
+                  data: dataGraph.jumlah_izin_perbulan,
+                  fill: true,
+                  barPercentage: 0.1, // Menyesuaikan lebar bar untuk label "Sakit"
+                },
+                {
+                  label: 'Izin',
+                  backgroundColor: 'transparent',
+                  borderColor: getStyle('--cui-success'),
+                  pointHoverBackgroundColor: getStyle('--cui-success'),
+                  borderWidth: 2,
+                  // data: [20, 30, 25, 35, 40, 45, 30, 25, 30, 25, 20, 15], // Isi dengan data jumlah izin per bulan
+                  // data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0], // Isi dengan data jumlah izin per bulan
+                  data: dataGraph.jumlah_izin_perbulan,
+                  barPercentage: 0.4, // Menyesuaikan lebar bar untuk label "Izin"
+                },
+              ],
+            }}
+            options={{
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: true,
+                },
+              },
+              scales: {
+                x: {
+                  grid: {
+                    drawOnChartArea: false,
+                  },
+                },
+                y: {
+                  ticks: {
+                    beginAtZero: true,
+                    maxTicksLimit: 5,
+                    stepSize: Math.ceil(100, 150, 200), // Sesuaikan dengan data Anda
+                    max: 200, // Sesuaikan dengan data Anda
+                  },
+                },
+              },
+              elements: {
+                line: {
+                  tension: 0.4,
+                },
+                point: {
+                  radius: 0,
+                  hitRadius: 10,
+                  hoverRadius: 4,
+                  hoverBorderWidth: 3,
+                },
+              },
+            }}
+          />
         </CCardBody>
       </CCard>
     </div>
