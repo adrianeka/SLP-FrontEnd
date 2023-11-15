@@ -72,7 +72,7 @@ const FormIzinMhs = () => {
       .get(apiUrl, { withCredentials: true })
       .then((response) => {
         const formattedData = response.data.map((matkul) => ({
-          value: matkul.detailMatkul.id_detailMatkul,
+          value: matkul.angkatanMatkul_id,
           label: `${matkul.detailMatkul.mataKuliah.nama_matakuliah} (${matkul.detailMatkul.tipe})`,
         }))
         setMatkulData(formattedData)
@@ -160,7 +160,7 @@ const FormIzinMhs = () => {
           'Content-Type': 'multipart/form-data',
         },
       })
-      window.location.href = '/riwayat'
+      window.location.href = '/drafts'
       console.log('Perizinan created successfully:', response.data)
     } catch (error) {
       console.error('Error creating Perizinan:', error)
@@ -262,8 +262,8 @@ const FormIzinMhs = () => {
         </CCardBody>
         <CCardFooter>
           <CRow>
-            <CCol xs={9}></CCol>
-            <CCol xs={1}>
+            <CCol xs={8}></CCol>
+            <CCol xs={2}>
               {' '}
               <CButton color="warning" variant="outline" type="submit" onClick={handleSubmitDraft}>
                 Save as Draft
