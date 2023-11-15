@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import axios from 'axios'
 import {
   CAvatar,
   CButton,
@@ -9,6 +9,7 @@ import {
   CCardFooter,
   CCardHeader,
   CCol,
+  CHeader,
   CProgress,
   CRow,
   CTable,
@@ -44,51 +45,41 @@ import {
   cilUserFemale,
 } from '@coreui/icons'
 
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
-import rekapDashboard from './item/rekapDashboard'
-
 const usersData = [
-  { id: 0, nama: 'Adrian', nim: '221511000', sakit: '3', izin: '0' },
-  { id: 1, nama: 'Reno', nim: '221511000', sakit: '4', izin: '8' },
-  { id: 2, nama: 'Mahesya', nim: '221511000', sakit: '0', izin: '2' },
-  { id: 3, nama: 'Taufik', nim: '221511000', sakit: '1', izin: '2' },
-  { id: 4, nama: 'Rizki', nim: '221511000', sakit: '2', izin: '1' },
-  { id: 5, nama: 'Tendy', nim: '221511000', sakit: '1', izin: '0' },
+  {
+    nama: 'Adrian',
+    izin: 'True',
+  },
+  {
+    nama: 'Reno',
+    sakit: 'True',
+  },
+  {
+    nama: 'Tendy',
+    izin: 'True',
+  },
+  {
+    nama: 'Taufik',
+    sakit: 'True',
+  },
+  {
+    nama: 'Mahesya',
+    izin: 'True',
+  },
+  {
+    nama: 'Rizki',
+    sakit: 'True',
+  },
 ]
 
-const getTotalSakit = () => {
-  const totalSakit = usersData.reduce((acc, user) => acc + parseInt(user.sakit), 0)
-  return totalSakit
-}
-
-const getTotalIzin = () => {
-  const totalIzin = usersData.reduce((acc, user) => acc + parseInt(user.izin), 0)
-  return totalIzin
-}
-
-const getTotalMahasiswa = () => {
-  return usersData.length
-}
-
-const getRandomTotalSakitIzin = () => {
-  const totalSakit = getTotalSakit()
-  const totalIzin = getTotalIzin()
-  const totalMahasiswa = getTotalMahasiswa()
-  const dataSakitIzin = []
-
-  for (let i = 0; i < 7; i++) {
-    // Generate random values for sakit + izin
-    const randomValue = Math.floor(Math.random() * ((totalSakit + totalIzin) / 3) * 2) + 1
-    dataSakitIzin.push(randomValue)
-  }
-
-  return dataSakitIzin
-}
-
-const calculatePercentage = (value, total) => {
-  return ((value / total) * 100).toFixed(2)
-}
+const progressGroupExample1 = [
+  { title: 'Matematika Diskrit', value1: 3, value2: 78 },
+  { title: 'Pemrograman Berbasis Objek', value1: 56, value2: 94 },
+  { title: 'Basis Data', value1: 12, value2: 67 },
+  { title: 'Pengenalan Rekayasa Perangkat Lunak', value1: 43, value2: 91 },
+  { title: 'Proyek 3', value1: 22, value2: 73 },
+  { title: 'Komputasi Kognitif', value1: 53, value2: 82 },
+]
 
 const Dashboard = () => {
   useEffect(() => {
@@ -99,30 +90,112 @@ const Dashboard = () => {
       console.log(data)
     }
   })
-  const totalSakit = getTotalSakit()
-  const totalIzin = getTotalIzin()
-  const totalMahasiswa = getTotalMahasiswa()
-  const dataSakitIzin = getRandomTotalSakitIzin()
-  const totalSakitIzinSum = dataSakitIzin.reduce((acc, value) => acc + value, 0)
+  const [userRole, setUserRole] = useState('')
+  const [dataDashboard, setDataDashboard] = useState([])
 
-  const progressExample = [
-    {
-      title: 'Sakit 6 Bulan Terakhir',
-      value: `${totalSakit} Users`,
-      percent: calculatePercentage(totalSakit, totalSakit + totalIzin),
-      color: 'info',
-    },
-    {
-      title: 'Izin 6 BUlan Terakhir',
-      value: `${totalIzin} Users`,
-      percent: calculatePercentage(totalIzin, totalSakit + totalIzin),
-      color: 'warning',
-    },
-  ]
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('dosenwali'))
+    if (!user) {
+      window.location.href = '/login'
+    } else {
+      setUserRole(user.id)
+    }
+  }, [])
+
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = `http://localhost:8080/api/test/dosenWaliDashboard/count/${userRole}`
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log(response.data)
+        setDataDashboard(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [userRole])
 
   return (
     <>
-      <CCard className="mb-4">
+      <CRow>
+        <CCol xs="4">
+          <CCard
+            style={{
+              // display: 'flex',
+              // alignItems: 'center',
+              // justifyContent: 'center',
+              height: '100%',
+            }}
+          >
+            <CCardHeader>Permohonan</CCardHeader>
+            <CCardBody>{dataDashboard.totalPermohonan} </CCardBody>
+          </CCard>
+        </CCol>
+
+        <CCol xs={4}>
+          <CCard>
+            <CCardHeader>Sakit</CCardHeader>
+            <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
+              {usersData
+                .filter((user) => user.sakit)
+                .map((user, index) => (
+                  <div key={index} className="mb-2">
+                    {user.nama}
+                  </div>
+                ))}
+              {!usersData.some((user) => user.sakit) && (
+                <div className="text-center">Tidak ada data</div>
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+
+        <CCol xs={4}>
+          <CCard>
+            <CCardHeader>Izin</CCardHeader>
+            <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
+              {usersData
+                .filter((user) => user.izin)
+                .map((user, index) => (
+                  <div key={index} className="mb-2">
+                    {user.nama}
+                  </div>
+                ))}
+              {!usersData.some((user) => user.izin) && (
+                <div className="text-center">Tidak ada data</div>
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+      <div className="mb-2" />
+      <CCard>
+        <CCardHeader>Mata Kuliah</CCardHeader>
+        <CCardBody>
+          {progressGroupExample1.map((item, index) => (
+            <div className="progress-group mb-4" key={index}>
+              <div className="progress-group-header d-flex flex-column">
+                <span className="ms-auto fw-semibold">{item.value1}</span>
+                <span className="ms-auto fw-semibold">{item.value2}</span>
+              </div>
+              <div className="progress-group-prepend">
+                <span className="text-medium-emphasis small">{item.title}</span>
+              </div>
+              <div className="progress-group-bars">
+                <CProgress thin color="info" value={item.value1} />
+                <CProgress thin color="danger" value={item.value2} />
+              </div>
+            </div>
+          ))}
+        </CCardBody>
+      </CCard>
+      {/* <CCard className="mb-4">
         <CCardHeader>Total Permohonan</CCardHeader>
         <CCardBody>
           <CRow>
@@ -135,7 +208,7 @@ const Dashboard = () => {
                   height: '200px',
                 }}
               >
-                <CCardBody>Total Permohonan</CCardBody>
+                <CCardBody>Total Permohonan: {dataDashboard.totalPermohonan} </CCardBody>
               </CCard>
             </CCol>
             <CCol sm="4">
@@ -147,7 +220,7 @@ const Dashboard = () => {
                   height: '200px',
                 }}
               >
-                <CCardBody>Sakit: {totalSakit}</CCardBody>
+                <CCardBody>Sakit: {dataDashboard.jumlahSakit}</CCardBody>
               </CCard>
             </CCol>
             <CCol sm="4">
@@ -159,20 +232,20 @@ const Dashboard = () => {
                   height: '200px',
                 }}
               >
-                <CCardBody>Izin: {totalIzin}</CCardBody>
+                <CCardBody>Izin: {dataDashboard.jumlahIzin}</CCardBody>
               </CCard>
             </CCol>
           </CRow>
         </CCardBody>
-      </CCard>
-      <CCard className="mb-4">
+      </CCard> */}
+      {/* <CCard className="mb-4">
         <CCardBody>
           <CRow>
             <CCol sm={5}>
               <h4 id="traffic" className="card-title mb-0">
                 Traffic
               </h4>
-              <div className="small text-medium-emphasis">January - July 2021</div>
+              <div className="small text-medium-emphasis">January - Desember 2023</div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
               <CButton color="primary" className="float-end">
@@ -195,15 +268,37 @@ const Dashboard = () => {
           <CChartLine
             style={{ height: '300px', marginTop: '40px' }}
             data={{
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+              labels: [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'Desember',
+              ],
               datasets: [
                 {
-                  label: 'Total Sakit + Izin',
+                  label: 'Total Sakit',
                   backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
                   borderColor: getStyle('--cui-info'),
                   pointHoverBackgroundColor: getStyle('--cui-info'),
                   borderWidth: 2,
-                  data: dataSakitIzin,
+                  data: dataDashboard.jumlah_sakit_perbulan,
+                  fill: true,
+                },
+                {
+                  label: 'Total Izin',
+                  backgroundColor: hexToRgba(getStyle('--cui-warning'), 10),
+                  borderColor: getStyle('--cui-warning'),
+                  pointHoverBackgroundColor: getStyle('--cui-warning'),
+                  borderWidth: 2,
+                  data: dataDashboard.jumlah_izin_perbulan,
                   fill: true,
                 },
               ],
@@ -257,7 +352,7 @@ const Dashboard = () => {
             </CCol>
           ))}
         </CRow>
-      </CCardFooter>
+      </CCardFooter> */}
     </>
   )
 }
