@@ -27,10 +27,7 @@ const FormSakitMhs = () => {
   const id_mahasiswa = dosenwaliObject.id
 
   useEffect(() => {
-    const user =
-      JSON.parse(localStorage.getItem('admin')) ||
-      JSON.parse(localStorage.getItem('mahasiswa')) ||
-      JSON.parse(localStorage.getItem('dosenwali'))
+    const user = JSON.parse(localStorage.getItem('mahasiswa'))
 
     if (!user) {
       window.location.href = '/login'
@@ -112,10 +109,12 @@ const FormSakitMhs = () => {
     axios
       .get(apiUrl, { withCredentials: true })
       .then((response) => {
+        console.log(response.data)
         const formattedData = response.data.map((matkul) => ({
-          value: matkul.detailMatkul.id_detailMatkul,
+          value: matkul.angkatanMatkul_id,
           label: `${matkul.detailMatkul.mataKuliah.nama_matakuliah} (${matkul.detailMatkul.tipe})`,
         }))
+
         setMatkulData(formattedData)
       })
       .catch((error) => {
@@ -141,6 +140,8 @@ const FormSakitMhs = () => {
     newPerizinan.append('nim', userRole)
     newPerizinan.append('status', 'Draft')
 
+    console.log(newPerizinan)
+
     // Check if formData.matakuliah is an array before mapping it
     if (Array.isArray(formData.matakuliah)) {
       newPerizinan.append(
@@ -151,7 +152,7 @@ const FormSakitMhs = () => {
       newPerizinan.append('matakuliah', [])
     }
 
-    newPerizinan.append('id_semester', semesterData[0].id_semester)
+    newPerizinan.append('id_semester', semesterData.id_semester)
     try {
       const response = await axios.post(apiUrl, newPerizinan, {
         withCredentials: true,
@@ -169,7 +170,7 @@ const FormSakitMhs = () => {
   return (
     <>
       <CCard>
-        <CCardHeader>Form Pengajuan Surat Perizinan Sakit Mahasiswa</CCardHeader>
+        <CCardHeader>Form Update Surat Perizinan Mahasiswa</CCardHeader>
         <CCardBody>
           <CForm className="row g-3">
             <CCol xs={12}>

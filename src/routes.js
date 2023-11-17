@@ -158,7 +158,7 @@ const routes = [
     element: FormIzinMhs,
   },
   { path: '/drafts', name: 'Draft Surat Perizinan', element: TableSuratMahasiswa },
-  { path: '/drafts/update/:id', name: 'Update Surat Perizinan', element: FormUpdateDrafts },
+  { path: '/drafts/update/:id', name: 'keterangan Surat Perizinan', element: FormUpdateDrafts },
   {
     path: '/riwayat',
     name: 'Riwayat Surat Perizinan Mahasiswa',

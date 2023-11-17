@@ -70,6 +70,17 @@ const RiwayatSurat = () => {
     setModalExport(true)
   }
 
+  const [modalAlasan, setModalAlasan] = useState(Array(perizinanData.length).fill(false))
+
+  // Function to handle opening a specific modal
+  const handleAlasanModal = (index) => {
+    // Create a copy of the modal states array
+    const newModalAlasan = [...modalAlasan]
+    // Set the specified modal's state to true
+    newModalAlasan[index] = true
+    // Update the state
+    setModalAlasan(newModalAlasan)
+  }
   const handleSearchChange = (e) => {
     setSearchText(e.target.value)
   }
@@ -83,6 +94,7 @@ const RiwayatSurat = () => {
         user.tanggal_akhir.toLowerCase().includes(searchText.toLowerCase()) ||
         user.jenis.toLowerCase().includes(searchText.toLowerCase()) ||
         user.keterangan.toLowerCase().includes(searchText.toLowerCase()) ||
+        user.keterangan_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
         user.surat.toLowerCase().includes(searchText.toLowerCase()) ||
         user.status.toLowerCase().includes(searchText.toLowerCase()))
     )
@@ -167,6 +179,7 @@ const RiwayatSurat = () => {
                     <CTableHeaderCell>Bukti Surat</CTableHeaderCell>
                     <CTableHeaderCell>Tanggal Awal</CTableHeaderCell>
                     <CTableHeaderCell>Tanggal Akhir</CTableHeaderCell>
+                    <CTableHeaderCell>Keterangan Dosen</CTableHeaderCell>
                     <CTableHeaderCell>status</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -178,7 +191,7 @@ const RiwayatSurat = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredData.map((user) => (
+                    filteredData.map((user, index) => (
                       <CTableRow key={user.id} className="text-center">
                         <CTableDataCell>{user.mahasiswa.nama}</CTableDataCell>
                         <CTableDataCell>{user.jenis}</CTableDataCell>
@@ -207,7 +220,7 @@ const RiwayatSurat = () => {
                             </CModalHeader>
                             <CModalBody>
                               <iframe
-                                src={`http://localhost:8080/api/dosenWali/perizinan/surat/${user.surat}`}
+                                src={`http://localhost:8080/api/mahasiswa/perizinan/surat/${user.surat}`}
                                 width="100%"
                                 height="600px"
                               ></iframe>
@@ -221,6 +234,45 @@ const RiwayatSurat = () => {
                         </CTableDataCell>
                         <CTableDataCell>{user.tanggal_awal}</CTableDataCell>
                         <CTableDataCell>{user.tanggal_akhir}</CTableDataCell>
+                        <CTableDataCell key={index}>
+                          <CCol xs={3}>
+                            <CButton
+                              variant="outline"
+                              color="warning"
+                              onClick={() => handleAlasanModal(index)}
+                              className="text-center"
+                            >
+                              Lihat
+                            </CButton>
+                          </CCol>
+
+                          <CModal
+                            size="xl"
+                            backdrop="static"
+                            visible={modalAlasan[index]}
+                            onClose={() => {
+                              // Create a copy of the modal states array
+                              const newModalAlasan = Array.isArray(modalAlasan)
+                                ? [...modalAlasan]
+                                : []
+                              // Set the specified modal's state to false
+                              newModalAlasan[index] = false
+                              // Update the state
+                              setModalAlasan(newModalAlasan)
+                            }}
+                            aria-labelledby="AlasanModalLabel"
+                          >
+                            <CModalHeader>
+                              <CModalTitle id="AlasanModalLabel">Keterangan Dosen</CModalTitle>
+                            </CModalHeader>
+                            <CModalBody>{user.keterangan_dosen}</CModalBody>
+                            <CModalFooter>
+                              <CButton color="secondary" onClick={() => setModalAlasan(false)}>
+                                Close
+                              </CButton>
+                            </CModalFooter>
+                          </CModal>
+                        </CTableDataCell>
                         <CTableDataCell>
                           <CBadge
                             color={

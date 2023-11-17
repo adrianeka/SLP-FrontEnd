@@ -119,6 +119,16 @@ const KelolaDataMengajar = () => {
     )
   })
 
+  const calculateClass = (tahunAngkatan) => {
+    const currentYear = new Date().getFullYear()
+    const academicYear = parseInt(tahunAngkatan)
+
+    const yearDifference = currentYear - academicYear
+
+    const classLevel = yearDifference + 1
+    return `${classLevel}`
+  }
+
   return (
     <div>
       <CRow>
@@ -178,15 +188,28 @@ const KelolaDataMengajar = () => {
                   ) : (
                     filteredData.map((jadwal) => (
                       <CTableRow key={jadwal.id}>
-                        <CTableDataCell>{jadwal.detailMatkul.matkul_id}</CTableDataCell>
                         <CTableDataCell>
-                          {jadwal.detailMatkul.mataKuliah.nama_matakuliah}
+                          {jadwal.angkatan_detail_matkul.detailMatkul
+                            ? jadwal.angkatan_detail_matkul.detailMatkul.matkul_id
+                            : '-'}
                         </CTableDataCell>
-                        <CTableDataCell>{jadwal.semester.nama_semester}</CTableDataCell>
+                        <CTableDataCell>
+                          {jadwal.angkatan_detail_matkul.detailMatkul.mataKuliah.nama_matakuliah}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {jadwal.angkatan_detail_matkul.semester.nama_semester}
+                        </CTableDataCell>
 
-                        <CTableDataCell>{jadwal.prodi.nama_prodi}</CTableDataCell>
-                        <CTableDataCell>{jadwal.kela.nama_kelas}</CTableDataCell>
-                        <CTableDataCell>{jadwal.angkatan.tahun_angkatan}</CTableDataCell>
+                        <CTableDataCell>
+                          {jadwal.angkatan_detail_matkul.prodi.nama_prodi}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {calculateClass(jadwal.angkatan_detail_matkul.angkatan.tahun_angkatan)}
+                          {jadwal.angkatan_detail_matkul.kela.nama_kelas}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {jadwal.angkatan_detail_matkul.angkatan.tahun_angkatan}
+                        </CTableDataCell>
                         <CTableDataCell>{jadwal.dosen.nama_dosen}</CTableDataCell>
                         <CTableDataCell>
                           {/* <CCol>

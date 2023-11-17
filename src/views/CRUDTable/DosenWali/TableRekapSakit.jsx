@@ -25,12 +25,13 @@ import {
   CModalHeader,
   CModalBody,
   CModalFooter,
+  CFormTextarea,
   CButtonGroup,
   CBadge,
 } from '@coreui/react'
 
 import CIcon from '@coreui/icons-react'
-import { cilPen, cilSearch, cilSend, cilTrash } from '@coreui/icons'
+import { cilPen, cilSearch, cilSend, cilTrash, cilShortText } from '@coreui/icons'
 import axios from 'axios'
 
 const usersData = [
@@ -46,13 +47,19 @@ const usersData = [
 ]
 
 const TableRekapSakit = () => {
+  const [modalTolak, setModalTolak] = useState(false)
+  const [modalTerima, setModalTerima] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState('All')
   const [searchText, setSearchText] = useState('') // State untuk nilai pencarian
   const [modalExport, setModalExport] = useState(false)
   const [perizinanData, setPerizinanData] = useState([])
+  const [selectedData, setSelectedData] = useState(null)
   const myValue = localStorage.getItem('dosenwali')
   const dosenwaliObject = JSON.parse(myValue)
   const id_dosen = dosenwaliObject.id
+  const [formData, setFormData] = useState({
+    keterangan_dosen: '',
+  })
 
   useEffect(() => {
     // URL API yang akan diambil datanya
@@ -92,6 +99,18 @@ const TableRekapSakit = () => {
     setSearchText(e.target.value)
   }
 
+  const handleModalTolak = (data) => {
+    // Handle saat tombol hapus diklik
+    setSelectedData(data)
+    setModalTolak(true) // Menampilkan modal
+  }
+
+  const handleModalTerima = (data) => {
+    // Handle saat tombol hapus diklik
+    setSelectedData(data)
+    setModalTerima(true) // Menampilkan modal
+  }
+
   const handleVerif = async (id, keterangan) => {
     // Handle form submission here, e.g., send the formData to an API
     const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/update/${id}`
@@ -99,12 +118,14 @@ const TableRekapSakit = () => {
     // Membuat objek updateDosenWali
     const Approved = {
       status: keterangan,
+      keterangan_dosen: formData.keterangan_dosen,
     }
     try {
       const response = await axios.put(apiUrl, Approved, {
         withCredentials: true,
       })
       console.log(response.data)
+      setModalTerima(false)
       setPerizinanData((prevData) => prevData.filter((item) => item.id_perizinan !== id))
     } catch (error) {
       console.error('Error updating Dosen Wali:', error)
@@ -229,7 +250,7 @@ const TableRekapSakit = () => {
                               color="success"
                               variant="outline"
                               className="ms-2"
-                              onClick={() => handleVerif(user.id_perizinan, 'Diverifikasi')}
+                              onClick={() => handleModalTerima(user)}
                             >
                               Disetujui
                             </CButton>
@@ -238,7 +259,7 @@ const TableRekapSakit = () => {
                               color="danger"
                               variant="outline"
                               className="ms-2"
-                              onClick={() => handleVerif(user.id_perizinan, 'Ditolak')}
+                              onClick={() => handleModalTolak(user)}
                             >
                               Ditolak
                             </CButton>
@@ -253,6 +274,88 @@ const TableRekapSakit = () => {
           </CCard>
         </CCol>
       </CRow>
+      {/* Modal Delete */}
+      <CModal
+        backdrop="static"
+        visible={modalTolak}
+        onClose={() => setModalTolak(false)}
+        aria-labelledby="StaticBackdropExampleLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="ModalTolak">Tolak Permohonan</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          Keterangan Permohonan Ditolak
+          <CCol md={12}>
+            <CInputGroup className="mb-3">
+              <CInputGroupText id="alasanRefuse">
+                <CIcon icon={cilShortText} />
+              </CInputGroupText>
+              <CFormTextarea
+                name="alasan"
+                type="text-area"
+                placeholder="Masukkan keterangan"
+                floatingLabel="Keterangan"
+                aria-describedby="keterangan-tolak"
+                value={formData.keterangan_dosen}
+                required
+                onChange={(e) => setFormData({ ...formData, keterangan_dosen: e.target.value })}
+              />
+            </CInputGroup>
+          </CCol>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setModalTolak(false)}>
+            Close
+          </CButton>
+          <CButton color="danger" onClick={() => handleVerif(selectedData.id_perizinan, 'Ditolak')}>
+            Ditolak
+          </CButton>
+        </CModalFooter>
+      </CModal>
+
+      {/* Modal Terima */}
+      <CModal
+        backdrop="static"
+        visible={modalTerima}
+        onClose={() => setModalTerima(false)}
+        aria-labelledby="StaticBackdropExampleLabel"
+      >
+        <CModalHeader>
+          <CModalTitle id="ModalTolak">Terima Permohonan</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          Keterangan Permohonan Diterima
+          <CCol md={12}>
+            <CInputGroup className="mb-3">
+              <CInputGroupText id="alasanTerima">
+                <CIcon icon={cilShortText} />
+              </CInputGroupText>
+              <CFormTextarea
+                name="alasan"
+                type="text-area"
+                placeholder="Masukkan keterangan"
+                floatingLabel="Keterangan"
+                aria-describedby="keterangan-terima"
+                value={formData.keterangan_dosen}
+                required
+                onChange={(e) => setFormData({ ...formData, keterangan_dosen: e.target.value })}
+              />
+            </CInputGroup>
+          </CCol>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setModalTerima(false)}>
+            Close
+          </CButton>
+          <CButton
+            color="success"
+            onClick={() => handleVerif(selectedData.id_perizinan, 'Diverifikasi')}
+          >
+            Disetujui
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </div>
   )
 }

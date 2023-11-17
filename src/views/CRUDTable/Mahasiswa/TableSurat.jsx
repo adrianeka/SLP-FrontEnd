@@ -38,6 +38,7 @@ import {
 } from '@coreui/icons'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 const usersData = []
 
@@ -47,6 +48,8 @@ const TableSuratMahasiswa = () => {
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [perizinanData, setPerizinanData] = useState([])
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     // URL API yang akan diambil datanya
@@ -70,9 +73,8 @@ const TableSuratMahasiswa = () => {
   }, [])
 
   const handleDeleteModal = (data) => {
-    // Handle saat tombol hapus diklik
     setSelectedData(data)
-    setModalDelete(true) // Menampilkan modal
+    setModalDelete(true)
   }
 
   const handleUpdateModal = (data) => {
@@ -84,6 +86,41 @@ const TableSuratMahasiswa = () => {
   const handleSearchChange = (e) => {
     //Handle search saat di ketik
     setSearchText(e.target.value)
+  }
+
+  const handleDelete = (id_perizinan) => {
+    const apiUrl = `http://localhost:8080/api/mahasiswa/perizinan/delete/${id_perizinan}`
+
+    axios
+      .delete(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log('Data berhasil dihapus:', response.data)
+
+        // Update the state to remove the deleted data
+        setPerizinanData((prevData) =>
+          prevData.filter((mahasiswa) => mahasiswa.id_perizinan !== id_perizinan),
+        )
+        setModalDelete(false) // Close the delete modal
+
+        // Menampilkan Sweet Alert saat berhasil menghapus data
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Data ${selectedData ? selectedData.keterangan : ''} berhasil dihapus.`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
+      })
+      .catch((error) => {
+        console.error('Error deleting data:', error)
+        const resMessage =
+          (error.response && error.response.data && error.response.data.message) ||
+          error.message ||
+          error.toString()
+        setLoading(false)
+        setMessage(resMessage)
+      })
   }
 
   const filteredData = perizinanData.filter((user) => {
@@ -189,12 +226,17 @@ const TableSuratMahasiswa = () => {
         <CModalHeader>
           <CModalTitle id="DeleteModal">Delete</CModalTitle>
         </CModalHeader>
-        <CModalBody>Yakin ingin hapus {selectedData ? selectedData.id : ''} ?</CModalBody>
+        <CModalBody>Yakin ingin hapus {selectedData ? selectedData.id_perizinan : ''} ?</CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setModalDelete(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton
+            color="danger"
+            onClick={() => handleDelete(selectedData ? selectedData.id_perizinan : null)}
+          >
+            Delete
+          </CButton>
         </CModalFooter>
       </CModal>
       {/* Modal Update */}
@@ -311,7 +353,12 @@ const TableSuratMahasiswa = () => {
           <CButton color="secondary" onClick={() => setModalUpdate(false)}>
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton
+            color="danger"
+            onClick={() => handleDelete(selectedData ? selectedData.id : null)}
+          >
+            Delete
+          </CButton>
         </CModalFooter>
       </CModal>
     </div>
