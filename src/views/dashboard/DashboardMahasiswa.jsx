@@ -17,6 +17,11 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CDropdown,
+  CDropdownToggle,
+  CDropdownMenu,
+  CDropdownItem,
+  CBoxBody,
 } from '@coreui/react'
 import { CChartLine } from '@coreui/react-chartjs'
 import { getStyle, hexToRgba } from '@coreui/utils'
@@ -111,53 +116,26 @@ const DashboardMahasiswa = () => {
         <CCardBody>
           <CRow>
             <CCol sm="4">
-              <CCard
-                style={{
-                  backgroundColor: 'green', // Ganti warna sesuai kebutuhan (contoh: hijau)
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '200px',
-                  textAlign: 'center', // Memposisikan teks ke tengah secara horizontal
-                }}
-              >
-                <CCardBody>
-                  <div className="text-white">Izin</div>
-                  <div className="text-white">{dataDashboard.jumlahIzin}</div>
+              <CCard>
+                <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
+                  <div className="text-dark">Izin</div>
+                  <div className="text-dark">{dataDashboard.jumlahIzin}</div>
                 </CCardBody>
               </CCard>
             </CCol>
             <CCol sm="4">
-              <CCard
-                style={{
-                  backgroundColor: 'yellow', // Ganti warna sesuai kebutuhan (contoh: kuning)
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '200px',
-                  textAlign: 'center', // Memposisikan teks ke tengah secara horizontal
-                }}
-              >
-                <CCardBody>
+              <CCard>
+                <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
                   <div className="text-dark">Sakit</div>
                   <div className="text-dark">{dataDashboard.jumlahSakit}</div>
                 </CCardBody>
               </CCard>
             </CCol>
             <CCol sm="4">
-              <CCard
-                style={{
-                  backgroundColor: 'blue', // Ganti warna sesuai kebutuhan (contoh: biru)
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '200px',
-                  textAlign: 'center', // Memposisikan teks ke tengah secara horizontal
-                }}
-              >
-                <CCardBody>
-                  <div className="text-white">Jumlah Perizinan</div>
-                  <div className="text-white">{totalPerizinan}</div>
+              <CCard>
+                <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
+                  <div className="text-dark">Jumlah Perizinan</div>
+                  <div className="text-dark">{totalPerizinan}</div>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -198,7 +176,6 @@ const DashboardMahasiswa = () => {
                   borderColor: getStyle('--cui-info'),
                   pointHoverBackgroundColor: getStyle('--cui-info'),
                   borderWidth: 2,
-                  // data: [50, 60, 45, 70, 80, 90, 75, 65, 70, 60, 55, 40], // Isi dengan data jumlah sakit per bulan
                   data: dataGraph.jumlah_izin_perbulan,
                   fill: true,
                   barPercentage: 0.1, // Menyesuaikan lebar bar untuk label "Sakit"
@@ -209,8 +186,6 @@ const DashboardMahasiswa = () => {
                   borderColor: getStyle('--cui-success'),
                   pointHoverBackgroundColor: getStyle('--cui-success'),
                   borderWidth: 2,
-                  // data: [20, 30, 25, 35, 40, 45, 30, 25, 30, 25, 20, 15], // Isi dengan data jumlah izin per bulan
-                  // data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0], // Isi dengan data jumlah izin per bulan
                   data: dataGraph.jumlah_izin_perbulan,
                   barPercentage: 0.4, // Menyesuaikan lebar bar untuk label "Izin"
                 },
@@ -252,6 +227,36 @@ const DashboardMahasiswa = () => {
             }}
           />
         </CCardBody>
+      </CCard>
+      <CCard>
+        <CDropdown className="m-4">
+          <CDropdownToggle color="primary">Select Option</CDropdownToggle>
+          <CDropdownMenu style={{ width: '100%', maxHeight: '300px', overflowY: 'auto' }}>
+            <CTable responsive>
+              <CTableHead>
+                <CTableRow className="text-center">
+                  <CTableHeaderCell>Jenis Surat</CTableHeaderCell>
+                  <CTableHeaderCell>Alasan</CTableHeaderCell>
+                  <CTableHeaderCell>Bukti Surat</CTableHeaderCell>
+                  <CTableHeaderCell>Tanggal Awal</CTableHeaderCell>
+                  <CTableHeaderCell>Tanggal Akhir</CTableHeaderCell>
+                  <CTableHeaderCell>status</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                <CTableRow>
+                  <CTableDataCell>A</CTableDataCell>
+                  <CTableDataCell>A</CTableDataCell>
+                  <CTableDataCell>A</CTableDataCell>
+                  <CTableDataCell>A</CTableDataCell>
+                </CTableRow>
+              </CTableBody>
+            </CTable>
+          </CDropdownMenu>
+        </CDropdown>
+        <div className="mb-5"></div>
+        <div className="mb-5"></div>
+        <div className="mb-5"></div>
       </CCard>
     </div>
   )
