@@ -94,7 +94,7 @@ const RiwayatSurat = () => {
         user.keterangan_dosen.toLowerCase().includes(searchText.toLowerCase()) ||
         user.surat.toLowerCase().includes(searchText.toLowerCase()) ||
         user.status.toLowerCase().includes(searchText.toLowerCase()))
-    ) 
+    )
   })
 
   return (

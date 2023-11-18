@@ -82,53 +82,26 @@ const Dashboard = () => {
         <CCardBody>
           <CRow>
             <CCol sm="4">
-              <CCard
-                style={{
-                  backgroundColor: 'green',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '200px',
-                  textAlign: 'center', // Memposisikan teks ke tengah secara horizontal
-                }}
-              >
-                <CCardBody>
-                  <div className="text-white">Izin</div>
-                  <div className="text-white">{dataDashboard.jumlahIzin}</div>
+              <CCard>
+                <CCardHeader>Jumlah Izin</CCardHeader>
+                <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
+                  <div className="text-dark">{dataDashboard.jumlahIzin}</div>
                 </CCardBody>
               </CCard>
             </CCol>
             <CCol sm="4">
-              <CCard
-                style={{
-                  backgroundColor: 'yellow',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '200px',
-                  textAlign: 'center', // Memposisikan teks ke tengah secara horizontal
-                }}
-              >
-                <CCardBody>
-                  <div className="text-dark">Sakit</div>
-                  <div>{dataDashboard.jumlahSakit}</div>
+              <CCard>
+                <CCardHeader>Jumlah Sakit</CCardHeader>
+                <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
+                  <div className="text-dark">{dataDashboard.jumlahSakit}</div>
                 </CCardBody>
               </CCard>
             </CCol>
             <CCol sm="4">
-              <CCard
-                style={{
-                  backgroundColor: 'blue',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '200px',
-                  textAlign: 'center', // Memposisikan teks ke tengah secara horizontal
-                }}
-              >
-                <CCardBody>
-                  <div className="text-white">Tahun Akademik</div>
-                  <div className="text-white">{dataDashboard.tahun_akademik}</div>
+              <CCard>
+                <CCardHeader>Tahun Akademik</CCardHeader>
+                <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
+                  <div className="text-dark">{dataDashboard.tahun_akademik}</div>
                 </CCardBody>
               </CCard>
             </CCol>
