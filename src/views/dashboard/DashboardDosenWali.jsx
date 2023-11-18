@@ -44,7 +44,7 @@ import {
   cilUser,
   cilUserFemale,
 } from '@coreui/icons'
-
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 const usersData = [
   {
     nama: 'Adrian',
@@ -204,7 +204,7 @@ const Dashboard = () => {
       <CCard>
         <CCardHeader>Mata Kuliah</CCardHeader>
         <CCardBody>
-          {dataGraf.map((item, index) => (
+          {/* {dataGraf.map((item, index) => (
             <div className="progress-group mb-4" key={index}>
               <div className="progress-group-header d-flex flex-column">
                 <span className="ms-auto fw-semibold">{item.jumlah_sakit}</span>
@@ -218,7 +218,22 @@ const Dashboard = () => {
                 <CProgress thin color="danger" value={item.jumlah_izin} />
               </div>
             </div>
-          ))}
+          ))} */}
+          <BarChart
+            width={500}
+            height={300}
+            data={dataGraf}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="nama_matkul" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+
+            <Bar dataKey="jumlah_sakit" stackId="a" fill="#8884d8" />
+            <Bar dataKey="jumlah_izin" stackId="a" fill="#82ca9d" />
+          </BarChart>
         </CCardBody>
       </CCard>
       {/* <CCard className="mb-4">
