@@ -96,7 +96,7 @@ const DashboardMahasiswa = () => {
   const [dataGraph, setDataGraph] = useState([])
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/test/adminDashboard/graph'
+    const apiUrl = 'http://localhost:8080/api/test/mahasiswaDashboard/graph'
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -178,6 +178,12 @@ const DashboardMahasiswa = () => {
 
   const totalPerizinan = dataDashboard.jumlahIzin + dataDashboard.jumlahSakit
   const tahunAkademik = dataDashboard.tahun_akademik
+  const [selectedSemester, setSelectedSemester] = useState('ganjil')
+  const labelsSemesterGanjil = ['July', 'August', 'September', 'October', 'November', 'December']
+  const labelsSemesterGenap = ['January', 'February', 'March', 'April', 'May', 'June']
+  const handleSemesterChange = (semester) => {
+    setSelectedSemester(semester)
+  }
 
   return (
     <div style={{ height: '100vh', overflow: 'auto' }}>
@@ -214,30 +220,44 @@ const DashboardMahasiswa = () => {
       <CCard className="my-4">
         <CCardBody className="mt-4">
           <CRow>
-            <CCol sm={5}>
+            <CCol sm={3}>
               <h4 id="tahunAkademik" className="card-title mb-0">
                 Jumlah Perizinan
               </h4>
               <div className="small text-medium-emphasis">{tahunAkademik}</div>
             </CCol>
+            <CCol sm={6}> </CCol>
+            <CCol sm={3}>
+              <CButtonGroup
+                className="btn-group d-flex justify-content-end mt-2"
+                role="group"
+                aria-label="Semester Selection"
+              >
+                <CButton
+                  type="button"
+                  className={`btn ${
+                    selectedSemester === 'ganjil' ? 'btn-primary' : 'btn-secondary'
+                  }`}
+                  onClick={() => handleSemesterChange('ganjil')}
+                >
+                  Semester Ganjil
+                </CButton>
+                <CButton
+                  type="button"
+                  className={`btn ${
+                    selectedSemester === 'genap' ? 'btn-primary' : 'btn-secondary'
+                  }`}
+                  onClick={() => handleSemesterChange('genap')}
+                >
+                  Semester Genap
+                </CButton>
+              </CButtonGroup>
+            </CCol>
           </CRow>
           <CChartLine
             style={{ height: '300px', marginTop: '40px' }}
             data={{
-              labels: [
-                'January',
-                'February',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
-                'August',
-                'September',
-                'October',
-                'November',
-                'December',
-              ],
+              labels: selectedSemester === 'ganjil' ? labelsSemesterGanjil : labelsSemesterGenap,
               datasets: [
                 {
                   label: 'Sakit',
@@ -245,9 +265,12 @@ const DashboardMahasiswa = () => {
                   borderColor: getStyle('--cui-info'),
                   pointHoverBackgroundColor: getStyle('--cui-info'),
                   borderWidth: 2,
-                  data: dataGraph.jumlah_izin_perbulan,
+                  data:
+                    selectedSemester === 'ganjil'
+                      ? dataGraph.jumlah_sakit_semester_ganjil
+                      : dataGraph.jumlah_sakit_semester_genap,
                   fill: true,
-                  barPercentage: 0.1, // Menyesuaikan lebar bar untuk label "Sakit"
+                  barPercentage: 0.1,
                 },
                 {
                   label: 'Izin',
@@ -255,8 +278,11 @@ const DashboardMahasiswa = () => {
                   borderColor: getStyle('--cui-success'),
                   pointHoverBackgroundColor: getStyle('--cui-success'),
                   borderWidth: 2,
-                  data: dataGraph.jumlah_izin_perbulan,
-                  barPercentage: 0.4, // Menyesuaikan lebar bar untuk label "Izin"
+                  data:
+                    selectedSemester === 'ganjil'
+                      ? dataGraph.jumlah_izin_semester_ganjil
+                      : dataGraph.jumlah_izin_semester_genap,
+                  barPercentage: 0.4,
                 },
               ],
             }}
