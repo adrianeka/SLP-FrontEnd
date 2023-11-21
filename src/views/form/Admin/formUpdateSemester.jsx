@@ -50,7 +50,7 @@ const FormUpdateSemester = () => {
         // Mengatur data ke dalam state formData
         setFormData({
           id_semester: id_semester,
-          status_semester: semesterData.status_semester,
+          status_semester: formData.id_semester === '01' ? 'Ganjil' : 'Genap',
           tahun_ajar: tahunAjar,
         })
       } catch (error) {

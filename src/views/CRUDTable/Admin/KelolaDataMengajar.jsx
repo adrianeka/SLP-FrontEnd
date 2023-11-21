@@ -189,51 +189,28 @@ const KelolaDataMengajar = () => {
                     filteredData.map((jadwal) => (
                       <CTableRow key={jadwal.id}>
                         <CTableDataCell>
-                          {jadwal.angkatan_detail_matkul.detailMatkul
-                            ? jadwal.angkatan_detail_matkul.detailMatkul.matkul_id
-                            : '-'}
-                        </CTableDataCell>
-                        <CTableDataCell>
-                          {jadwal.angkatan_detail_matkul.detailMatkul.mataKuliah.nama_matakuliah}
-                        </CTableDataCell>
-                        <CTableDataCell>
-                          {jadwal.angkatan_detail_matkul.semester.nama_semester}
+                          {jadwal.angkatan_detail_matkul?.detailMatkul?.matkul_id || '-'}
                         </CTableDataCell>
 
                         <CTableDataCell>
-                          {jadwal.angkatan_detail_matkul.prodi.nama_prodi}
+                          {jadwal.angkatan_detail_matkul?.detailMatkul?.mataKuliah?.nama_matakuliah}
                         </CTableDataCell>
                         <CTableDataCell>
-                          {calculateClass(jadwal.angkatan_detail_matkul.angkatan.tahun_angkatan)}
-                          {jadwal.angkatan_detail_matkul.kela.nama_kelas}
+                          {jadwal.angkatan_detail_matkul?.semester?.nama_semester}
                         </CTableDataCell>
                         <CTableDataCell>
-                          {jadwal.angkatan_detail_matkul.angkatan.tahun_angkatan}
+                          {jadwal.angkatan_detail_matkul?.prodi?.nama_prodi || '-'}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {calculateClass(
+                            jadwal.angkatan_detail_matkul &&
+                              jadwal.angkatan_detail_matkul.angkatan?.tahun_angkatan,
+                          )}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {jadwal.angkatan_detail_matkul?.angkatan?.tahun_angkatan || '-'}
                         </CTableDataCell>
                         <CTableDataCell>{jadwal.dosen.nama_dosen}</CTableDataCell>
-                        <CTableDataCell>
-                          {/* <CCol>
-                            <Link to={`/kelola/akademik/jadwal/update/${jadwal.id}`}>
-                              <CButton
-                                color="primary"
-                                variant="outline"
-                                className="ms-2"
-                                title="Ubah Data Jadwal Mata Kuliah"
-                              >
-                                <CIcon icon={cilPen} />
-                              </CButton>
-                            </Link>
-                            <CButton
-                              color="danger"
-                              variant="outline"
-                              className="ms-2"
-                              title="Hapus Data Jadwal Mata Kuliah"
-                              onClick={() => handleDeleteModal(jadwal)}
-                            >
-                              <CIcon icon={cilTrash} />
-                            </CButton>
-                          </CCol> */}
-                        </CTableDataCell>
                       </CTableRow>
                     ))
                   )}

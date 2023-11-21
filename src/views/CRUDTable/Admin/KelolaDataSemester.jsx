@@ -33,6 +33,7 @@ const KelolaDataSemester = () => {
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [semesterData, setSemesterData] = useState([])
+  const [statusChanged, setStatusChanged] = useState(false)
   const [tableData, setTableData] = useState([])
   useEffect(() => {
     // URL API yang akan diambil datanya
@@ -48,12 +49,13 @@ const KelolaDataSemester = () => {
 
         console.log(response.data)
         setSemesterData(response.data)
+        setStatusChanged(false)
       })
       .catch((error) => {
         // Handle error jika terjadi kesalahan saat mengambil data dari API
         console.error('Error fetching data:', error)
       })
-  }, [])
+  }, [statusChanged])
 
   useEffect(() => {
     if (semesterData.length > 0) {
@@ -122,6 +124,50 @@ const KelolaDataSemester = () => {
       statusSemester.includes(searchText.toLowerCase())
     )
   })
+
+  const handleToggleStatus = (semester) => {
+    const newStatus = semester.status_semester === 1 ? 0 : 1
+
+    // URL API untuk mengubah status semester
+    const apiUrl = `http://localhost:8080/api/admins/semester/update/${semester.id_semester}`
+
+    // Menggunakan Axios untuk mengirim permintaan PUT
+    axios
+      .put(
+        apiUrl,
+        { status_semester: newStatus },
+        {
+          withCredentials: true,
+        },
+      )
+      .then((response) => {
+        // Handle ketika status berhasil diubah
+        console.log('Status semester berhasil diubah:', response.data)
+
+        // Update status semester pada data yang ditampilkan
+        setSemesterData((prevData) =>
+          prevData.map((item) =>
+            item.id_semester === semester.id_semester
+              ? { ...item, status_semester: newStatus }
+              : item,
+          ),
+        )
+
+        // Menampilkan Sweet Alert saat berhasil mengubah status semester
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Status Semester ${semester.nama_semester} berhasil diubah`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
+        setStatusChanged(true)
+      })
+
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengubah status semester
+        console.error('Error updating status:', error)
+      })
+  }
   return (
     <div>
       <CRow>
@@ -184,28 +230,29 @@ const KelolaDataSemester = () => {
                           <CTableDataCell>
                             {semester.status_semester == 1 ? 'Aktif' : 'Tidak Aktif'}
                           </CTableDataCell>
-                          <CTableDataCell>
-                            <CCol>
-                              <Link to={`/kelola/akademik/semester/update/${semester.id_semester}`}>
-                                <CButton
-                                  color="primary"
-                                  variant="outline"
-                                  className="ms-2"
-                                  title="Ubah Data Semester"
-                                >
-                                  <CIcon icon={cilPen} />
-                                </CButton>
-                              </Link>
-                              <CButton
-                                color="danger"
-                                variant="outline"
-                                className="ms-2"
-                                title="Hapus Data Semester"
-                                onClick={() => handleDeleteModal(semester)}
-                              >
-                                <CIcon icon={cilTrash} />
-                              </CButton>
-                            </CCol>
+                          <CTableDataCell style={{ display: 'flex', alignItems: 'center' }}>
+                            <CButton
+                              color="primary"
+                              variant="outline"
+                              className="ms-2"
+                              title={semester.status_semester === 1 ? 'Non-Aktifkan' : 'Aktifkan'}
+                              onClick={() => handleToggleStatus(semester)}
+                              style={{
+                                display: semester.status_semester === 1 ? 'none' : 'block',
+                              }}
+                            >
+                              {semester.status_semester === 1 ? 'Non-Active' : 'Active'}
+                            </CButton>
+
+                            <CButton
+                              color="danger"
+                              variant="outline"
+                              className="ms-2"
+                              title="Hapus Data Semester"
+                              onClick={() => handleDeleteModal(semester)}
+                            >
+                              <CIcon icon={cilTrash} />
+                            </CButton>
                           </CTableDataCell>
                         </CTableRow>
                       )

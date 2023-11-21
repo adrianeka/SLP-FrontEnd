@@ -23,6 +23,7 @@ const FormSakitMhs = () => {
   const [selectedFile, setSelectedFile] = useState(null)
   const [userRole, setUserRole] = useState('')
   const [matkulData, setMatkulData] = useState([])
+  const [dataperizinan, setperizinan] = useState([])
   const [prevFormData, setPrevFormData] = useState({
     matakuliah: [],
   })
@@ -87,6 +88,74 @@ const FormSakitMhs = () => {
     setSelectedFile(e.target.files[0])
   }
 
+  useEffect(() => {
+    const apiUrl = `http://localhost:8080/api/mahasiswa/list/matkul/mahasiswa/${semesterData.id_semester}/${mahasiswaData.prodi_id}/${mahasiswaData.kelas_id}/${mahasiswaData.angkatan_id}`
+
+    axios
+      .get(apiUrl, { withCredentials: true })
+      .then((response) => {
+        console.log(response.data)
+        const formattedData = response.data.map((matkul) => ({
+          value: matkul.angkatanMatkul_id,
+          label: `${matkul.detailMatkul.mataKuliah.nama_matakuliah} (${matkul.detailMatkul.tipe})`,
+        }))
+
+        setMatkulData(formattedData)
+      })
+      .catch((error) => {
+        console.error('Error fetching Matkul data:', error)
+      })
+  }, [
+    semesterData.id_semester,
+    mahasiswaData.prodi_id,
+    mahasiswaData.kelas_id,
+    mahasiswaData.angkatan_id,
+  ])
+
+  useEffect(() => {
+    // Mengambil data Dosen dari API berdasarkan ID saat komponen dimuat
+    const fetchData = async () => {
+      try {
+        const apiUrl = `http://localhost:8080/api/mahasiswa/perizinan/${id}`
+        const response = await axios.get(apiUrl, {
+          withCredentials: true,
+        })
+        const PerizinanData = response.data
+
+        setperizinan(PerizinanData)
+
+        // Use Promise.all to make multiple API calls concurrently
+        const matkulPromises = PerizinanData.detailPerizinans.map(async (item) => {
+          const apiUrls = `http://localhost:8080/api/mahasiswa/detailMatkul/${item.id_detail_matkul}`
+          const response = await axios.get(apiUrls, {
+            withCredentials: true,
+          })
+          return response.data
+        })
+
+        const matkulData = await Promise.all(matkulPromises)
+        console.log(matkulData)
+
+        setFormData({
+          keterangan: PerizinanData.keterangan,
+          tanggal_awal: PerizinanData.tanggal_awal,
+          tanggal_akhir: PerizinanData.tanggal_akhir,
+
+          matakuliah: matkulData.map((item) => ({
+            value: item[0].angkatanMatkul_id, // Assuming angkatanMatkul_id is at the first index
+            label: `${item[0].detailMatkul.mataKuliah.nama_matakuliah} (${item[0].detailMatkul.tipe})`,
+          })),
+          file: 'http://localhost:8080/api/mahasiswa/perizinan/surat/' + PerizinanData.surat,
+        })
+      } catch (error) {
+        console.error('Error fetching Dosen data:', error)
+      }
+    }
+
+    fetchData()
+  }, [id])
+  console.log(formData)
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -97,7 +166,7 @@ const FormSakitMhs = () => {
     newPerizinan.append('keterangan', formData.keterangan)
     newPerizinan.append('tanggal_awal', formData.tanggal_awal)
     newPerizinan.append('tanggal_akhir', formData.tanggal_akhir)
-    newPerizinan.append('jenis', 'Sakit')
+    newPerizinan.append('jenis', dataperizinan.jenis)
     newPerizinan.append('nim', userRole)
     newPerizinan.append('status', 'Menunggu Verifikasi')
 
@@ -125,29 +194,6 @@ const FormSakitMhs = () => {
       console.error('Error creating Perizinan:', error)
     }
   }
-  useEffect(() => {
-    const apiUrl = `http://localhost:8080/api/mahasiswa/list/matkul/mahasiswa/${semesterData.id_semester}/${mahasiswaData.prodi_id}/${mahasiswaData.kelas_id}/${mahasiswaData.angkatan_id}`
-
-    axios
-      .get(apiUrl, { withCredentials: true })
-      .then((response) => {
-        console.log(response.data)
-        const formattedData = response.data.map((matkul) => ({
-          value: matkul.angkatanMatkul_id,
-          label: `${matkul.detailMatkul.mataKuliah.nama_matakuliah} (${matkul.detailMatkul.tipe})`,
-        }))
-
-        setMatkulData(formattedData)
-      })
-      .catch((error) => {
-        console.error('Error fetching Matkul data:', error)
-      })
-  }, [
-    semesterData.id_semester,
-    mahasiswaData.prodi_id,
-    mahasiswaData.kelas_id,
-    mahasiswaData.angkatan_id,
-  ])
 
   const handleSubmitDraft = async (e) => {
     e.preventDefault()
@@ -159,7 +205,7 @@ const FormSakitMhs = () => {
     newPerizinan.append('keterangan', formData.keterangan)
     newPerizinan.append('tanggal_awal', formData.tanggal_awal)
     newPerizinan.append('tanggal_akhir', formData.tanggal_akhir)
-    newPerizinan.append('jenis', 'Sakit')
+    newPerizinan.append('jenis', dataperizinan.jenis)
     newPerizinan.append('nim', userRole)
     newPerizinan.append('status', 'Draft')
 
@@ -187,47 +233,6 @@ const FormSakitMhs = () => {
       console.error('Error creating Perizinan:', error)
     }
   }
-
-  useEffect(() => {
-    // Mengambil data Dosen dari API berdasarkan ID saat komponen dimuat
-    const fetchData = async () => {
-      try {
-        const apiUrl = `http://localhost:8080/api/mahasiswa/perizinan/${id}`
-        const response = await axios.get(apiUrl, {
-          withCredentials: true,
-        })
-        const PerizinanData = response.data
-
-        // Use Promise.all to make multiple API calls concurrently
-        const matkulPromises = PerizinanData.detailPerizinans.map(async (item) => {
-          const apiUrls = `http://localhost:8080/api/mahasiswa/detailMatkul/${item.id_detail_matkul}`
-          const response = await axios.get(apiUrls, {
-            withCredentials: true,
-          })
-          return response.data
-        })
-
-        const matkulData = await Promise.all(matkulPromises)
-        console.log(matkulData)
-
-        setFormData({
-          keterangan: PerizinanData.keterangan,
-          tanggal_awal: PerizinanData.tanggal_awal,
-          tanggal_akhir: PerizinanData.tanggal_akhir,
-          matakuliah: matkulData.map((item) => ({
-            value: item[0].angkatanMatkul_id, // Assuming angkatanMatkul_id is at the first index
-            label: `${item[0].detailMatkul.mataKuliah.nama_matakuliah} (${item[0].detailMatkul.tipe})`,
-          })),
-          file: 'http://localhost:8080/api/mahasiswa/perizinan/surat/' + PerizinanData.surat,
-        })
-      } catch (error) {
-        console.error('Error fetching Dosen data:', error)
-      }
-    }
-
-    fetchData()
-  }, [id])
-  console.log(formData)
 
   return (
     <>

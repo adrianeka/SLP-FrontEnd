@@ -194,7 +194,7 @@ const KelolaDataJadwalKelas = () => {
                         <CTableDataCell>{jadwal.prodi.nama_prodi}</CTableDataCell>
                         <CTableDataCell>{jadwal.angkatan.tahun_angkatan}</CTableDataCell>
                         <CTableDataCell>{jadwal.semester.nama_semester}</CTableDataCell>
-                        <CTableDataCell></CTableDataCell>
+
                         {/* <CTableDataCell>
                           <CCol>
                             <Link to={`/kelola/akademik/jadwal/update/${jadwal.id}`}>

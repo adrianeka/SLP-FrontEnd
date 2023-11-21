@@ -100,25 +100,33 @@ const TableKaprodi = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {kaprodiData.map((user) => (
-                    <CTableRow key={user.id}>
-                      <CTableDataCell>{user.dosen}</CTableDataCell>
-                      <CTableDataCell>{user.prodi}</CTableDataCell>
-                      <CTableDataCell>
-                        <CButton color="primary" variant="outline" className="ms-2">
-                          Update
-                        </CButton>
-                        <CButton
-                          color="danger"
-                          variant="outline"
-                          className="ms-2"
-                          onClick={() => setVisible(!visible)}
-                        >
-                          Delete
-                        </CButton>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
+                  {kaprodiData.length === 0 ? (
+                    <tr>
+                      <td colSpan="3" className="text-center">
+                        No Data
+                      </td>
+                    </tr>
+                  ) : (
+                    kaprodiData.map((user) => (
+                      <CTableRow key={user.id}>
+                        <CTableDataCell>{user.dosen}</CTableDataCell>
+                        <CTableDataCell>{user.prodi}</CTableDataCell>
+                        <CTableDataCell>
+                          <CButton color="primary" variant="outline" className="ms-2">
+                            Update
+                          </CButton>
+                          <CButton
+                            color="danger"
+                            variant="outline"
+                            className="ms-2"
+                            onClick={() => setVisible(!visible)}
+                          >
+                            Delete
+                          </CButton>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))
+                  )}
                 </CTableBody>
               </CTable>
             </CCardBody>

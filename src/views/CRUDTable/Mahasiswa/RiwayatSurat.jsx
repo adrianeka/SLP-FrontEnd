@@ -70,6 +70,7 @@ const RiwayatSurat = () => {
   const handleSearchChange = (e) => {
     setSearchText(e.target.value)
   }
+
   const [modalAlasan, setModalAlasan] = useState(Array(perizinanData.length).fill(false))
 
   // Function to handle opening a specific modal

@@ -122,6 +122,10 @@ const TableSuratMahasiswa = () => {
         setMessage(resMessage)
       })
   }
+  const [modalExport, setModalExport] = useState(false)
+  const handleExportModal = () => {
+    setModalExport(true)
+  }
 
   const filteredData = perizinanData.filter((user) => {
     //Var untuk menampung data baru
@@ -183,7 +187,37 @@ const TableSuratMahasiswa = () => {
                       <CTableRow key={user.id} className="text-center">
                         <CTableDataCell>{user.jenis}</CTableDataCell>
                         <CTableDataCell>{user.keterangan}</CTableDataCell>
-                        <CTableDataCell>{user.jenis}</CTableDataCell>
+                        <CTableDataCell>
+                          <CCol xs={3}>
+                            <CButton variant="outline" color="success" onClick={handleExportModal}>
+                              Lihat
+                            </CButton>
+                          </CCol>
+
+                          <CModal
+                            size="xl"
+                            backdrop="static"
+                            visible={modalExport}
+                            onClose={() => setModalExport(false)}
+                            aria-labelledby="ExportModalLabel"
+                          >
+                            <CModalHeader>
+                              <CModalTitle id="ExportModalLabel">Bukti Surat</CModalTitle>
+                            </CModalHeader>
+                            <CModalBody>
+                              <iframe
+                                src={`http://localhost:8080/api/mahasiswa/perizinan/surat/${user.surat}`}
+                                width="100%"
+                                height="600px"
+                              ></iframe>
+                            </CModalBody>
+                            <CModalFooter>
+                              <CButton color="secondary" onClick={() => setModalExport(false)}>
+                                Close
+                              </CButton>
+                            </CModalFooter>
+                          </CModal>
+                        </CTableDataCell>
                         <CTableDataCell>{user.tanggal_awal}</CTableDataCell>
                         <CTableDataCell>{user.tanggal_akhir}</CTableDataCell>
                         <CTableDataCell>
