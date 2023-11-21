@@ -63,7 +63,6 @@ const Dashboard = () => {
         withCredentials: true,
       })
       .then((response) => {
-        // console.log('ini tuh apa', response.data)
         setDataGraph(response.data)
       })
       .catch((error) => {
@@ -143,7 +142,7 @@ const Dashboard = () => {
                   pointHoverBackgroundColor: getStyle('--cui-info'),
                   borderWidth: 2,
                   // data: [50, 60, 45, 70, 80, 90, 75, 65, 70, 60, 55, 40], // Isi dengan data jumlah sakit per bulan
-                  data: dataGraph.jumlah_izin_perbulan,
+                  data: dataGraph.jumlah_sakit_perbulan,
                   fill: true,
                   barPercentage: 0.1, // Menyesuaikan lebar bar untuk label "Sakit"
                 },
