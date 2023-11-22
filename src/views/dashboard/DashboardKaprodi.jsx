@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import axios from 'axios'
 import {
   CAvatar,
   CButton,
@@ -9,6 +9,7 @@ import {
   CCardFooter,
   CCardHeader,
   CCol,
+  CFormSelect,
   CProgress,
   CRow,
   CTable,
@@ -19,6 +20,7 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { CChartLine } from '@coreui/react-chartjs'
+import { CChart } from '@coreui/react-chartjs'
 import { getStyle, hexToRgba } from '@coreui/utils'
 import CIcon from '@coreui/icons-react'
 import {
@@ -48,217 +50,236 @@ import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import rekapDashboard from './item/rekapDashboard'
 
-const usersData = [
-  { id: 0, nama: 'Adrian', nim: '221511000', sakit: '3', izin: '0' },
-  { id: 1, nama: 'Reno', nim: '221511000', sakit: '4', izin: '8' },
-  { id: 2, nama: 'Mahesya', nim: '221511000', sakit: '0', izin: '2' },
-  { id: 3, nama: 'Taufik', nim: '221511000', sakit: '1', izin: '2' },
-  { id: 4, nama: 'Rizki', nim: '221511000', sakit: '2', izin: '1' },
-  { id: 5, nama: 'Tendy', nim: '221511000', sakit: '1', izin: '0' },
-]
-
-const getTotalSakit = () => {
-  const totalSakit = usersData.reduce((acc, user) => acc + parseInt(user.sakit), 0)
-  return totalSakit
-}
-
-const getTotalIzin = () => {
-  const totalIzin = usersData.reduce((acc, user) => acc + parseInt(user.izin), 0)
-  return totalIzin
-}
-
-const getTotalMahasiswa = () => {
-  return usersData.length
-}
-
-const getRandomTotalSakitIzin = () => {
-  const totalSakit = getTotalSakit()
-  const totalIzin = getTotalIzin()
-  const totalMahasiswa = getTotalMahasiswa()
-  const dataSakitIzin = []
-
-  for (let i = 0; i < 7; i++) {
-    // Generate random values for sakit + izin
-    const randomValue = Math.floor(Math.random() * ((totalSakit + totalIzin) / 3) * 2) + 1
-    dataSakitIzin.push(randomValue)
-  }
-
-  return dataSakitIzin
-}
-
-const calculatePercentage = (value, total) => {
-  return ((value / total) * 100).toFixed(2)
-}
-
 const DashboardKaprodi = () => {
+  const [tipeProdi] = useState([])
   useEffect(() => {
     const data = localStorage.getItem('kaprodi')
     if (!data) {
       window.location.href = '/login'
     } else {
-      console.log(data)
+      const dataLogin = JSON.parse(data)
+      const dataId = dataLogin.id
+      tipeProdi.prodi = parseInt(dataId[dataId.length - 1])
     }
   })
-  const totalSakit = getTotalSakit()
-  const totalIzin = getTotalIzin()
-  const totalMahasiswa = getTotalMahasiswa()
-  const dataSakitIzin = getRandomTotalSakitIzin()
-  const totalSakitIzinSum = dataSakitIzin.reduce((acc, value) => acc + value, 0)
 
-  const progressExample = [
-    {
-      title: 'Sakit 6 Bulan Terakhir',
-      value: `${totalSakit} Users`,
-      percent: calculatePercentage(totalSakit, totalSakit + totalIzin),
-      color: 'info',
-    },
-    {
-      title: 'Izin 6 BUlan Terakhir',
-      value: `${totalIzin} Users`,
-      percent: calculatePercentage(totalIzin, totalSakit + totalIzin),
-      color: 'warning',
-    },
-  ]
+  const [dataCard, setDataDashboard] = useState([])
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = `http://localhost:8080/api/kaprodiDashboard/card/${tipeProdi.prodi}`
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // console.log('data ', response.data)
+        setDataDashboard(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
+
+  const [dataGraph, setDataGraph] = useState([])
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = `http://localhost:8080/api/kaprodiDashboard/graph/${tipeProdi.prodi}`
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // console.log('ini tuh apa', response.data)
+        setDataGraph(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [])
+
+  const renderBarChart = (label, data, color) => {
+    return {
+      label: label,
+      backgroundColor: hexToRgba(color, 10),
+      borderColor: color,
+      pointHoverBackgroundColor: color,
+      borderWidth: 2,
+      data: data,
+      fill: true,
+      barPercentage: 0.4, // Menyesuaikan lebar bar
+    }
+  }
+
+  const generateBarChartData = (tipe) => {
+    if (!dataGraph[tipe]) {
+      return { labels: [], datasets: [] }
+    }
+
+    const labels = Object.keys(dataGraph[tipe])
+    const datasets = []
+
+    // Loop melalui setiap kelas
+    for (const kelas in dataGraph[tipe][labels[0]]) {
+      const data = []
+
+      // Loop melalui setiap angkatan
+      for (const angkatan of labels) {
+        data.unshift(dataGraph[tipe][angkatan][kelas] || 0)
+      }
+
+      // Generate data untuk grafik batang
+      datasets.unshift(renderBarChart(kelas, data, getStyle('--cui-info')))
+    }
+
+    return { labels, datasets }
+  }
+
+  console.log('dataGraph di luar setelah nyeting', dataGraph)
+
+  // console.log(generateBarChartData('sakit').labels)
+  // console.log(generateBarChartData('sakit').datasets)
+  // console.log(generateBarChartData('izin').labels)
+  // console.log(generateBarChartData('izin').datasets)
 
   return (
-    <>
-      <CCard className="mb-4">
-        <CCardHeader>Total Permohonan</CCardHeader>
-        <CCardBody>
-          <CRow>
-            <CCol sm="4">
-              <CCard
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '200px',
-                }}
-              >
-                <CCardBody>Total Permohonan</CCardBody>
-              </CCard>
-            </CCol>
-            <CCol sm="4">
-              <CCard
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '200px',
-                }}
-              >
-                <CCardBody>Sakit: {totalSakit}</CCardBody>
-              </CCard>
-            </CCol>
-            <CCol sm="4">
-              <CCard
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '200px',
-                }}
-              >
-                <CCardBody>Izin: {totalIzin}</CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
-        </CCardBody>
-      </CCard>
-      <CCard className="mb-4">
-        <CCardBody>
-          <CRow>
-            <CCol sm={5}>
-              <h4 id="traffic" className="card-title mb-0">
-                Traffic
-              </h4>
-              <div className="small text-medium-emphasis">January - July 2021</div>
-            </CCol>
-            <CCol sm={7} className="d-none d-md-block">
-              <CButton color="primary" className="float-end">
-                <CIcon icon={cilCloudDownload} />
-              </CButton>
-              <CButtonGroup className="float-end me-3">
-                {['Day', 'Month', 'Year'].map((value) => (
-                  <CButton
-                    color="outline-secondary"
-                    key={value}
-                    className="mx-0"
-                    active={value === 'Month'}
+    <CRow>
+      <CCol sm="12">
+        <CCard className="mb-4">
+          <CCardBody>
+            <CRow>
+              <CCol sm="4">
+                <CCard
+                  style={{
+                    backgroundColor: 'rgb(220, 220, 220)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '200px',
+                    textAlign: 'center',
+                  }}
+                >
+                  <CCardBody
+                    style={{
+                      paddingTop: '4rem',
+                    }}
                   >
-                    {value}
-                  </CButton>
-                ))}
-              </CButtonGroup>
-            </CCol>
-          </CRow>
-          <CChartLine
-            style={{ height: '300px', marginTop: '40px' }}
-            data={{
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-              datasets: [
-                {
-                  label: 'Total Sakit + Izin',
-                  backgroundColor: hexToRgba(getStyle('--cui-info'), 10),
-                  borderColor: getStyle('--cui-info'),
-                  pointHoverBackgroundColor: getStyle('--cui-info'),
-                  borderWidth: 2,
-                  data: dataSakitIzin,
-                  fill: true,
-                },
-              ],
-            }}
-            options={{
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  display: false,
-                },
-              },
-              scales: {
-                x: {
-                  grid: {
-                    drawOnChartArea: false,
+                    <div className="text-dark">Sakit</div>
+                    <div className="text-dark">{dataCard.jumlahSakit}</div>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+              <CCol sm="4">
+                <CCard
+                  style={{
+                    backgroundColor: 'rgb(220, 220, 220)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '200px',
+                    textAlign: 'center', // Memposisikan teks ke tengah secara horizontal
+                  }}
+                >
+                  <CCardBody
+                    style={{
+                      paddingTop: '4rem',
+                    }}
+                  >
+                    <div className="text-dark">Izin</div>
+                    <div className="text-dark">{dataCard.jumlahIzin}</div>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+              <CCol sm="4">
+                <CCard
+                  style={{
+                    backgroundColor: 'rgb(220, 220, 220)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '200px',
+                    textAlign: 'center', // Memposisikan teks ke tengah secara horizontal
+                  }}
+                >
+                  <CCardBody
+                    style={{
+                      paddingTop: '4rem',
+                    }}
+                  >
+                    <div className="text-dark">Tahun Akademik</div>
+                    <div className="text-dark">{dataCard.tahunAkademik}</div>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            </CRow>
+          </CCardBody>
+        </CCard>
+        {['sakit', 'izin'].map((tipe) => (
+          <CCard key={tipe} className="mb-4">
+            <CCardBody className="mt-4">
+              <CRow>
+                <CCol sm={5}>
+                  <h4 id="tahunAkademik" className="card-title mb-0">
+                    {tipe === 'sakit' ? 'Detail Jumlah Sakit' : 'Detail Jumlah Izin'}
+                  </h4>
+                  <div className="small text-medium-emphasis">{dataGraph.tahunAkademik}</div>
+                </CCol>
+              </CRow>
+              <CChart
+                type="bar"
+                data={{
+                  labels: generateBarChartData(tipe).labels,
+                  datasets: generateBarChartData(tipe).datasets,
+                }}
+                labels="months"
+                options={{
+                  plugins: {
+                    legend: {
+                      labels: {
+                        color: getStyle('--cui-body-color'),
+                      },
+                    },
                   },
-                },
-                y: {
-                  ticks: {
-                    beginAtZero: true,
-                    maxTicksLimit: 5,
-                    stepSize: Math.ceil(totalSakitIzinSum / 5),
-                    max: totalSakitIzinSum,
+                  scales: {
+                    x: {
+                      title: {
+                        display: true,
+                        text: 'Angkatan',
+                        color: getStyle('--cui-body-color'),
+                      },
+                      grid: {
+                        color: getStyle('--cui-border-color-translucent'),
+                      },
+                      ticks: {
+                        color: getStyle('--cui-body-color'),
+                      },
+                    },
+                    y: {
+                      title: {
+                        display: true,
+                        text: 'Jumlah',
+                        color: getStyle('--cui-body-color'),
+                      },
+                      grid: {
+                        color: getStyle('--cui-border-color-translucent'),
+                      },
+                      ticks: {
+                        color: getStyle('--cui-body-color'),
+                      },
+                    },
                   },
-                },
-              },
-              elements: {
-                line: {
-                  tension: 0.4,
-                },
-                point: {
-                  radius: 0,
-                  hitRadius: 10,
-                  hoverRadius: 4,
-                  hoverBorderWidth: 3,
-                },
-              },
-            }}
-          />
-        </CCardBody>
-      </CCard>
-      <CCardFooter>
-        <CRow xs={{ cols: 1 }} md={{ cols: 5 }} className="text-center">
-          {progressExample.map((item, index) => (
-            <CCol className="mb-sm-2 mb-0" key={index}>
-              <div className="text-medium-emphasis">{item.title}</div>
-              <strong>
-                {item.value} ({item.percent}%)
-              </strong>
-              <CProgress thin className="mt-2" color={item.color} value={item.percent} />
-            </CCol>
-          ))}
-        </CRow>
-      </CCardFooter>
-    </>
+                }}
+              />
+            </CCardBody>
+          </CCard>
+        ))}
+      </CCol>
+    </CRow>
   )
 }
 
