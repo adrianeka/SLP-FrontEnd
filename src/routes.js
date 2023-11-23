@@ -29,6 +29,8 @@ const FormUpdateJadwalKelas = React.lazy(() => import('./views/form/Admin/formUp
 const KelolaDataMengajar = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataMengajar'))
 const FormCrateDataMengajar = React.lazy(() => import('./views/form/Admin/formCreateDataMengajar'))
 const FormUpdateDataMengajar = React.lazy(() => import('./views/form/Admin/formUpdateDataMengajar'))
+const FormTambahKaprodi = React.lazy(() => import('./views/form/Admin/formCreateKaprodi'))
+const FormUpdateKaprodi = React.lazy(() => import('./views/form/Admin/formUpdateKaprodi'))
 // Mahasiswa
 const DashboardMahasiswa = React.lazy(() => import('./views/dashboard/DashboardMahasiswa'))
 const TableSuratMahasiswa = React.lazy(() => import('./views/CRUDTable/Mahasiswa/TableSurat'))
@@ -49,7 +51,6 @@ const RiwayatSuratPermohonan = React.lazy(() =>
 //kaprodi
 const DashboardKaprodi = React.lazy(() => import('./views/dashboard/DashboardKaprodi'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
-const FormTambahKaprodi = React.lazy(() => import('./views/form/Admin/formCreateKaprodi'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/login', name: 'Login', element: Login },
@@ -83,6 +84,7 @@ const routes = [
   },
   { path: '/kelola/kaprodi', name: 'Tabel Kaprodi', element: TableKaprodi },
   { path: '/kelola/kaprodi/tambah', name: 'Form Create Kaprodi', element: FormTambahKaprodi },
+  { path: '/kelola/kaprodi/update/:id', name: 'Form Update Kaprodi', element: FormUpdateKaprodi },
   // Kelola akademik
   { path: '/kelola/akademik/jadwal', name: 'Tabel Jadwal Mata Kuliah', element: KelolaDataJadwal },
   { path: '/kelola/akademik/semester', name: 'Tabel Semester', element: KelolaDataSemester },

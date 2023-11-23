@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import Select from 'react-select'
+import Swal from 'sweetalert2'
 import {
   CButton,
   CCard,
@@ -157,7 +158,17 @@ const FormCreateMatkul = () => {
         )
       }
 
-      window.location.href = '/kelola/akademik/matkul'
+      Swal.fire({
+        title: 'Berhasil',
+        text: `Data Mata kuliah berhasil ditambahkan.`,
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/kelola/akademik/matkul'
+          // console.log('Mata kuliah created successfully:', response.data)
+        }
+      })
     } catch (error) {
       console.error('Error creating Mata kuliah:', error)
     }

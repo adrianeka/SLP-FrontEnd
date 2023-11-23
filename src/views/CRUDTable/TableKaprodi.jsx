@@ -26,7 +26,7 @@ import {
 } from '@coreui/react'
 import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
-import { cilUserPlus } from '@coreui/icons'
+import { cilUserPlus, cilPen } from '@coreui/icons'
 import axios from 'axios'
 
 const TableKaprodi = () => {
@@ -112,17 +112,27 @@ const TableKaprodi = () => {
                         <CTableDataCell>{user.dosen}</CTableDataCell>
                         <CTableDataCell>{user.prodi}</CTableDataCell>
                         <CTableDataCell>
-                          <CButton color="primary" variant="outline" className="ms-2">
-                            Update
-                          </CButton>
-                          <CButton
-                            color="danger"
-                            variant="outline"
-                            className="ms-2"
-                            onClick={() => setVisible(!visible)}
-                          >
-                            Delete
-                          </CButton>
+                          <CCol>
+                            <Link to={`/kelola/kaprodi/update/${user.id}`}>
+                              <CButton
+                                color="primary"
+                                variant="outline"
+                                className="ms-2"
+                                title="Ubah Data matkul"
+                              >
+                                <CIcon icon={cilPen} />
+                              </CButton>
+                            </Link>
+                            {/* <CButton
+                              color="danger"
+                              variant="outline"
+                              className="ms-2"
+                              title="Hapus Data matkul"
+                              onClick={() => handleDeleteModal(matkul)}
+                            >
+                              <CIcon icon={cilTrash} />
+                            </CButton> */}
+                          </CCol>
                         </CTableDataCell>
                       </CTableRow>
                     ))
