@@ -206,6 +206,7 @@ const KelolaDataMengajar = () => {
                             jadwal.angkatan_detail_matkul &&
                               jadwal.angkatan_detail_matkul.angkatan?.tahun_angkatan,
                           )}
+                          {jadwal.angkatan_detail_matkul?.kela?.nama_kelas || '-'}
                         </CTableDataCell>
                         <CTableDataCell>
                           {jadwal.angkatan_detail_matkul?.angkatan?.tahun_angkatan || '-'}

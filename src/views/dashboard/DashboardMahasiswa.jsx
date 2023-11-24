@@ -222,7 +222,7 @@ const DashboardMahasiswa = () => {
           />
         </CCardBody>
       </CCard>
-      <CCard>
+      {/* <CCard>
         <CDropdown className="m-4">
           <CDropdownToggle color="primary">Select Option</CDropdownToggle>
           <CDropdownMenu style={{ width: '100%', maxHeight: '300px', overflowY: 'auto' }}>
@@ -275,7 +275,7 @@ const DashboardMahasiswa = () => {
         <div className="mb-5"></div>
         <div className="mb-5"></div>
         <div className="mb-5"></div>
-      </CCard>
+      </CCard> */}
     </div>
   )
 }
