@@ -44,7 +44,7 @@ import {
   cilUser,
   cilUserFemale,
 } from '@coreui/icons'
-
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 const usersData = [
   {
     nama: 'Adrian',
@@ -104,7 +104,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = `http://localhost:8080/api/test/dosenWaliDashboard/count/${userRole}`
+    const apiUrl = `http://localhost:8080/api/test/dosenWaliDashboard/namasakitizinhariini/${userRole}`
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -114,6 +114,27 @@ const Dashboard = () => {
       .then((response) => {
         console.log(response.data)
         setDataDashboard(response.data)
+      })
+      .catch((error) => {
+        // Handle error jika terjadi kesalahan saat mengambil data dari API
+        console.error('Error fetching data:', error)
+      })
+  }, [userRole])
+
+  const [dataGraf, setDataGraf] = useState([])
+  useEffect(() => {
+    // URL API yang akan diambil datanya
+    const apiUrl = `http://localhost:8080/api/test/dosenWaliDashboard/getmatkul/${userRole}`
+
+    // Menggunakan Axios untuk mengambil data dari API
+    axios
+      .get(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log(response.data)
+        // Convert object to array using Object.values()
+        setDataGraf(Object.values(response.data))
       })
       .catch((error) => {
         // Handle error jika terjadi kesalahan saat mengambil data dari API
@@ -133,8 +154,8 @@ const Dashboard = () => {
               height: '100%',
             }}
           >
-            <CCardHeader>Permohonan</CCardHeader>
-            <CCardBody>{dataDashboard.totalPermohonan} </CCardBody>
+            <CCardHeader>Permohonan Menunggu Hari Ini </CCardHeader>
+            <CCardBody>{dataDashboard.totalPermohonanMenunggu} </CCardBody>
           </CCard>
         </CCol>
 
@@ -142,15 +163,18 @@ const Dashboard = () => {
           <CCard>
             <CCardHeader>Sakit</CCardHeader>
             <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
-              {usersData
-                .filter((user) => user.sakit)
-                .map((user, index) => (
-                  <div key={index} className="mb-2">
-                    {user.nama}
-                  </div>
-                ))}
-              {!usersData.some((user) => user.sakit) && (
-                <div className="text-center">Tidak ada data</div>
+              {dataDashboard &&
+              dataDashboard.mahasiswaData &&
+              dataDashboard.mahasiswaData.some((mahasiswa) => mahasiswa.jenis === 'Sakit') ? (
+                dataDashboard.mahasiswaData
+                  .filter((mahasiswa) => mahasiswa.jenis === 'Sakit')
+                  .map((mahasiswa, index) => (
+                    <div key={index} className="mb-2">
+                      {mahasiswa.nama}
+                    </div>
+                  ))
+              ) : (
+                <div className="text-center">Tidak ada yang sakit Hari ini</div>
               )}
             </CCardBody>
           </CCard>
@@ -160,14 +184,17 @@ const Dashboard = () => {
           <CCard>
             <CCardHeader>Izin</CCardHeader>
             <CCardBody className="overflow-auto" style={{ maxHeight: '300px' }}>
-              {usersData
-                .filter((user) => user.izin)
-                .map((user, index) => (
-                  <div key={index} className="mb-2">
-                    {user.nama}
-                  </div>
-                ))}
-              {!usersData.some((user) => user.izin) && (
+              {dataDashboard &&
+              dataDashboard.mahasiswaData &&
+              dataDashboard.mahasiswaData.some((mahasiswa) => mahasiswa.jenis === 'Izin') ? (
+                dataDashboard.mahasiswaData
+                  .filter((mahasiswa) => mahasiswa.jenis === 'Izin')
+                  .map((mahasiswa, index) => (
+                    <div key={index} className="mb-2">
+                      {mahasiswa.nama}
+                    </div>
+                  ))
+              ) : (
                 <div className="text-center">Tidak ada data</div>
               )}
             </CCardBody>
@@ -178,21 +205,36 @@ const Dashboard = () => {
       <CCard>
         <CCardHeader>Mata Kuliah</CCardHeader>
         <CCardBody>
-          {progressGroupExample1.map((item, index) => (
+          {/* {dataGraf.map((item, index) => (
             <div className="progress-group mb-4" key={index}>
               <div className="progress-group-header d-flex flex-column">
-                <span className="ms-auto fw-semibold">{item.value1}</span>
-                <span className="ms-auto fw-semibold">{item.value2}</span>
+                <span className="ms-auto fw-semibold">{item.jumlah_sakit}</span>
+                <span className="ms-auto fw-semibold">{item.jumlah_izin}</span>
               </div>
               <div className="progress-group-prepend">
-                <span className="text-medium-emphasis small">{item.title}</span>
+                <span className="text-medium-emphasis small">{item.nama_matkul}</span>
               </div>
               <div className="progress-group-bars">
-                <CProgress thin color="info" value={item.value1} />
-                <CProgress thin color="danger" value={item.value2} />
+                <CProgress thin color="info" value={item.jumlah_sakit} />
+                <CProgress thin color="danger" value={item.jumlah_izin} />
               </div>
             </div>
-          ))}
+          ))} */}
+          <BarChart
+            width={500}
+            height={300}
+            data={dataGraf}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="nama_matkul" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+
+            <Bar dataKey="jumlah_sakit" stackId="a" fill="#8884d8" />
+            <Bar dataKey="jumlah_izin" stackId="a" fill="#82ca9d" />
+          </BarChart>
         </CCardBody>
       </CCard>
       {/* <CCard className="mb-4">

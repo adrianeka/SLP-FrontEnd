@@ -6,6 +6,12 @@ const KelolaDataMhs = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDat
 const KelolaDataJadwal = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataJadwal'))
 const KelolaDataSemester = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataSemester'))
 const KelolaDataMatkul = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataMatkul'))
+const Prodi = React.lazy(() => import('./views/CRUDTable/Admin/Prodi'))
+const ListSemester = React.lazy(() => import('./views/CRUDTable/Admin/ListSemester'))
+const ListAngkatanKelas = React.lazy(() => import('./views/CRUDTable/Admin/ListAngkatanKelas'))
+const ListKelas = React.lazy(() => import('./views/CRUDTable/Admin/ListKelas'))
+const ProdiRombel = React.lazy(() => import('./views/CRUDTable/Admin/ProdiRombel'))
+const ProdiMengajar = React.lazy(() => import('./views/CRUDTable/Admin/ProdiMengajar'))
 const FormTambahMhs = React.lazy(() => import('./views/form/Admin/formCreateMhs'))
 const FormUpdateMhs = React.lazy(() => import('./views/form/Admin/formUpdateMhs'))
 const KelolaDataDosenPengampu = React.lazy(() =>
@@ -88,7 +94,11 @@ const routes = [
   // Kelola akademik
   { path: '/kelola/akademik/jadwal', name: 'Tabel Jadwal Mata Kuliah', element: KelolaDataJadwal },
   { path: '/kelola/akademik/semester', name: 'Tabel Semester', element: KelolaDataSemester },
-  { path: '/kelola/akademik/matkul', name: 'Tabel Mata Kuliah', element: KelolaDataMatkul },
+  {
+    path: '/kelola/akademik/matkul/:id/:id_semester',
+    name: 'Tabel Mata Kuliah',
+    element: KelolaDataMatkul,
+  },
   {
     path: '/kelola/akademik/jadwal/tambah',
     name: 'From Create Jadwal Mata Kuliah',
@@ -99,6 +109,7 @@ const routes = [
     name: 'From Create Mata Kuliah',
     element: FormTambahMatkul,
   },
+
   {
     path: '/kelola/akademik/matkul/update/:id',
     name: 'Form Update Matkul',
@@ -115,10 +126,11 @@ const routes = [
     element: FormUpdateSemester,
   },
   {
-    path: '/kelola/akademik/jadwalkelas',
+    path: '/kelola/akademik/jadwalkelas/:id/:id_kelas/:id_prodi',
     name: 'Kelola Data Jadwal Kelas',
     element: KelolaDataJadwalKelas,
   },
+
   {
     path: '/kelola/akademik/jadwalkelas/tambah',
     name: 'Form Create Jadwal Kelas',
@@ -130,7 +142,7 @@ const routes = [
     element: FormUpdateJadwalKelas,
   },
   {
-    path: '/kelola/akademik/mengajar',
+    path: '/kelola/akademik/mengajar/:id/:id_kelas/:id_prodi',
     name: 'Kelola Data Mengajar',
     element: KelolaDataMengajar,
   },
@@ -180,6 +192,36 @@ const routes = [
     path: '/kelola/mahasiswa/update/:id',
     name: 'Form Update Mahasiswa',
     element: FormUpdateMhs,
+  },
+  {
+    path: '/kelola/matakuliah/prodi',
+    name: 'Card Prodi',
+    element: Prodi,
+  },
+  {
+    path: '/kelola/rombongan-belajar/prodi',
+    name: 'Card Prodi',
+    element: ProdiRombel,
+  },
+  {
+    path: '/kelola/data-mengajar/prodi',
+    name: 'Card Prodi',
+    element: ProdiMengajar,
+  },
+  {
+    path: '/kelola/matakuliah/list-semester/:id',
+    name: 'Table List Semester',
+    element: ListSemester,
+  },
+  {
+    path: '/kelola/rombongan-belajar/kelas/:id',
+    name: 'Card Angkatan Kelas',
+    element: ListAngkatanKelas,
+  },
+  {
+    path: '/kelola/data-mengajar/kelas/:id',
+    name: 'Card Angkatan Kelas',
+    element: ListKelas,
   },
 ]
 

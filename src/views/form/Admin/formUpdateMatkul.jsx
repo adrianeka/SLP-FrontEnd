@@ -73,8 +73,6 @@ const FormUpdateMatkul = () => {
         })
         const detMataKuliah = responsedetMatkul.data // Data Dosen yang diambil dari API
         const MataKuliah = responsematkul.data
-        console.log(responsedetMatkul.data)
-        console.log(responsematkul.data)
         setFormData({
           id_mataKuliah: detMataKuliah.matkul_id,
           sks: detMataKuliah.sks,
@@ -89,7 +87,7 @@ const FormUpdateMatkul = () => {
     }
 
     fetchData()
-  }, [id_detMatkul])
+  }, [id_detMatkul, id_matkul])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -192,9 +190,10 @@ const FormUpdateMatkul = () => {
                 <CFormSelect
                   id="tipe"
                   placeholder="Tipe Mata Kuliah"
+                  value={formData.tipe || ''} // Set the value to an empty string if formData.tipe is null
                   onChange={(e) => setFormData({ ...formData, tipe: e.target.value })}
                 >
-                  <option hidden>Tipe MataKuliah</option>
+                  {formData.tipe ? null : <option hidden>Tipe MataKuliah</option>}
                   <option value="Teori">Teori</option>
                   <option value="Praktek">Praktek</option>
                 </CFormSelect>
