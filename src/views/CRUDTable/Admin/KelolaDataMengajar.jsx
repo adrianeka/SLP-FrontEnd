@@ -39,17 +39,20 @@ import {
   cilUserPlus,
   cilFile,
 } from '@coreui/icons'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 const KelolaDataMengajar = () => {
   const [modalDelete, setModalDelete] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [mengajarData, setMengajarData] = useState([])
+  const { id } = useParams()
+  const { id_kelas } = useParams()
+  const { id_prodi } = useParams()
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/admins/mengajar'
+    const apiUrl = `http://localhost:8080/api/admins/mengajar/${id}/${id_kelas}/${id_prodi}`
 
     // Menggunakan Axios untuk mengambil data dari API
     axios

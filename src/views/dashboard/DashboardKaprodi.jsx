@@ -52,6 +52,7 @@ import rekapDashboard from './item/rekapDashboard'
 
 const DashboardKaprodi = () => {
   const [tipeProdi] = useState([])
+
   useEffect(() => {
     const data = localStorage.getItem('kaprodi')
     if (!data) {
