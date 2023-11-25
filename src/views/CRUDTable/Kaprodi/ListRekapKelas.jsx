@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import '../../../assets/css/style.css'
 import {
   CButton,
   CCard,
@@ -11,6 +12,8 @@ import {
   CCardText,
 } from '@coreui/react'
 import { Link, useParams } from 'react-router-dom'
+import CIcon from '@coreui/icons-react'
+import { cilChevronRight } from '@coreui/icons'
 
 const ProdiRombel = () => {
   const [searchText, setSearchText] = useState('')
@@ -57,26 +60,33 @@ const ProdiRombel = () => {
     <div>
       <CRow>
         <CCol>
-          <CCard>
-            <CCardHeader>Daftar Kelas</CCardHeader>
+          <CCard className="custom-card">
             <CCardBody>
+              <div className="fw-bold my-3 title-page">Daftar Kelas</div>
               <CRow>
                 {filteredData.map((prodi) => (
                   <CCol key={prodi.nama_kelas} sm={6}>
-                    <CCard className="m-2">
-                      <CCardBody>
-                        <CCardTitle>
-                          {prodi.tahun_angkatan} - {prodi.nama_kelas}
-                        </CCardTitle>
-                        <CCardTitle></CCardTitle>
-                        <CCardText>Teknik Informatika</CCardText>
-                        <Link
-                          to={`/kaprodi/rekap/mahasiswa/${prodi.tahun_angkatan}/${prodi.nama_kelas}/${tipeProdi.prodi}`}
-                        >
-                          <CButton className="btn btn-info text-white">Select</CButton>
-                        </Link>
-                      </CCardBody>
-                    </CCard>
+                    <Link
+                      to={`/kaprodi/rekap/mahasiswa/${prodi.tahun_angkatan}/${prodi.nama_kelas}/${tipeProdi.prodi}`}
+                      className="link-card"
+                    >
+                      <CCard className="mt-2 link-card">
+                        <CCardBody>
+                          <CRow>
+                            <CCol xs={11}>
+                              <CCardTitle>
+                                {prodi.tahun_angkatan} - {prodi.nama_kelas}
+                              </CCardTitle>
+                              <CCardTitle></CCardTitle>
+                              <CCardText>Teknik Informatika</CCardText>
+                            </CCol>
+                            <CCol xs={1} className="d-flex align-items-center">
+                              <CIcon icon={cilChevronRight} size="xl" />
+                            </CCol>
+                          </CRow>
+                        </CCardBody>
+                      </CCard>
+                    </Link>
                   </CCol>
                 ))}
               </CRow>

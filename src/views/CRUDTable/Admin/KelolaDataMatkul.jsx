@@ -23,23 +23,11 @@ import {
   CModalBody,
   CModalFooter,
   CInputGroupText,
-  CFormTextarea,
-  CFormSelect,
-  CFormLabel,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilPen,
-  cilSend,
-  cilTrash,
-  cilSearch,
-  cilShortText,
-  cilCalendar,
-  cilClock,
-  cilUserPlus,
-  cilFile,
-} from '@coreui/icons'
+import { cilPen, cilSearch, cilPlus } from '@coreui/icons'
 import { Link, useParams } from 'react-router-dom'
+import '../../../assets/css/style.css'
 
 const KelolaDataMatkul = () => {
   const [modalDelete, setModalDelete] = useState(false)
@@ -134,17 +122,25 @@ const KelolaDataMatkul = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Mata Kuliah</CCardHeader>
             <CCardBody>
-              <CForm className="mb-3">
-                <CRow>
+              <div className="fw-bold my-3 title-page">Daftar Mata Kuliah</div>
+              <CForm>
+                <CRow className="my-3">
                   <CCol md={8} xs={6}>
                     <CRow>
                       <CCol md={2}>
-                        <Link to="/kelola/akademik/matkul/tambah">
-                          <CButton variant="outline">
-                            <CIcon icon={cilUserPlus} className="mx-2" />
-                            Create
+                        <Link to="/kelola/akademik/matkul/tambah" className="link-card">
+                          <CButton
+                            variant="outline"
+                            color="dark"
+                            className="d-flex align-items-center justify-content-center my-3"
+                          >
+                            <CRow>
+                              <CCol xs={1}>
+                                <CIcon icon={cilPlus} />
+                              </CCol>
+                              <CCol xs={9}>Create</CCol>
+                            </CRow>
                           </CButton>
                         </Link>
                       </CCol>

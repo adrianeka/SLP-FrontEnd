@@ -29,6 +29,7 @@ import CIcon from '@coreui/icons-react'
 import { cilPen, cilTrash, cilSearch, cilFile, cilUserPlus } from '@coreui/icons'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import '../../assets/css/style.css'
 
 const TableKaprodi = () => {
   const [visible, setVisible] = useState(false)
@@ -126,11 +127,11 @@ const TableKaprodi = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Kaprodi</CCardHeader>
             <CCardBody>
+              <div className="fw-bold mt-3 mb-5 title-page">Daftar Kaprodi</div>
               <CButtonGroup>
                 <Link to={'/kelola/kaprodi/tambah'}>
-                  <CButton variant="outline">
+                  <CButton variant="outline" color="dark">
                     <CIcon icon={cilUserPlus} className="mx-1 d-none d-md-inline" />
                     Create
                   </CButton>
