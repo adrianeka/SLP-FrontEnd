@@ -11,6 +11,9 @@ import {
   CCardText,
 } from '@coreui/react'
 import { Link, useParams } from 'react-router-dom'
+import '../../../assets/css/style.css'
+import CIcon from '@coreui/icons-react'
+import { cilChevronRight } from '@coreui/icons'
 
 const ListKelas = () => {
   const [searchText, setSearchText] = useState('')
@@ -44,26 +47,33 @@ const ListKelas = () => {
     <div>
       <CRow>
         <CCol>
-          <CCard>
-            <CCardHeader>Daftar Prodi</CCardHeader>
+          <CCard className="custom-card">
             <CCardBody>
+              <div className="fw-bold my-3 title-page">Daftar Kelas</div>
               <CRow>
                 {filteredData.map((prodi) => (
                   <CCol key={prodi.nama_kelas} sm={6}>
-                    <CCard>
-                      <CCardBody>
-                        <CCardTitle>
-                          {prodi.tahun_angkatan} - {prodi.nama_kelas}
-                        </CCardTitle>
-                        <CCardTitle></CCardTitle>
-                        <CCardText>Teknik Informatika</CCardText>
-                        <Link
-                          to={`/kelola/akademik/mengajar/${prodi.tahun_angkatan}/${prodi.nama_kelas}/${id}`}
-                        >
-                          <CButton className="btn btn-info text-white">Select</CButton>
-                        </Link>
-                      </CCardBody>
-                    </CCard>
+                    <Link
+                      to={`/kelola/akademik/mengajar/${prodi.tahun_angkatan}/${prodi.nama_kelas}/${id}`}
+                      className="link-card"
+                    >
+                      <CCard className="mt-2 link-card">
+                        <CCardBody>
+                          <CRow>
+                            <CCol xs={11}>
+                              <CCardTitle>
+                                {prodi.tahun_angkatan} - {prodi.nama_kelas}
+                              </CCardTitle>
+                              <CCardTitle></CCardTitle>
+                              <CCardText>Teknik Informatika</CCardText>
+                            </CCol>
+                            <CCol xs={1} className="d-flex align-items-center">
+                              <CIcon icon={cilChevronRight} size="xl" />
+                            </CCol>
+                          </CRow>
+                        </CCardBody>
+                      </CCard>
+                    </Link>
                   </CCol>
                 ))}
               </CRow>

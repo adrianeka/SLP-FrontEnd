@@ -5,15 +5,9 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow,
-  CTable,
-  CTableBody,
   CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
   CForm,
   CFormInput,
   CInputGroup,
@@ -24,13 +18,13 @@ import {
   CModalFooter,
   CInputGroupText,
   CSpinner,
-  CAlert,
   CButtonGroup,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPen, cilTrash, cilSearch, cilFile, cilUserPlus } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 import DataTable from 'react-data-table-component'
+import '../../../assets/css/style.css'
 
 const KelolaDataMhs = () => {
   const [message, setMessage] = useState('')
@@ -244,8 +238,8 @@ const KelolaDataMhs = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Mahasiswa</CCardHeader>
             <CCardBody>
+              <div className="fw-bold mt-3 mb-5 title-page">Daftar Mahasiswa</div>
               <CForm className="mb-3">
                 <CRow>
                   <CCol md={8} xs={6}>
@@ -253,7 +247,7 @@ const KelolaDataMhs = () => {
                       <CCol xs={4}>
                         <CButtonGroup>
                           <Link to={'/kelola/mahasiswa/tambah'}>
-                            <CButton variant="outline">
+                            <CButton variant="outline" color="dark">
                               <CIcon icon={cilUserPlus} className="mx-1 d-none d-md-inline" />
                               Create
                             </CButton>
