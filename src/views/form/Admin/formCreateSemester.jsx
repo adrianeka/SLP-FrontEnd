@@ -25,7 +25,6 @@ const FormCreateSemester = () => {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     id_semester: '',
-    status_semester: '',
     tahun_ajar: '',
   })
   console.log(formData)
@@ -40,7 +39,6 @@ const FormCreateSemester = () => {
     const newSemester = {
       id_semester: `${formData.id_semester}-${tahunAjar}`,
       nama_semester: `${formData.id_semester === '01' ? 'Ganjil' : 'Genap'} ${formData.tahun_ajar}`,
-      status_semester: formData.status_semester,
     }
     try {
       const response = await axios.post(apiUrl, newSemester, {
@@ -102,7 +100,7 @@ const FormCreateSemester = () => {
                   />
                 </CInputGroup>
               </CCol>
-              <CCol md={6}>
+              <CCol md={12}>
                 <CRow>
                   <CInputGroup className="mb-3">
                     <CInputGroupText id="semester">
@@ -117,26 +115,6 @@ const FormCreateSemester = () => {
                         placeholder="Semester"
                         required
                         options={optionsSemester}
-                      />
-                    </CCol>
-                  </CInputGroup>
-                </CRow>
-              </CCol>
-              <CCol md={6}>
-                <CRow>
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText id="status">
-                      <CIcon icon={cilShortText} />
-                    </CInputGroupText>
-                    <CCol>
-                      <Select
-                        onChange={(selectedOption) => {
-                          setFormData({ ...formData, status_semester: selectedOption.value })
-                        }}
-                        id="status"
-                        placeholder="Status"
-                        required
-                        options={optionsStatus}
                       />
                     </CCol>
                   </CInputGroup>

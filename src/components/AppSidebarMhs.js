@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
+import { CImage, CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
@@ -16,6 +16,7 @@ import 'simplebar/dist/simplebar.min.css'
 import navigation from '../_nav'
 import navigationMhs from '../navMhs'
 import { cilCrop, cilDinner } from '@coreui/icons'
+import polban from './../assets/images/polban.png'
 
 const AppSidebarMhs = () => {
   const dispatch = useDispatch()
@@ -34,9 +35,15 @@ const AppSidebarMhs = () => {
       <CSidebarBrand className="d-none d-md-flex" to="/">
         {/* <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
         <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} /> */}
-        <CIcon className="sidebar-brand-full" to="/dashboard" icon={cilDinner} height={35} />
-        <CIcon className="sidebar-brand-narrow" to="/dashboard" icon={cilCrop} height={35} />
-        SLP
+        <CImage
+          className="mx-1"
+          align="center"
+          rounded
+          src={polban}
+          alt="Polban"
+          width={50}
+          height={70}
+        />
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>

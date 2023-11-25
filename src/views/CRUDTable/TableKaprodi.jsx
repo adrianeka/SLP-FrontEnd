@@ -28,6 +28,7 @@ import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 import { cilUserPlus, cilPen } from '@coreui/icons'
 import axios from 'axios'
+import '../../assets/css/style.css'
 
 const TableKaprodi = () => {
   const [visible, setVisible] = useState(false)
@@ -80,11 +81,11 @@ const TableKaprodi = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Kaprodi</CCardHeader>
             <CCardBody>
+              <div className="fw-bold mt-3 mb-5 title-page">Daftar Kaprodi</div>
               <CButtonGroup>
                 <Link to={'/kelola/kaprodi/tambah'}>
-                  <CButton variant="outline">
+                  <CButton variant="outline" color="dark">
                     <CIcon icon={cilUserPlus} className="mx-1 d-none d-md-inline" />
                     Create
                   </CButton>

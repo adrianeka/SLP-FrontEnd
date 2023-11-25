@@ -29,6 +29,7 @@ import CIcon from '@coreui/icons-react'
 import { cilPen, cilTrash, cilSearch, cilUserPlus, cilFile } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 import DataTable from 'react-data-table-component'
+import '../../../assets/css/style.css'
 
 const KelolaDataDosenPengampu = () => {
   const [message, setMessage] = useState('')
@@ -227,15 +228,15 @@ const KelolaDataDosenPengampu = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Dosen</CCardHeader>
             <CCardBody>
+              <div className="fw-bold mt-3 mb-5 title-page">Daftar Dosen</div>
               <CForm className="mb-3">
                 <CRow>
                   <CCol md={8} xs={6}>
                     <CRow>
                       <CCol md={2}>
                         <Link to="/kelola/dosen/pengampu/tambah">
-                          <CButton variant="outline">
+                          <CButton variant="outline" color="dark">
                             <CIcon icon={cilUserPlus} className="mx-2" />
                             Create
                           </CButton>

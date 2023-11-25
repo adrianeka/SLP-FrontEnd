@@ -5,7 +5,6 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow,
   CTable,
@@ -23,33 +22,24 @@ import {
   CModalBody,
   CModalFooter,
   CInputGroupText,
-  CFormTextarea,
-  CFormSelect,
-  CFormLabel,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilPen,
-  cilSend,
-  cilTrash,
-  cilSearch,
-  cilShortText,
-  cilCalendar,
-  cilClock,
-  cilUserPlus,
-  cilFile,
-} from '@coreui/icons'
-import { Link } from 'react-router-dom'
+import { cilPlus, cilSearch, cilUserPlus } from '@coreui/icons'
+import { Link, useParams } from 'react-router-dom'
+import '../../../assets/css/style.css'
 
 const KelolaDataMengajar = () => {
   const [modalDelete, setModalDelete] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [mengajarData, setMengajarData] = useState([])
+  const { id } = useParams()
+  const { id_kelas } = useParams()
+  const { id_prodi } = useParams()
 
   useEffect(() => {
     // URL API yang akan diambil datanya
-    const apiUrl = 'http://localhost:8080/api/admins/mengajar'
+    const apiUrl = `http://localhost:8080/api/admins/mengajar/${id}/${id_kelas}/${id_prodi}`
 
     // Menggunakan Axios untuk mengambil data dari API
     axios
@@ -134,17 +124,25 @@ const KelolaDataMengajar = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Data Mengajar</CCardHeader>
             <CCardBody>
+              <div className="fw-bold my-3 title-page">Daftar Prodi</div>
               <CForm className="mb-3">
                 <CRow>
-                  <CCol md={8} xs={6}>
+                  <CCol md={8} xs={6} className="mt-3">
                     <CRow>
                       <CCol md={2}>
-                        <Link to="/kelola/akademik/mengajar/tambah">
-                          <CButton variant="outline">
-                            <CIcon icon={cilUserPlus} className="mx-2" />
-                            Create
+                        <Link to="/kelola/akademik/mengajar/tambah" className="link-card">
+                          <CButton
+                            variant="outline"
+                            color="dark"
+                            className="d-flex align-items-center justify-content-center my-3"
+                          >
+                            <CRow>
+                              <CCol xs={1}>
+                                <CIcon icon={cilPlus} />
+                              </CCol>
+                              <CCol xs={9}>Create</CCol>
+                            </CRow>
                           </CButton>
                         </Link>
                       </CCol>
@@ -206,6 +204,7 @@ const KelolaDataMengajar = () => {
                             jadwal.angkatan_detail_matkul &&
                               jadwal.angkatan_detail_matkul.angkatan?.tahun_angkatan,
                           )}
+                          {jadwal.angkatan_detail_matkul?.kela?.nama_kelas || '-'}
                         </CTableDataCell>
                         <CTableDataCell>
                           {jadwal.angkatan_detail_matkul?.angkatan?.tahun_angkatan || '-'}

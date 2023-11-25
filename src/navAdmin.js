@@ -46,7 +46,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Dosen Pengampu',
+        name: 'Dosen',
         to: '/kelola/dosen/pengampu',
       },
       {
@@ -78,17 +78,17 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Mata Kuliah',
-        to: '/kelola/akademik/matkul',
+        to: '/kelola/matakuliah/prodi',
       },
       {
         component: CNavItem,
-        name: 'Jadwal Kelas',
-        to: '/kelola/akademik/jadwalkelas',
+        name: 'Rombongan Belajar',
+        to: '/kelola/rombongan-belajar/prodi',
       },
       {
         component: CNavItem,
         name: 'Data Mengajar',
-        to: '/kelola/akademik/mengajar',
+        to: '/kelola/data-mengajar/prodi',
       },
     ],
   },

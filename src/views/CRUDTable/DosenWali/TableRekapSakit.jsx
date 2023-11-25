@@ -112,6 +112,8 @@ const TableRekapSakit = () => {
   }
 
   const handleVerif = async (id, keterangan) => {
+    console.log(id)
+    console.log(keterangan)
     // Handle form submission here, e.g., send the formData to an API
     const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/update/${id}`
 
@@ -126,6 +128,7 @@ const TableRekapSakit = () => {
       })
       console.log(response.data)
       setModalTerima(false)
+      setModalTolak(false)
       setPerizinanData((prevData) => prevData.filter((item) => item.id_perizinan !== id))
     } catch (error) {
       console.error('Error updating Dosen Wali:', error)

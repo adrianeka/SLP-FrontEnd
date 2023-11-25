@@ -8,6 +8,8 @@ const KelolaDataSemester = React.lazy(() => import('./views/CRUDTable/Admin/Kelo
 const KelolaDataMatkul = React.lazy(() => import('./views/CRUDTable/Admin/KelolaDataMatkul'))
 const FormTambahMhs = React.lazy(() => import('./views/form/Admin/formCreateMhs'))
 const FormUpdateMhs = React.lazy(() => import('./views/form/Admin/formUpdateMhs'))
+const Prodi = React.lazy(() => import('./views/CRUDTable/Admin/Prodi'))
+const ListSemester = React.lazy(() => import('./views/CRUDTable/Admin/ListSemester'))
 const KelolaDataDosenPengampu = React.lazy(() =>
   import('./views/CRUDTable/Admin/KelolaDataDosenPengampu'),
 )
@@ -50,6 +52,7 @@ const routes = [
     name: 'Tabel Dosen Pengampu',
     element: FormTambahDosen,
   },
+
   { path: '/kelola/dosen/wali', name: 'Tabel Dosen Wali', element: KelolaDataDosenWali },
   { path: '/kelola/kaprodi', name: 'Tabel Kaprodi', element: TableKaprodi },
   { path: '/kelola/akademik/jadwal', name: 'Tabel Jadwal Mata Kuliah', element: KelolaDataJadwal },
@@ -98,6 +101,17 @@ const routes = [
     path: '/kelola/mahasiswa/update/:id',
     name: 'Form Update Mahasiswa',
     element: FormUpdateMhs,
+  },
+
+  {
+    path: '/kelola/matakuliah/prodi',
+    name: 'Card Prodi',
+    element: Prodi,
+  },
+  {
+    path: '/kelola/matakuliah/list-semester',
+    name: 'Table List Semester',
+    element: ListSemester,
   },
 ]
 

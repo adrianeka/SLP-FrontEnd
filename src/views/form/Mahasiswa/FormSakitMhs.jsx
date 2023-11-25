@@ -17,6 +17,7 @@ import CIcon from '@coreui/icons-react'
 import Select from 'react-select'
 import { cilCalendar, cilCircle, cilClock, cilShortText } from '@coreui/icons'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const FormSakitMhs = () => {
   const [selectedFile, setSelectedFile] = useState(null)
@@ -97,8 +98,17 @@ const FormSakitMhs = () => {
           'Content-Type': 'multipart/form-data',
         },
       })
-      window.location.href = '/riwayat'
-      console.log('Perizinan created successfully:', response.data)
+      Swal.fire({
+        title: 'Berhasil',
+        text: 'Data Perizinan berhasil dikirim!',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/riwayat'
+          console.log('Perizinan created successfully:', response.data)
+        }
+      })
     } catch (error) {
       console.error('Error creating Perizinan:', error)
     }
@@ -160,8 +170,18 @@ const FormSakitMhs = () => {
           'Content-Type': 'multipart/form-data',
         },
       })
-      window.location.href = '/drafts'
-      console.log('Perizinan created successfully:', response.data)
+      Swal.fire({
+        title: 'Berhasil',
+        text: 'Data Perizinan berhasil disimpan sampai Draft',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Mengarahkan user ke kelola mahasiswa
+          window.location.href = '/drafts'
+          console.log('Perizinan created successfully:', response.data)
+        }
+      })
     } catch (error) {
       console.error('Error creating Perizinan:', error)
     }
