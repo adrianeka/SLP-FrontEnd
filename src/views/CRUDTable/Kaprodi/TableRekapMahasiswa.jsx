@@ -31,12 +31,12 @@ import axios from 'axios'
 
 const MahasiswaTable = () => {
   const [usersData, setMahasiswaData] = useState([])
-  const myValue = localStorage.getItem('dosenwali')
-  const dosenwaliObject = JSON.parse(myValue)
-  const id_dosen = dosenwaliObject.id
+  const data = localStorage.getItem('kaprodi')
+  const kaprodiObject = JSON.parse(data)
+  const prodi_id = kaprodiObject.id
 
   useEffect(() => {
-    const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/rekap/${id_dosen}`
+    const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/rekap/${prodi_id}`
 
     axios
       .get(apiUrl, {

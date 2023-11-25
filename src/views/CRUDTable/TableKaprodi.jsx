@@ -26,13 +26,18 @@ import {
 } from '@coreui/react'
 import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
-import { cilUserPlus, cilPen } from '@coreui/icons'
+import { cilPen, cilTrash, cilSearch, cilFile, cilUserPlus } from '@coreui/icons'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const TableKaprodi = () => {
   const [visible, setVisible] = useState(false)
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [modalDelete, setModalDelete] = useState(false)
   const [kaprodiData, setKaprodiData] = useState([])
+  const [selectedData, setSelectedData] = useState(null)
 
   useEffect(() => {
     // URL API yang akan diambil datanya
@@ -47,7 +52,7 @@ const TableKaprodi = () => {
         // Mengatur data dosen ke dalam state dosenData
         const kaprodiData = response.data.map((item) => {
           return {
-            id_kaprodi: item.id_dosenwali,
+            id_kaprodi: item.id_kaprodi,
             username: item.username,
             password: item.password,
             dosen_id: item.dosen_id,
@@ -65,6 +70,47 @@ const TableKaprodi = () => {
         console.error('Error fetching data:', error)
       })
   }, [])
+
+  const handleDelete = (id_kaprodi) => {
+    const apiUrl = `http://localhost:8080/api/admins/kaprodi/destroy/${id_kaprodi}`
+
+    // Send a DELETE request to delete the data
+    axios
+      .delete(apiUrl, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log('Data berhasil dihapus:', response.data)
+
+        // Update the state to remove the deleted data
+        setKaprodiData((prevData) =>
+          prevData.filter((kaprodi) => kaprodi.id_kaprodi !== id_kaprodi),
+        )
+        setModalDelete(false) // Close the delete modal
+
+        // Menampilkan Sweet Alert saat berhasil menghapus data
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Data ${selectedData ? selectedData.dosen : ''} berhasil dihapus.`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
+      })
+      .catch((error) => {
+        console.error('Error deleting data:', error)
+        const resMessage =
+          (error.response && error.response.data && error.response.data.message) ||
+          error.message ||
+          error.toString()
+        setLoading(false)
+        setMessage(resMessage)
+      })
+  }
+
+  const handleDeleteModal = (data) => {
+    setSelectedData(data)
+    setModalDelete(true)
+  }
 
   const filteredData = kaprodiData.filter((data) => {
     //Search filter data
@@ -108,12 +154,12 @@ const TableKaprodi = () => {
                     </tr>
                   ) : (
                     kaprodiData.map((user) => (
-                      <CTableRow key={user.id}>
+                      <CTableRow key={user.id_kaprodi}>
                         <CTableDataCell>{user.dosen}</CTableDataCell>
                         <CTableDataCell>{user.prodi}</CTableDataCell>
                         <CTableDataCell>
                           <CCol>
-                            <Link to={`/kelola/kaprodi/update/${user.id}`}>
+                            {/* <Link to={`/kelola/kaprodi/update/${user.id}`}>
                               <CButton
                                 color="primary"
                                 variant="outline"
@@ -122,16 +168,16 @@ const TableKaprodi = () => {
                               >
                                 <CIcon icon={cilPen} />
                               </CButton>
-                            </Link>
-                            {/* <CButton
+                            </Link> */}
+                            <CButton
                               color="danger"
                               variant="outline"
                               className="ms-2"
                               title="Hapus Data matkul"
-                              onClick={() => handleDeleteModal(matkul)}
+                              onClick={() => handleDeleteModal(user)}
                             >
                               <CIcon icon={cilTrash} />
-                            </CButton> */}
+                            </CButton>
                           </CCol>
                         </CTableDataCell>
                       </CTableRow>
@@ -145,19 +191,34 @@ const TableKaprodi = () => {
       </CRow>
       <CModal
         backdrop="static"
-        visible={visible}
-        onClose={() => setVisible(false)}
-        aria-labelledby="StaticBackdropExampleLabel"
+        visible={modalDelete}
+        onClick={() => {
+          setModalDelete(false)
+          setMessage('')
+          setLoading(false)
+        }}
       >
-        <CModalHeader>
-          <CModalTitle id="DeleteModal">Delete</CModalTitle>
+        <CModalHeader closeButton>
+          <CModalTitle>Delete</CModalTitle>
         </CModalHeader>
-        <CModalBody>Yakin ingin delete?</CModalBody>
+        <CModalBody>Yakin ingin hapus {selectedData ? selectedData.dosen : ''} ?</CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setVisible(false)}>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setModalDelete(false)
+              setMessage('')
+              setLoading(false)
+            }}
+          >
             Close
           </CButton>
-          <CButton color="danger">Delete</CButton>
+          <CButton
+            color="danger"
+            onClick={() => handleDelete(selectedData ? selectedData.id_kaprodi : null)}
+          >
+            Delete
+          </CButton>
         </CModalFooter>
       </CModal>
     </div>
