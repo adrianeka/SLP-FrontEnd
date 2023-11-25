@@ -56,6 +56,12 @@ const RiwayatSuratPermohonan = React.lazy(() =>
 
 //kaprodi
 const DashboardKaprodi = React.lazy(() => import('./views/dashboard/DashboardKaprodi'))
+const RekapMahasiswaProdi = React.lazy(() =>
+  import('./views/CRUDTable/Kaprodi/TableRekapMahasiswa'),
+)
+
+const KelasMahasiswaProdi = React.lazy(() => import('./views/CRUDTable/Kaprodi/ListRekapKelas'))
+
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -156,8 +162,19 @@ const routes = [
     name: 'Form Update Data Mengajar',
     element: FormUpdateDataMengajar,
   },
-
+  // Kaprodi
   { path: '/dashboard/kaprodi', name: 'Dashboard Kaprodi', element: DashboardKaprodi },
+  {
+    path: '/kaprodi/rekap/mahasiswa/:angkatan/:kelas/:id',
+    name: 'Rekap Mahasiswa Kaprodi',
+    element: RekapMahasiswaProdi,
+  },
+
+  {
+    path: '/kaprodi/rekap/kelas/',
+    name: 'Rekap Mahasiswa Kaprodi',
+    element: KelasMahasiswaProdi,
+  },
 
   // Dashboard Mahasiswa
   { path: '/dashboardMhs', name: 'Dashboard Mahasiswa', element: DashboardMahasiswa },

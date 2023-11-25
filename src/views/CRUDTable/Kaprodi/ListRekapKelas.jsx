@@ -12,14 +12,27 @@ import {
 } from '@coreui/react'
 import { Link, useParams } from 'react-router-dom'
 
-const ListKelas = () => {
+const ProdiRombel = () => {
   const [searchText, setSearchText] = useState('')
   const [jadwalData, setJadwalData] = useState([])
-
-  const { id } = useParams()
+  const [tipeProdi] = useState([])
 
   useEffect(() => {
-    const apiUrl = `http://localhost:8080/api/admins/jadwal/kelas/${id}`
+    const data = localStorage.getItem('kaprodi')
+    if (!data) {
+      window.location.href = '/login'
+    } else {
+      const dataLogin = JSON.parse(data)
+      const dataId = dataLogin.id
+      tipeProdi.prodi = parseInt(dataId[dataId.length - 1])
+      console.log(data)
+    }
+  })
+  const id = tipeProdi.prodi
+  console.log(tipeProdi.prodi)
+
+  useEffect(() => {
+    const apiUrl = `http://localhost:8080/api/kaprodi/jadwal/kelas/${tipeProdi.prodi}`
 
     axios
       .get(apiUrl, {
@@ -45,7 +58,7 @@ const ListKelas = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Prodi</CCardHeader>
+            <CCardHeader>Daftar Kelas</CCardHeader>
             <CCardBody>
               <CRow>
                 {filteredData.map((prodi) => (
@@ -58,7 +71,7 @@ const ListKelas = () => {
                         <CCardTitle></CCardTitle>
                         <CCardText>Teknik Informatika</CCardText>
                         <Link
-                          to={`/kelola/akademik/mengajar/${prodi.tahun_angkatan}/${prodi.nama_kelas}/${id}`}
+                          to={`/kaprodi/rekap/mahasiswa/${prodi.tahun_angkatan}/${prodi.nama_kelas}/${tipeProdi.prodi}`}
                         >
                           <CButton className="btn btn-info text-white">Select</CButton>
                         </Link>
@@ -75,4 +88,4 @@ const ListKelas = () => {
   )
 }
 
-export default ListKelas
+export default ProdiRombel

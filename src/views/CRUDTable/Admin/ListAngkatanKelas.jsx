@@ -50,7 +50,7 @@ const ProdiRombel = () => {
               <CRow>
                 {filteredData.map((prodi) => (
                   <CCol key={prodi.nama_kelas} sm={6}>
-                    <CCard>
+                    <CCard className="m-2">
                       <CCardBody>
                         <CCardTitle>
                           {prodi.tahun_angkatan} - {prodi.nama_kelas}

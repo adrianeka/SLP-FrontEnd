@@ -128,7 +128,7 @@ const FormCreateJadwalKelas = () => {
         confirmButtonText: 'OK',
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = '/kelola/akademik/jadwalkelas'
+          window.location.href = '/kelola/rombongan-belajar/prodi'
           console.log('Jadwal created successfully:', response.data)
         }
       })

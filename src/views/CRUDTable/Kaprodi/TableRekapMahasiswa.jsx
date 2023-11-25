@@ -28,15 +28,16 @@ import {
   CDropdownItem,
 } from '@coreui/react'
 import axios from 'axios'
+import { Link, useParams } from 'react-router-dom'
 
 const MahasiswaTable = () => {
   const [usersData, setMahasiswaData] = useState([])
-  const data = localStorage.getItem('kaprodi')
-  const kaprodiObject = JSON.parse(data)
-  const prodi_id = kaprodiObject.id
-
+  const currentYear = new Date().getFullYear()
+  const { id } = useParams()
+  const { angkatan } = useParams()
+  const { kelas } = useParams()
   useEffect(() => {
-    const apiUrl = `http://localhost:8080/api/dosenWali/perizinan/rekap/${prodi_id}`
+    const apiUrl = `http://localhost:8080/api/kaprodi/rekap/mahasiswa/${angkatan}/${kelas}/${id}`
 
     axios
       .get(apiUrl, {
@@ -55,13 +56,17 @@ const MahasiswaTable = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Mahasiswa</CCardHeader>
+            <CCardHeader>
+              Daftar Mahasiswa Kelas {angkatan} - {kelas}
+            </CCardHeader>
             <CCardBody>
               <CTable striped bordered responsive>
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Nama Mahasiswa</CTableHeaderCell>
                     <CTableHeaderCell>NIM</CTableHeaderCell>
+
+                    <CTableHeaderCell>Kelas</CTableHeaderCell>
                     <CTableHeaderCell>Total Jam Pelajaran Sakit</CTableHeaderCell>
                     <CTableHeaderCell>Total Jam Pelajaran Izin</CTableHeaderCell>
                   </CTableRow>
@@ -71,6 +76,10 @@ const MahasiswaTable = () => {
                     <CTableRow key={user.id}>
                       <CTableDataCell>{user.nama}</CTableDataCell>
                       <CTableDataCell>{user.nim}</CTableDataCell>
+                      <CTableDataCell>
+                        {currentYear - user.angkatan.tahun_angkatan + 1 + user.kela.nama_kelas}
+                      </CTableDataCell>
+
                       <CTableDataCell>{user.total_sakit_hours}</CTableDataCell>
                       <CTableDataCell>{user.total_izin_hours}</CTableDataCell>
                     </CTableRow>

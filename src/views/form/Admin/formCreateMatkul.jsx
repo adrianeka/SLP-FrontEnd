@@ -165,7 +165,7 @@ const FormCreateMatkul = () => {
         confirmButtonText: 'OK',
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = '/kelola/akademik/matkul'
+          window.location.href = '/kelola/matakuliah/prodi'
           // console.log('Mata kuliah created successfully:', response.data)
         }
       })
