@@ -26,6 +26,7 @@ import {
   CFormTextarea,
   CFormSelect,
   CFormLabel,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -40,12 +41,17 @@ import {
   cilFile,
 } from '@coreui/icons'
 import { Link, useParams } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 const KelolaDataMengajar = () => {
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
   const [modalDelete, setModalDelete] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [mengajarData, setMengajarData] = useState([])
+  const [modalImport, setModalImport] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
   const { id } = useParams()
   const { id_kelas } = useParams()
   const { id_prodi } = useParams()
@@ -82,6 +88,14 @@ const KelolaDataMengajar = () => {
     setSearchText(e.target.value)
   }
 
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0])
+  }
+
+  const handleImportModal = () => {
+    setModalImport(true)
+  }
+
   const handleDelete = (id) => {
     // URL API untuk menghapus data dosen dengan id tertentu
     const apiUrl = `http://localhost:8080/api/admins/jadwal/${id}`
@@ -104,6 +118,63 @@ const KelolaDataMengajar = () => {
         // Handle error jika terjadi kesalahan saat menghapus data
         console.error('Error deleting data:', error)
       })
+  }
+
+  const handleImportExcel = async () => {
+    if (!selectedFile) {
+      setMessage('Pilih file Excel terlebih dahulu')
+      return
+    }
+    try {
+      setLoading(true)
+      const formData = new FormData()
+      formData.append('excel', selectedFile)
+      const response = await axios.post(
+        'http://localhost:8080/api/admins/create/mengajar/import-excel',
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+
+      // Handle the response (success or failure)
+      console.log(response.data)
+      if (response.data.success.length == 0) {
+        //Jika import gagal
+        setMessage('Ada kesalahan pada excel!')
+        setLoading(false)
+      } else {
+        // Menutup modal import
+        setModalImport(false)
+
+        // Fetch and update the data in the table
+        const apiUrl = `http://localhost:8080/api/admins/mengajar/${id}/${id_kelas}/${id_prodi}`
+        const updatedDataResponse = await axios.get(apiUrl, {
+          withCredentials: true,
+        })
+
+        setMengajarData(updatedDataResponse.data)
+        // Menampilkan Sweet Alert saat berhasil menambah data
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Import data excel berhasil`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
+      }
+    } catch (error) {
+      // Handle error if the request fails
+      // console.error('Error uploading Excel file:', error)
+      const resMessage =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString()
+      setLoading(false)
+      setMessage(resMessage)
+    }
   }
 
   const filteredData = mengajarData.filter((data) => {
@@ -151,7 +222,18 @@ const KelolaDataMengajar = () => {
                           </CButton>
                         </Link>
                       </CCol>
-                      <CCol xs={6}></CCol>
+                      <CCol xs={6}>
+                        {' '}
+                        <CButton
+                          variant="outline"
+                          color="success"
+                          onClick={handleImportModal}
+                          className="mx-2"
+                        >
+                          <CIcon icon={cilFile} className="mx-1 d-none d-md-inline" />
+                          Import
+                        </CButton>
+                      </CCol>
                     </CRow>
                   </CCol>
                   <CCol md={4} xs={6}>
@@ -224,6 +306,58 @@ const KelolaDataMengajar = () => {
           </CCard>
         </CCol>
       </CRow>
+      {/* Modal Import */}
+      <CModal
+        backdrop="static"
+        visible={modalImport}
+        onClose={() => {
+          setModalImport(false)
+          setMessage('')
+          setLoading(false)
+        }}
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>Import From Excel</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CFormInput
+            name="excel"
+            type="file"
+            accept=".xlsx, .xls"
+            onChange={handleFileChange}
+            label="File Excel"
+          />
+          <p className="text-muted">Hanya menerima tipe file .xlsx dan .xls</p>
+        </CModalBody>
+        <CModalFooter>
+          <CRow className="mt-2">
+            {message && (
+              <p className="alert alert-danger" style={{ padding: '5px' }}>
+                {message}
+              </p>
+            )}
+          </CRow>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setModalImport(false)
+              setMessage('')
+              setLoading(false)
+            }}
+          >
+            Close
+          </CButton>
+          {loading ? (
+            <CButton color="primary" disabled>
+              <CSpinner color="info" size="sm" />
+            </CButton>
+          ) : (
+            <CButton color="primary" onClick={handleImportExcel}>
+              Import
+            </CButton>
+          )}
+        </CModalFooter>
+      </CModal>
       {/* Modal Delete */}
       <CModal
         backdrop="static"

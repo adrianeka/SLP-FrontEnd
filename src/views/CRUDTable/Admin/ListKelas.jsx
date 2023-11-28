@@ -32,7 +32,7 @@ const ListKelas = () => {
       .catch((error) => {
         console.error('Error fetching data:', error)
       })
-  }, [])
+  }, [id])
 
   const filteredData = jadwalData.filter(
     (data) =>
@@ -57,6 +57,7 @@ const ListKelas = () => {
                         </CCardTitle>
                         <CCardTitle></CCardTitle>
                         <CCardText>Teknik Informatika</CCardText>
+
                         <Link
                           to={`/kelola/akademik/mengajar/${prodi.tahun_angkatan}/${prodi.nama_kelas}/${id}`}
                         >

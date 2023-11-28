@@ -26,6 +26,7 @@ import {
   CFormTextarea,
   CFormSelect,
   CFormLabel,
+  CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -40,12 +41,17 @@ import {
   cilFile,
 } from '@coreui/icons'
 import { Link, useParams } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 const KelolaDataMatkul = () => {
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
   const [modalDelete, setModalDelete] = useState(false)
   const [searchText, setSearchText] = useState('') //State untuk seatch
   const [selectedData, setSelectedData] = useState(null) //State untuk mengambil id dari table
   const [matkulData, setMatkulData] = useState([])
+  const [modalImport, setModalImport] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
   const { id } = useParams()
   const { id_semester } = useParams()
 
@@ -70,10 +76,18 @@ const KelolaDataMatkul = () => {
       })
   }, [])
 
+  const handleImportModal = () => {
+    setModalImport(true)
+  }
+
   const handleDeleteModal = (data) => {
     // Handle saat tombol hapus diklik
     setSelectedData(data) //Mengambil data id saat ingin menghapus
     setModalDelete(true) // Menampilkan modal
+  }
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0])
   }
 
   const handleSearchChange = (e) => {
@@ -92,6 +106,63 @@ const KelolaDataMatkul = () => {
       data.prodi.nama_prodi.toLowerCase().includes(searchText.toLowerCase())
     )
   })
+
+  const handleImportExcel = async () => {
+    if (!selectedFile) {
+      setMessage('Pilih file Excel terlebih dahulu')
+      return
+    }
+    try {
+      setLoading(true)
+      const formData = new FormData()
+      formData.append('excel', selectedFile)
+      const response = await axios.post(
+        'http://localhost:8080/api/admins/detailMatkul/create/import-excel',
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+
+      // Handle the response (success or failure)
+      console.log(response.data)
+      if (response.data.success.length == 0) {
+        //Jika import gagal
+        setMessage('Ada kesalahan pada excel!')
+        setLoading(false)
+      } else {
+        // Menutup modal import
+        setModalImport(false)
+
+        // Fetch and update the data in the table
+        const apiUrl = `http://localhost:8080/api/admins/detailMatkul/${id}/${id_semester}`
+        const updatedDataResponse = await axios.get(apiUrl, {
+          withCredentials: true,
+        })
+
+        setMatkulData(updatedDataResponse.data)
+        // Menampilkan Sweet Alert saat berhasil menambah data
+        Swal.fire({
+          title: 'Berhasil',
+          text: `Import data excel berhasil`,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        })
+      }
+    } catch (error) {
+      // Handle error if the request fails
+      // console.error('Error uploading Excel file:', error)
+      const resMessage =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString()
+      setLoading(false)
+      setMessage(resMessage)
+    }
+  }
 
   const handleDelete = (id_matkul, id_detailmatkul) => {
     // URL API untuk menghapus data pada tabel matkul dan detailMatkul
@@ -148,7 +219,17 @@ const KelolaDataMatkul = () => {
                           </CButton>
                         </Link>
                       </CCol>
-                      <CCol xs={6}></CCol>
+                      <CCol xs={6}>
+                        <CButton
+                          variant="outline"
+                          color="success"
+                          onClick={handleImportModal}
+                          className="mx-2"
+                        >
+                          <CIcon icon={cilFile} className="mx-1 d-none d-md-inline" />
+                          Import
+                        </CButton>
+                      </CCol>
                     </CRow>
                   </CCol>
                   <CCol md={4} xs={6}>
@@ -227,6 +308,59 @@ const KelolaDataMatkul = () => {
           </CCard>
         </CCol>
       </CRow>
+      {/* Modal Import */}
+      <CModal
+        backdrop="static"
+        visible={modalImport}
+        onClose={() => {
+          setModalImport(false)
+          setMessage('')
+          setLoading(false)
+        }}
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>Import From Excel</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CFormInput
+            name="excel"
+            type="file"
+            accept=".xlsx, .xls"
+            onChange={handleFileChange}
+            label="File Excel"
+          />
+          <p className="text-muted">Hanya menerima tipe file .xlsx dan .xls</p>
+        </CModalBody>
+        <CModalFooter>
+          <CRow className="mt-2">
+            {message && (
+              <p className="alert alert-danger" style={{ padding: '5px' }}>
+                {message}
+              </p>
+            )}
+          </CRow>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setModalImport(false)
+              setMessage('')
+              setLoading(false)
+            }}
+          >
+            Close
+          </CButton>
+          {loading ? (
+            <CButton color="primary" disabled>
+              <CSpinner color="info" size="sm" />
+            </CButton>
+          ) : (
+            <CButton color="primary" onClick={handleImportExcel}>
+              Import
+            </CButton>
+          )}
+        </CModalFooter>
+      </CModal>
+
       {/* Modal Delete */}
       <CModal
         backdrop="static"
