@@ -5,7 +5,6 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow,
   CTable,
@@ -29,19 +28,10 @@ import {
   CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilPen,
-  cilSend,
-  cilTrash,
-  cilSearch,
-  cilShortText,
-  cilCalendar,
-  cilClock,
-  cilUserPlus,
-  cilFile,
-} from '@coreui/icons'
+import { cilFile, cilPlus, cilSearch, cilUserPlus } from '@coreui/icons'
 import { Link, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import '../../../assets/css/style.css'
 
 const KelolaDataMengajar = () => {
   const [message, setMessage] = useState('')
@@ -208,17 +198,25 @@ const KelolaDataMengajar = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Data Mengajar</CCardHeader>
             <CCardBody>
+              <div className="fw-bold my-3 title-page">Daftar Prodi</div>
               <CForm className="mb-3">
                 <CRow>
-                  <CCol md={8} xs={6}>
+                  <CCol md={8} xs={6} className="mt-3">
                     <CRow>
                       <CCol md={2}>
-                        <Link to="/kelola/akademik/mengajar/tambah">
-                          <CButton variant="outline">
-                            <CIcon icon={cilUserPlus} className="mx-2" />
-                            Create
+                        <Link to="/kelola/akademik/mengajar/tambah" className="link-card">
+                          <CButton
+                            variant="outline"
+                            color="dark"
+                            className="d-flex align-items-center justify-content-center my-3"
+                          >
+                            <CRow>
+                              <CCol xs={1}>
+                                <CIcon icon={cilPlus} />
+                              </CCol>
+                              <CCol xs={9}>Create</CCol>
+                            </CRow>
                           </CButton>
                         </Link>
                       </CCol>
@@ -296,7 +294,7 @@ const KelolaDataMengajar = () => {
                         <CTableDataCell>
                           {jadwal.angkatan_detail_matkul?.angkatan?.tahun_angkatan || '-'}
                         </CTableDataCell>
-                        <CTableDataCell>{jadwal.dosen.nama_dosen}</CTableDataCell>
+                        <CTableDataCell>{jadwal.dosen?.nama_dosen || '-'}</CTableDataCell>
                       </CTableRow>
                     ))
                   )}

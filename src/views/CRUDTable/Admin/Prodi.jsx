@@ -11,8 +11,9 @@ import {
   CCardText,
 } from '@coreui/react'
 import { Link } from 'react-router-dom'
-import { cilUserPlus } from '@coreui/icons'
+import { cilChevronRight, cilPlus } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
+import '../../../assets/css/style.css'
 
 const Prodi = () => {
   const [searchText, setSearchText] = useState('')
@@ -42,34 +43,46 @@ const Prodi = () => {
     <div>
       <CRow>
         <CCol>
-          <CCard>
-            <CCardHeader>Daftar Prodi</CCardHeader>
+          <CCard className="custom-card">
             <CCardBody>
-              <CCol md={8} xs={6} className="mb-3">
-                <CRow>
-                  <CCol md={2}>
-                    <Link to="/kelola/akademik/matkul/tambah">
-                      <CButton variant="outline">
-                        <CIcon icon={cilUserPlus} className="mx-2" />
-                        Create
-                      </CButton>
-                    </Link>
-                  </CCol>
-                  <CCol xs={6}></CCol>
-                </CRow>
-              </CCol>
+              <div className="fw-bold my-3 title-page">Daftar Prodi</div>
+              <Link to="/kelola/akademik/matkul/tambah" className="link-card">
+                <CButton
+                  variant="outline"
+                  color="dark"
+                  className="d-flex align-items-center justify-content-center my-3"
+                >
+                  <CRow>
+                    <CCol xs={1}>
+                      <CIcon icon={cilPlus} />
+                    </CCol>
+                    <CCol xs={10}>
+                      <div className="">Mata Kuliah</div>
+                    </CCol>
+                  </CRow>
+                </CButton>
+              </Link>
               <CRow>
                 {filteredData.map((prodi) => (
                   <CCol key={prodi.id_prodi} sm={6}>
-                    <CCard>
-                      <CCardBody>
-                        <CCardTitle>{prodi.nama_prodi}</CCardTitle>
-                        <CCardText>Teknik Informatika</CCardText>
-                        <Link to={`/kelola/matakuliah/list-semester/${prodi.id_prodi}`}>
-                          <CButton className="btn btn-info text-white">Select</CButton>
-                        </Link>
-                      </CCardBody>
-                    </CCard>
+                    <Link
+                      to={`/kelola/matakuliah/list-semester/${prodi.id_prodi}`}
+                      className="link-card"
+                    >
+                      <CCard className="mt-2 link-card">
+                        <CCardBody>
+                          <CRow>
+                            <CCol xs={11}>
+                              <CCardTitle>{prodi.nama_prodi}</CCardTitle>
+                              <CCardText>Teknik Informatika</CCardText>
+                            </CCol>
+                            <CCol xs={1} className="d-flex align-items-center">
+                              <CIcon icon={cilChevronRight} size="xl" />
+                            </CCol>
+                          </CRow>
+                        </CCardBody>
+                      </CCard>
+                    </Link>
                   </CCol>
                 ))}
               </CRow>

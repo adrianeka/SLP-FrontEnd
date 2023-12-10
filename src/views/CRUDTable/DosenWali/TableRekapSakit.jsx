@@ -33,6 +33,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilPen, cilSearch, cilSend, cilTrash, cilShortText } from '@coreui/icons'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const usersData = [
   {
@@ -80,7 +81,7 @@ const TableRekapSakit = () => {
         // Handle error jika terjadi kesalahan saat mengambil data dari API
         console.error('Error fetching data:', error)
       })
-  }, [])
+  }, [id_dosen])
   // Pengecekan apakah mahasiswaTable adalah sebuah array
   if (!Array.isArray(usersData)) {
     console.error('mahasiswaTable is not an array')
@@ -125,6 +126,12 @@ const TableRekapSakit = () => {
     try {
       const response = await axios.put(apiUrl, Approved, {
         withCredentials: true,
+      })
+      Swal.fire({
+        title: 'Berhasil',
+        text: `Data Berhasil di Konfirmasi!`,
+        icon: 'success',
+        confirmButtonText: 'OK',
       })
       console.log(response.data)
       setModalTerima(false)

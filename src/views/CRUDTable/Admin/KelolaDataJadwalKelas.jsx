@@ -29,19 +29,10 @@ import {
   CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilPen,
-  cilSend,
-  cilTrash,
-  cilSearch,
-  cilShortText,
-  cilCalendar,
-  cilClock,
-  cilUserPlus,
-  cilFile,
-} from '@coreui/icons'
+import { cilSearch, cilPlus, cilFile } from '@coreui/icons'
 import { Link, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import '../../../assets/css/style.css'
 
 const KelolaDataJadwalKelas = () => {
   const [message, setMessage] = useState('')
@@ -209,17 +200,25 @@ const KelolaDataJadwalKelas = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Jadwal Mata Kuliah Kelas</CCardHeader>
             <CCardBody>
+              <div className="fw-bold my-3 title-page">Daftar Rombongan Kelas</div>
               <CForm className="mb-3">
                 <CRow>
-                  <CCol md={8} xs={6}>
+                  <CCol md={8} xs={6} className="mt-3">
                     <CRow>
                       <CCol md={2}>
-                        <Link to="/kelola/akademik/jadwalkelas/tambah">
-                          <CButton variant="outline">
-                            <CIcon icon={cilUserPlus} className="mx-2" />
-                            Create
+                        <Link to="/kelola/akademik/jadwalkelas/tambah" className="link-card">
+                          <CButton
+                            variant="outline"
+                            color="dark"
+                            className="d-flex align-items-center justify-content-center my-3"
+                          >
+                            <CRow>
+                              <CCol xs={1}>
+                                <CIcon icon={cilPlus} />
+                              </CCol>
+                              <CCol xs={9}>Create</CCol>
+                            </CRow>
                           </CButton>
                         </Link>
                       </CCol>
@@ -228,7 +227,7 @@ const KelolaDataJadwalKelas = () => {
                           variant="outline"
                           color="success"
                           onClick={handleImportModal}
-                          className="mx-2"
+                          className="mx-2 mt-3"
                         >
                           <CIcon icon={cilFile} className="mx-1 d-none d-md-inline" />
                           Import

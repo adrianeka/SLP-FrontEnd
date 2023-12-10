@@ -5,13 +5,10 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardFooter,
-  CCardHeader,
   CCol,
   CRow,
   CTable,
   CTableBody,
-  CTableCaption,
   CTableDataCell,
   CTableHead,
   CTableHeaderCell,
@@ -25,11 +22,11 @@ import {
   CModalBody,
   CModalFooter,
   CInputGroupText,
-  CFormSelect,
 } from '@coreui/react'
-import { cilPen, cilTrash, cilUserPlus, cilShortText, cilSearch } from '@coreui/icons'
+import { cilTrash, cilUserPlus, cilSearch } from '@coreui/icons'
 import { Link } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
+import '../../../assets/css/style.css'
 
 const KelolaDataDosenWali = () => {
   const [message, setMessage] = useState('')
@@ -145,15 +142,15 @@ const KelolaDataDosenWali = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Dosen Wali</CCardHeader>
             <CCardBody>
+              <div className="fw-bold mt-3 mb-5 title-page">Daftar Dosen Wali</div>
               <CForm className="mb-3">
                 <CRow>
                   <CCol md={8} xs={6}>
                     <CRow>
                       <CCol md={2}>
-                        <Link to={'/kelola/dosen/wali/tambah'}>
-                          <CButton variant="outline">
+                        <Link to={'/kelola/dosen/wali/tambah'} className="link-card">
+                          <CButton variant="outline" color="dark">
                             <CIcon icon={cilUserPlus} className="mx-2" />
                             Create
                           </CButton>
@@ -175,7 +172,7 @@ const KelolaDataDosenWali = () => {
                   </CCol>
                 </CRow>
               </CForm>
-              <CTable striped bordered responsive>
+              <CTable striped bordered responsive className="mt-2">
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell>Dosen Wali</CTableHeaderCell>

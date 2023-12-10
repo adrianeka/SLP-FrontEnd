@@ -27,11 +27,11 @@ const navKaprodi = [
     icon: <CIcon icon={cilApplications} customClassName="nav-icon" />,
   },
 
-  // {
-  //   component: CNavItem,
-  //   name: 'Rekap Data Mahasiswa',
-  //   to: '/#',
-  // },
+  {
+    component: CNavItem,
+    name: 'Rekap Data Mahasiswa',
+    to: '/kaprodi/rekap/kelas/',
+  },
 ]
 
 export default navKaprodi

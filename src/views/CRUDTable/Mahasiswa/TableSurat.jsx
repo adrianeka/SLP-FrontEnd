@@ -123,7 +123,7 @@ const TableSuratMahasiswa = () => {
       })
   }
   const [modalExport, setModalExport] = useState(false)
-  const handleExportModal = () => {
+  const handleExportModal = (user) => {
     setModalExport(true)
   }
 
@@ -189,7 +189,11 @@ const TableSuratMahasiswa = () => {
                         <CTableDataCell>{user.keterangan}</CTableDataCell>
                         <CTableDataCell>
                           <CCol xs={3}>
-                            <CButton variant="outline" color="success" onClick={handleExportModal}>
+                            <CButton
+                              variant="outline"
+                              color="success"
+                              onClick={() => handleExportModal(user)}
+                            >
                               Lihat
                             </CButton>
                           </CCol>

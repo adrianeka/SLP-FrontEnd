@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import Swal from 'sweetalert2'
 import {
-  CButton,
   CCard,
   CCardBody,
   CCardHeader,
@@ -15,18 +12,11 @@ import {
   CTableHeaderCell,
   CTableRow,
   CForm,
-  CFormInput,
-  CInputGroup,
-  CModal,
-  CModalTitle,
-  CModalHeader,
-  CModalBody,
-  CModalFooter,
-  CInputGroupText,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPen, cilTrash, cilSearch, cilUserPlus } from '@coreui/icons'
+import { cilChevronRight } from '@coreui/icons'
 import { Link, useParams } from 'react-router-dom'
+import '../../../assets/css/style.css'
 
 const ListSemester = () => {
   const { id } = useParams()
@@ -64,23 +54,29 @@ const ListSemester = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Daftar Semester Kuliah</CCardHeader>
+            {/* <CCardHeader>Daftar Semester Kuliah</CCardHeader> */}
             <CCardBody>
-              <CForm className="mb-3"></CForm>
-              <CTable striped bordered responsive>
+              <div className="fw-bold my-3 title-page">Daftar Semester Kuliah</div>
+              <CTable bordered responsive className="mt-3">
                 <CTableHead>
-                  <CTableRow className="text-center">
+                  <CTableRow className="px-5">
                     <CTableHeaderCell>Semester</CTableHeaderCell>
-                    <CTableHeaderCell>Aksi</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
                   {filteredData.map((semester) => (
-                    <CTableRow key={semester.id} className="text-center">
-                      <CTableDataCell>{semester.nama_semester}</CTableDataCell>
-                      <CTableDataCell>
-                        <Link to={`/kelola/akademik/matkul/${semester.id}/${id}`}>
-                          <CButton className="btn btn-info text-white">Select</CButton>
+                    <CTableRow key={semester.id} className="px-5">
+                      <CTableDataCell className="link-card">
+                        <Link
+                          to={`/kelola/akademik/matkul/${semester.id}/${id}`}
+                          style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
+                          <CRow>
+                            <CCol xs={11}>{semester.nama_semester}</CCol>
+                            <CCol xs={1}>
+                              <CIcon icon={cilChevronRight} size="xl" />
+                            </CCol>
+                          </CRow>
                         </Link>
                       </CTableDataCell>
                     </CTableRow>

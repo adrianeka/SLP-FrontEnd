@@ -5,7 +5,6 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardHeader,
   CCol,
   CRow,
   CTable,
@@ -25,8 +24,9 @@ import {
   CInputGroupText,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPen, cilTrash, cilSearch, cilUserPlus } from '@coreui/icons'
+import { cilTrash, cilSearch, cilPlus } from '@coreui/icons'
 import { Link } from 'react-router-dom'
+import '../../../assets/css/style.css'
 
 const KelolaDataSemester = () => {
   const [modalDelete, setModalDelete] = useState(false)
@@ -172,18 +172,26 @@ const KelolaDataSemester = () => {
     <div>
       <CRow>
         <CCol>
-          <CCard>
-            <CCardHeader>Daftar Semester Kuliah</CCardHeader>
+          <CCard className="custom-card">
             <CCardBody>
-              <CForm className="mb-3">
+              <div className="fw-bold my-3 title-page">Daftar Semester Kuliah</div>
+              <CForm>
                 <CRow>
-                  <CCol md={8} xs={6}>
+                  <CCol md={8} xs={6} className="my-3">
                     <CRow>
                       <CCol md={2}>
-                        <Link to="/kelola/akademik/semester/tambah">
-                          <CButton variant="outline">
-                            <CIcon icon={cilUserPlus} className="mx-2" />
-                            Create
+                        <Link to="/kelola/akademik/semester/tambah" className="link-card">
+                          <CButton
+                            variant="outline"
+                            color="dark"
+                            className="d-flex align-items-center justify-content-center my-3"
+                          >
+                            <CRow>
+                              <CCol xs={1}>
+                                <CIcon icon={cilPlus} />
+                              </CCol>
+                              <CCol xs={9}>Create</CCol>
+                            </CRow>
                           </CButton>
                         </Link>
                       </CCol>

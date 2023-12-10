@@ -33,6 +33,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilPen, cilSearch, cilSend, cilTrash, cilShortText } from '@coreui/icons'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const usersData = [
   {
@@ -125,6 +126,12 @@ const TableRekapIzin = () => {
     try {
       const response = await axios.put(apiUrl, Approved, {
         withCredentials: true,
+      })
+      Swal.fire({
+        title: 'Berhasil',
+        text: `Data Berhasil di Konfirmasi!`,
+        icon: 'success',
+        confirmButtonText: 'OK',
       })
       console.log(response.data)
       setModalTerima(false)
